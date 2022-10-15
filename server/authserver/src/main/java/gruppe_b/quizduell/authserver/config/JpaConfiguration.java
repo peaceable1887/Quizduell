@@ -12,8 +12,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  * @author Christopher Burmeister
  */
 @Configuration
-@EnableJpaRepositories("gruppe_b.quizduell.persistence.*")
-@EntityScan("gruppe_b.quizduell.persistence.*")
+@EnableJpaRepositories("gruppe_b.quizduell.persistence.repository")
+@EntityScan("gruppe_b.quizduell.persistence.entities")
 public class JpaConfiguration {
 
 }
