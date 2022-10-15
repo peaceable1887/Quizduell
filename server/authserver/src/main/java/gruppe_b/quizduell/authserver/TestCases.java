@@ -3,13 +3,14 @@ package gruppe_b.quizduell.authserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import gruppe_b.quizduell.application.interfaces.RequestHandler;
 import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommand;
-import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommandHandler;
+import gruppe_b.quizduell.domain.entities.User;
 
 public class TestCases {
 
     @Autowired
-    CreateUserCommandHandler createUser;
+    RequestHandler<CreateUserCommand, User> createUserHandler;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -17,6 +18,6 @@ public class TestCases {
     public void createTestUserJohn() {
         String endcodePswd = passwordEncoder.encode("password");
         CreateUserCommand command = new CreateUserCommand("john", endcodePswd, "salz");
-        createUser.handle(command);
+        createUserHandler.handle(command);
     }
 }

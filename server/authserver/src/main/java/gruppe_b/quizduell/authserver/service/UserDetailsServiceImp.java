@@ -6,15 +6,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.application.interfaces.RequestHandler;
 import gruppe_b.quizduell.application.user.queries.GetUserDetailQuery;
-import gruppe_b.quizduell.application.user.queries.GetUserDetailQueryHandler;
 import gruppe_b.quizduell.domain.entities.User;
 
 @Service("UserDetailsService")
 public class UserDetailsServiceImp implements UserDetailsService {
 
     @Autowired
-    GetUserDetailQueryHandler getUserHandler;
+    RequestHandler<GetUserDetailQuery, User> getUserHandler;
 
     UserDetails userDetails;
 
