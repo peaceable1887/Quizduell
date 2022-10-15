@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  authserver:
+    restart: always
+    build: ./authserver
+    ports:
+      - "8080:8080"
+    links:
+      - maria:maria
+  maria:
+    restart: always
+    image: mariadb:latest
+    expose:
+      - "3306"
+    environment:
+      - MARIADB_USER=admin
+      - MARIADB_PASSWORD=admin
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_DATABASE=quizduell
