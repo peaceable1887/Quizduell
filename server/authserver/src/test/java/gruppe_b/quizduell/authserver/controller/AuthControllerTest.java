@@ -16,11 +16,13 @@ import gruppe_b.quizduell.application.user.commands.create_user.CreateUserComman
 import gruppe_b.quizduell.domain.entities.User;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.containsString;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -57,7 +59,9 @@ class AuthControllerTest {
                 // Act & Assert
                 this.mvc.perform(get("/")
                                 .header("Authorization", "Bearer " + token))
-                                .andExpect(content().string("Hello, john"));
+                                .andExpect(status().isOk())
+                                .andExpect(content().string(containsString("Hello, ")))
+                                .andReturn();
         }
 
         @Test
@@ -95,7 +99,7 @@ class AuthControllerTest {
 
                 // Assert
                 assertNotNull(token);
-                assertEquals(478, token.length());
+                assertEquals(524, token.length());
         }
 
         @Test
