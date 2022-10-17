@@ -42,6 +42,7 @@ class AuthControllerTest {
 
                 CreateUserCommand command = new CreateUserCommand(
                                 "john",
+                                "test@test.de",
                                 endcodePswd,
                                 "salt");
                 createUserHandler.handle(command);

@@ -21,7 +21,7 @@ public class CreateUserCommandHandler implements RequestHandler<CreateUserComman
     }
 
     public User handle(CreateUserCommand command) {
-        User user = new User(command.name, command.passwordHash, command.salt);
+        User user = new User(command.name, command.mail, command.passwordHash, command.salt);
 
         return repo.save(user);
     }

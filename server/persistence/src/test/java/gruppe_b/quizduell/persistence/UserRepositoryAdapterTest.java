@@ -22,15 +22,15 @@ class UserRepositoryAdapterTest {
     void setUp() {
         repo.deleteAll();
 
-        john = repo.save(new User("John", "password", "salt"));
-        dave = repo.save(new User("Dave", "password", "salt"));
-        marc = repo.save(new User("Marc", "password", "salt"));
+        john = repo.save(new User("John", "JohnDoe@doe.com", "password", "salt"));
+        dave = repo.save(new User("Dave", "exampleusermailname@exmaplemailhost.hamburg", "password", "salt"));
+        marc = repo.save(new User("Marc", "u@u.de", "password", "salt"));
     }
 
     @Test
     void createsNewUserOnSave() {
         // Arrange
-        User user = new User("test", "test", "test");
+        User user = new User("test", "test", "test", "test");
 
         // Act
         User result = repo.save(user);

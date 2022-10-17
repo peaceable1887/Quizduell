@@ -25,8 +25,8 @@ public class DbUser extends User {
     public DbUser() {
     }
 
-    public DbUser(String name, String passwordHash, String salt) {
-        super(name, passwordHash, salt);
+    public DbUser(String name, String mail, String passwordHash, String salt) {
+        super(name, mail, passwordHash, salt);
     }
 
     @Id
@@ -45,6 +45,12 @@ public class DbUser extends User {
         return super.getName();
     }
 
+    @Column(name = "mail", nullable = true, unique = true)
+    @Override
+    public String getMail() {
+        return super.getMail();
+    }
+
     @Column(name = "password", nullable = false)
     @Override
     public String getPasswordHash() {
@@ -61,6 +67,7 @@ public class DbUser extends User {
         User user = new User();
         user.setId(getId());
         user.setName(getName());
+        user.setMail(getMail());
         user.setPasswordHash(getPasswordHash());
         user.setSalt(getSalt());
 

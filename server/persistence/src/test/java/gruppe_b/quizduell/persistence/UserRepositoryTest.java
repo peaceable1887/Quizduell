@@ -23,15 +23,15 @@ class UserRepositoryTest {
     void setUp() {
         repo.deleteAll();
 
-        john = repo.save(new DbUser("John", "password", "salt"));
-        dave = repo.save(new DbUser("Dave", "password", "salt"));
-        marc = repo.save(new DbUser("Marc", "password", "salt"));
+        john = repo.save(new DbUser("John", "JohnDoe@doe.com", "password", "salt"));
+        dave = repo.save(new DbUser("Dave", "exampleusermailname@exmaplemailhost.hamburg", "password", "salt"));
+        marc = repo.save(new DbUser("Marc", "u@u.de", "password", "salt"));
     }
 
     @Test
     void setsIdOnSave() {
         // Arrange
-        DbUser user = new DbUser("Doe", "password", "salt");
+        DbUser user = new DbUser("Doe", "test", "password", "salt");
 
         // Act
         DbUser result = repo.save(user);
@@ -43,17 +43,17 @@ class UserRepositoryTest {
     @Test
     void addDuplicateShouldThrowException() {
         // Arrange
-        repo.save(new DbUser("Duplicate", "password", "salt"));
+        repo.save(new DbUser("Duplicate", "test", "password", "salt"));
 
         // Act
 
         // Assert
         Throwable exception = assertThrows(
                 org.springframework.dao.DataIntegrityViolationException.class, () -> {
-                    repo.save(new DbUser("Duplicate", "PASSWORD", "PASSWORD"));
+                    repo.save(new DbUser("Duplicate", "test", "PASSWORD", "PASSWORD"));
                 });
         assertEquals(
-                "could not execute statement; SQL [n/a]; constraint [UK_3g1j96g94xpk3lpxl2qbl985x]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
+                "could not execute statement; SQL [n/a]; constraint [UK_jhck7kjdogc7yia7qamc89ypv]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement",
                 exception.getMessage());
     }
 }

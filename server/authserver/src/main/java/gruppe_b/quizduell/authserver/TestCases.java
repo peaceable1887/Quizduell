@@ -17,7 +17,7 @@ public class TestCases {
 
     public void createTestUserJohn() {
         String endcodePswd = passwordEncoder.encode("password");
-        CreateUserCommand command = new CreateUserCommand("john", endcodePswd, "salz");
+        CreateUserCommand command = new CreateUserCommand("john", "test@test.de", endcodePswd, "salz");
         createUserHandler.handle(command);
     }
 }

@@ -10,14 +10,16 @@ import java.util.UUID;
 public class User {
     UUID id;
     String name;
+    String mail;
     String passwordHash;
     String salt;
 
     public User() {
     }
 
-    public User(String name, String passwordHash, String salt) {
+    public User(String name, String mail, String passwordHash, String salt) {
         this.name = name;
+        this.mail = mail;
         this.passwordHash = passwordHash;
         this.salt = salt;
     }
@@ -28,6 +30,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPasswordHash() {

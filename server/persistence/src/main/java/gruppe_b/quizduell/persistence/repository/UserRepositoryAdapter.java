@@ -32,6 +32,7 @@ public class UserRepositoryAdapter implements UserRepository {
     public User save(User user) {
         return repo.save(new DbUser(
                 user.getName(),
+                user.getMail(),
                 user.getPasswordHash(),
                 user.getSalt()));
     }

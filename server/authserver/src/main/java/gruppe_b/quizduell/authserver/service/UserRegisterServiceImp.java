@@ -26,6 +26,7 @@ public class UserRegisterServiceImp implements UserRegisterService {
     public void saveUser(UserCredentialsDto userCredentialsDto) {
         CreateUserCommand command = new CreateUserCommand(
                 userCredentialsDto.name,
+                userCredentialsDto.mail,
                 passwordEncoder.encode(userCredentialsDto.password),
                 "salt");
 
