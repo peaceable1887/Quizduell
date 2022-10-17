@@ -8,6 +8,11 @@ import gruppe_b.quizduell.application.user.commands.create_user.CreateUserComman
 import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommandHandler;
 import gruppe_b.quizduell.authserver.common.UserCredentialsDto;
 
+/**
+ * Service zum Erstellen eines neuen User's in der Datenbank.
+ * 
+ * @author Christopher Burmeister
+ */
 @Service
 public class UserRegisterServiceImp implements UserRegisterService {
 

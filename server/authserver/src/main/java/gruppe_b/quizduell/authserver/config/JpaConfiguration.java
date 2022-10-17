@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * Konfigurations-Klasse für JpaRepo's aus dem "persistence" Layer.
- * 
  * Konfiguration erfolgt über annotation.
  * 
  * @author Christopher Burmeister

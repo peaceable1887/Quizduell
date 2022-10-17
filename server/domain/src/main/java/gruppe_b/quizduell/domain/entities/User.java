@@ -2,6 +2,11 @@ package gruppe_b.quizduell.domain.entities;
 
 import java.util.UUID;
 
+/**
+ * User Objekt
+ * 
+ * @author Christopher Burmeister
+ */
 public class User {
     UUID id;
     String name;

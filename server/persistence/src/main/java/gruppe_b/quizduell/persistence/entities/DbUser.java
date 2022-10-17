@@ -13,6 +13,11 @@ import org.hibernate.annotations.Type;
 
 import gruppe_b.quizduell.domain.entities.User;
 
+/**
+ * User DbEntity.
+ * 
+ * @author Christopher Burmeister
+ */
 @Entity
 @Table(name = "users")
 public class DbUser extends User {

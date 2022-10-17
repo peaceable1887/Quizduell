@@ -46,9 +46,9 @@ class AuthControllerTest {
                                 "salt");
                 createUserHandler.handle(command);
 
-                MvcResult result = this.mvc.perform(post("/token")
+                MvcResult result = this.mvc.perform(get("/token")
                                 .with(httpBasic("john", "password")))
-                                .andExpect(status().isCreated())
+                                .andExpect(status().isOk())
                                 .andReturn();
 
                 String token = result.getResponse().getContentAsString();
@@ -85,9 +85,9 @@ class AuthControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jObject.toJSONString()));
 
-                MvcResult result = this.mvc.perform(post("/token")
+                MvcResult result = this.mvc.perform(get("/token")
                                 .with(httpBasic("RegisterTestName2", "password")))
-                                .andExpect(status().isCreated())
+                                .andExpect(status().isOk())
                                 .andReturn();
 
                 String token = result.getResponse().getContentAsString();

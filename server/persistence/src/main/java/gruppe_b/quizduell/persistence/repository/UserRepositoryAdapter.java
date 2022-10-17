@@ -7,6 +7,12 @@ import gruppe_b.quizduell.application.user.UserRepository;
 import gruppe_b.quizduell.domain.entities.User;
 import gruppe_b.quizduell.persistence.entities.DbUser;
 
+/**
+ * Adapter für das User Repository.
+ * Übernimmt das Mapping zwischen dem User Domain Model und dem User DbEntity.
+ * 
+ * @author Christopher Burmeister
+ */
 @Repository("UserRepository")
 public class UserRepositoryAdapter implements UserRepository {
 

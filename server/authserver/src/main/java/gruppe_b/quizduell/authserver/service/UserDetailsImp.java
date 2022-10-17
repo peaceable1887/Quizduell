@@ -7,6 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import gruppe_b.quizduell.domain.entities.User;
 
+/**
+ * Implementierung des UserDetails Interfaces für Authentifizierung mit Spring
+ * Security.
+ * 
+ * @author Christopher Burmeister
+ */
 public class UserDetailsImp implements UserDetails {
 
     private final User user;

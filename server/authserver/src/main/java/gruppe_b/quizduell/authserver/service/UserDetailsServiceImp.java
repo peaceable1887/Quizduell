@@ -7,9 +7,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
-import gruppe_b.quizduell.application.user.queries.GetUserDetailQuery;
+import gruppe_b.quizduell.application.user.queries.get_details.GetUserDetailQuery;
 import gruppe_b.quizduell.domain.entities.User;
 
+/**
+ * Implementierung des Interfaces UserDetailsService für die Authentifizierung
+ * mit Spring Security.
+ * 
+ * @author Christopher Burmeister
+ */
 @Service("UserDetailsService")
 public class UserDetailsServiceImp implements UserDetailsService {
 

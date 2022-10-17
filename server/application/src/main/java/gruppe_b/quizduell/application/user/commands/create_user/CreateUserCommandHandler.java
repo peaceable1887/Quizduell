@@ -6,6 +6,11 @@ import gruppe_b.quizduell.application.interfaces.RequestHandler;
 import gruppe_b.quizduell.application.user.UserRepository;
 import gruppe_b.quizduell.domain.entities.User;
 
+/**
+ * CommandHandler zum Erstellen eines neuen Users.
+ * 
+ * @author Christopher Burmeister
+ */
 @Service
 public class CreateUserCommandHandler implements RequestHandler<CreateUserCommand, User> {
 
