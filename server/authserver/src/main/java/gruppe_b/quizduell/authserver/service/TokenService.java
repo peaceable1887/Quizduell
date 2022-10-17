@@ -26,15 +26,18 @@ public class TokenService {
     }
 
     public String generateToken(Authentication authentication) {
+
+        UserDetailsImp user = (UserDetailsImp) authentication.getPrincipal();
+
         Instant now = Instant.now();
         String scope = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
+                .issuer("quizduell_authserver")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .subject(authentication.getName())
+                .subject(user.getId().toString()) // UserId zum Identifizieren setzen
                 .claim("scope", scope)
                 .build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

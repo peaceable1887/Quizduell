@@ -1,6 +1,7 @@
 package gruppe_b.quizduell.authserver.service;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,6 +36,10 @@ public class UserDetailsImp implements UserDetails {
     @Override
     public String getUsername() {
         return user.getName();
+    }
+
+    public UUID getId() {
+        return user.getId();
     }
 
     @Override
