@@ -103,6 +103,18 @@ class AuthControllerTest {
         }
 
         @Test
+        void whenUnregisteredThen401() throws Exception {
+                // Arrange
+
+                // Act
+
+                // Assert
+                this.mvc.perform(get("/token")
+                                .with(httpBasic("unregisteredTest", "password")))
+                                .andExpect(status().isUnauthorized());
+        }
+
+        @Test
         void whenRegisterWithEmptyNameWhenFail() throws Exception {
                 // Arrange
                 JSONObject jObject = new JSONObject();

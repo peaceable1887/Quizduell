@@ -27,6 +27,9 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = getUserHandler.handle(new GetUserDetailQuery(username));
+        if (user == null) {
+            throw new UsernameNotFoundException(username);
+        }
         return new UserDetailsImp(user);
     }
 }
