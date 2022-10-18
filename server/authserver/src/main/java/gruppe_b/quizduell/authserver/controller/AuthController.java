@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gruppe_b.quizduell.authserver.common.UserCredentialsDto;
 import gruppe_b.quizduell.authserver.service.TokenService;
-import gruppe_b.quizduell.authserver.service.UserDetailsImp;
 import gruppe_b.quizduell.authserver.service.UserRegisterService;
 
 /**

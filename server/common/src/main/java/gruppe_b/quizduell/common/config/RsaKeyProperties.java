@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.authserver.config;
+package gruppe_b.quizduell.common.config;
 
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
