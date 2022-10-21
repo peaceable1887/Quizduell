@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.authserver.config;
+package gruppe_b.quizduell.lobbyserver.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,39 +17,14 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import gruppe_b.quizduell.authserver.TestCases;
 import gruppe_b.quizduell.common.config.AbstractSecurityConfig;
 import gruppe_b.quizduell.common.config.RsaKeyProperties;
 
-/**
- * Konfigurations-Klasse für die Security Einstellungen.
- * 
- * @author Christopher Burmeister
- */
 @Configuration
-@EnableWebSecurity
-public class SecurityConfig extends AbstractSecurityConfig {
+public class TestSecurityConfig extends AbstractSecurityConfig {
 
-    public SecurityConfig(RsaKeyProperties rsaKeys) {
+    protected TestSecurityConfig(RsaKeyProperties rsaKeys) {
         super(rsaKeys);
-    }
-
-    @Bean
-    public AuthenticationManager authManager(UserDetailsService userDetailsService) {
-        var authProvider = new DaoAuthenticationProvider();
-        authProvider.setPasswordEncoder(passwordEncoder());
-        authProvider.setUserDetailsService(userDetailsService);
-        return new ProviderManager(authProvider);
-    }
-
-    /**
-     * Temp Bean für die Erstellung von Testdaten
-     * 
-     * @return
-     */
-    @Bean
-    public TestCases getTestCasesClass() {
-        return new TestCases();
     }
 
     @Bean
