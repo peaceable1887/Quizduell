@@ -9,6 +9,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -57,5 +62,19 @@ public class SecurityConfig extends AbstractSecurityConfig {
         JWK jwk = new RSAKey.Builder(getRsaKeys().publicKey()).privateKey(getRsaKeys().privateKey()).build();
         JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwks);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeRequests(auth -> auth
+                        .antMatchers("/register").permitAll())
+                .authorizeRequests(auth -> auth
+                        .anyRequest().authenticated())
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
+                .build();
     }
 }

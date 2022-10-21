@@ -38,7 +38,7 @@ public class AuthHelper {
                 .issuer("quizduell_authserver")
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
-                .subject("00000000-0000-0000-0000-000000000000") // UserId zum Identifizieren setzen
+                .subject("00000000-0000-0000-0000-000000000000")
                 .claim("scope", "")
                 .build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
