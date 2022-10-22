@@ -4,6 +4,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.websocket.ContainerProvider;
+import javax.websocket.WebSocketContainer;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
@@ -36,6 +40,9 @@ import java.lang.reflect.Type;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebSocketTest {
+
+    @Autowired
+    AuthHelper authHelper;
 
     @Value("${local.server.port}")
     private int port;
@@ -60,12 +67,22 @@ class WebSocketTest {
     void whenPublishThenPublishNewLobby() throws Exception {
         // Arrange
         UUID lobbyId = lobbyHelper.createLobby();
+        String jwtToken = authHelper.generateToken();
 
         WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
                 asList(new WebSocketTransport(new StandardWebSocketClient()))));
 
-        StompSession stompSession = stompClient.connect(WS_URI, new StompSessionHandlerAdapter() {
-        }).get(1, TimeUnit.SECONDS);
+        WebSocketHttpHeaders handshakeHeaders = new WebSocketHttpHeaders();
+        handshakeHeaders.add("X-Authorization", jwtToken);
+        StompHeaders connectHeaders = new StompHeaders();
+
+        final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+        headers.add("X-Authorization", jwtToken);
+
+        StompSession stompSession = stompClient.connect(WS_URI, handshakeHeaders,
+                connectHeaders,
+                new StompSessionHandlerAdapter() {
+                }).get(2, TimeUnit.SECONDS);
 
         stompSession.subscribe(SUBSCRIBE_NEW_LOBBY_ENDPOINT,
                 new PublishLobbyStompFrameHandler());
@@ -73,7 +90,7 @@ class WebSocketTest {
         // Act
         lobbyHelper.publishLobby(lobbyId);
 
-        String lobby = completableFuture.get(10, TimeUnit.SECONDS);
+        String lobby = completableFuture.get(60, TimeUnit.SECONDS);
 
         // Assert
         assertNotNull(lobby);
@@ -90,7 +107,8 @@ class WebSocketTest {
         @Override
         public void handleFrame(StompHeaders headers, @Nullable Object payload) {
             // TODO Auto-generated method stub
-            completableFuture.complete(new String((byte[]) payload));
+            String msg = new String((byte[]) payload);
+            completableFuture.complete(msg);
         }
 
     }
