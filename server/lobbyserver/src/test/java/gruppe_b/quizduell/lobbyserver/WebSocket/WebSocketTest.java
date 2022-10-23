@@ -76,13 +76,12 @@ class WebSocketTest {
         handshakeHeaders.add("X-Authorization", jwtToken);
         StompHeaders connectHeaders = new StompHeaders();
 
-        final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
-        headers.add("X-Authorization", jwtToken);
-
         StompSession stompSession = stompClient.connect(WS_URI, handshakeHeaders,
                 connectHeaders,
                 new StompSessionHandlerAdapter() {
-                }).get(2, TimeUnit.SECONDS);
+                })
+                // "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJxdWl6ZHVlbGxfYXV0aHNlcnZlciIsInN1YiI6IjgzOTg0MWQ1LTgzMWMtNGNkMS1iOTExLTI3YThmZDA2ZTZiMSIsImV4cCI6MTY2NjUyMTQ2OCwiaWF0IjoxNjY2NTE3ODY4LCJzY29wZSI6IiJ9.oeiRkQAWBLwsiqIicH_U651IQOCQTSNknKBatoq_62fhNN77H8FP_AdMKHFjX4bqc4Rfu7KaYKOrIWCq288A6ocUz0mcdkO-hPBWpqYN4PvU0KQXIDjmzEdczDLeel4zf3OvjLQo3sSaW95frOMno48QKTJBasFpY_dLGOhOEBDrTjQCiyQIM9bNM3r6OZBjiip_MZGVuhcNDiB9kTzPC23IXIJqYdahsd3jvbKT6udSBe6Poj9fmpZaC_LJ3pOd9t--23WK9j87WUafnYqok5YTozUwu22QxSsYgnuZDDTSMIs6Mu43cRvhZqBZZoPWgJSq3syhlAKbSXEfLn0BrA")
+                .get(1, TimeUnit.SECONDS);
 
         stompSession.subscribe(SUBSCRIBE_NEW_LOBBY_ENDPOINT,
                 new PublishLobbyStompFrameHandler());
@@ -90,12 +89,14 @@ class WebSocketTest {
         // Act
         lobbyHelper.publishLobby(lobbyId);
 
-        String lobby = completableFuture.get(60, TimeUnit.SECONDS);
+        String lobby = completableFuture.get(10, TimeUnit.SECONDS);
 
         // Assert
         assertNotNull(lobby);
         assertTrue(lobby.contains(lobbyId.toString()));
     }
+
+    // TODO: Test with expired jwt token
 
     private class PublishLobbyStompFrameHandler implements StompFrameHandler {
 

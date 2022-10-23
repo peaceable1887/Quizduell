@@ -37,9 +37,14 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
         // // .setWebSocketEnabled(false) // TODO: brauche ich das mit NGINX?
         // // 22.10. Test failt aktuell mit diesem Parameter
         // .setSessionCookieNeeded(false);
+
         registry.addEndpoint("/lobby-websocket")
-                // .addInterceptors(new JwtHandshakeInterceptor())
                 .withSockJS();
+
+        // registry.addEndpoint("/lobby-websocket")
+        // .addInterceptors(new JwtHandshakeInterceptor())
+        // .setAllowedOrigins("*")
+        // .withSockJS();
 
         logger.info("--> Stomp Endpoints registered");
     }

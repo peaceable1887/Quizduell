@@ -67,7 +67,7 @@ public class WebSocketAuthenticationConfig implements WebSocketMessageBrokerConf
                     accessor.setUser(authentication);
                 }
                 Jwt jwt = jwtDecoder.decode(
-                        "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJxdWl6ZHVlbGxfYXV0aHNlcnZlciIsInN1YiI6IjFhMDIxMWY2LWRiOGYtNGIxYS1hMGFmLWM0NDhjZWIzNTBiNyIsImV4cCI6MTY2NjQ2MTYwNywiaWF0IjoxNjY2NDU4MDA3LCJzY29wZSI6IiJ9.EhGoea8ECMsq9LQ2WvLd3ShrENbQQxC3ePZ14zbGAn-2XajZpcHFofzndaJM2RBJ-oPWwT6RlQWHsNXBb0TzTjYQ0UkWW0hjehpq_4uQwwblqXwVsjgxWBEHaim53vsNYBzx9jGbKePi46KObiISwBIFTBmYg68m6EbJ0RCFEElrZ3lWLvcZXEOYlcAbXKbKda13_EmZaQ6DrRZNyyzaMX2exotX6Q8qSID2IeRGl8lsWEbLdR5ZrZBttZCAaO8SbDWTChxBTpL6oy1Y5bS-3CBn3VyhCyc8sGVnMoRv0FPwS6apKGQm2-1vyNcwmu5WRyI4rSM7AmWc1PbpgxpxCA");
+                        "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJxdWl6ZHVlbGxfYXV0aHNlcnZlciIsInN1YiI6IjgzOTg0MWQ1LTgzMWMtNGNkMS1iOTExLTI3YThmZDA2ZTZiMSIsImV4cCI6MTY2NjUyMTQ2OCwiaWF0IjoxNjY2NTE3ODY4LCJzY29wZSI6IiJ9.oeiRkQAWBLwsiqIicH_U651IQOCQTSNknKBatoq_62fhNN77H8FP_AdMKHFjX4bqc4Rfu7KaYKOrIWCq288A6ocUz0mcdkO-hPBWpqYN4PvU0KQXIDjmzEdczDLeel4zf3OvjLQo3sSaW95frOMno48QKTJBasFpY_dLGOhOEBDrTjQCiyQIM9bNM3r6OZBjiip_MZGVuhcNDiB9kTzPC23IXIJqYdahsd3jvbKT6udSBe6Poj9fmpZaC_LJ3pOd9t--23WK9j87WUafnYqok5YTozUwu22QxSsYgnuZDDTSMIs6Mu43cRvhZqBZZoPWgJSq3syhlAKbSXEfLn0BrA");
                 JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
                 Authentication authentication = converter.convert(jwt);
                 accessor.setUser(authentication);

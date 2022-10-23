@@ -44,6 +44,17 @@ class LobbyControllerTests {
     LobbyHelper lobbyHelper;
 
     @Test
+    void whenNotAuthenticated() throws Exception {
+        // Arrange
+
+        // Act
+
+        // Assert
+        this.mvc.perform(get("/lobby/all"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @WithMockUser
     void whenCreateThenCreateNewLobby() throws Exception {
         // Arrange
