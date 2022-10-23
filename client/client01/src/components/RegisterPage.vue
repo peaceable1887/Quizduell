@@ -21,8 +21,10 @@
                     <label for="passwordRepeat">Passwort wiederholen</label>
                     <input type="text" id="passwordRepeat" v-model="userRegData.passwordRepeat">
                 </div>
-                <button>Registrieren</button>
-                <button>Zurück</button>
+                <div class="btnWrapper">
+                    <button>Zurück</button>
+                    <button >Registrieren</button>               
+                </div>
             </form>
         </div>        
     </div>
@@ -92,6 +94,11 @@ h2
 {
     margin: 0 0 0 40px;
     width: 300px;
+}
+.btnWrapper 
+{
+    display: flex;
+    justify-content: space-around;
 }
 #registerForm button
 {

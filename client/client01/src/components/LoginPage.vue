@@ -1,28 +1,29 @@
 <template>
-    <main>
-        <div class="headline">
-            <h2>Quizduell</h2>
-        </div>
-        <div>
-            <form id="loginForm">
-                <div class="formData">
-                    <label for="accountName">Accountname</label>
-                    <input type="text" id="accountName">
-                </div>
-                <div class="formData">
-                    <label for="password">Passwort</label>
-                    <input type="text" id="password">
-                </div>
-                <button>Anmelden</button>
-            </form>
-            <div class="register">
-                <button @click="activeSite = 'RegisterPage'" id="registerLink">Registrieren</button>
+    <main >
+        <div v-if="!isHidden">
+            <div class="headline">
+                <h2>Quizduell</h2>
             </div>
+            <div>
+                <form id="loginForm">
+                    <div class="formData">
+                        <label for="accountName">Accountname</label>
+                        <input type="text" id="accountName">
+                    </div>
+                    <div class="formData">
+                        <label for="password">Passwort</label>
+                        <input type="text" id="password">
+                    </div>
+                    <button >Anmelden</button>
+                </form>
+                <div class="register">
+                    <button @click="activeSite = 'RegisterPage', isHidden = true" id="registerLink">Registrieren</button>
+                </div>
+            </div>   
+        </div>
             <keep-alive>
                 <component :is="activeSite"></component>
-            </keep-alive>
-        </div>   
-        <LoadUserData></LoadUserData>     
+            </keep-alive>     
     </main>
 </template>
 
@@ -42,13 +43,14 @@
         (
             {
                 activeSite: "",
+                isHidden: false,
             }  
         ),
         methods:
         {
             hideLoginPage()
             {
-                
+                console.log("versteckt!");
             }
         }
     }
