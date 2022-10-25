@@ -8,6 +8,11 @@ services:
       - "8080:8080"
     links:
       - maria:maria
+    environment:
+      - DB_HOSTNAME=maria
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
   maria:
     restart: always
     image: mariadb:latest
