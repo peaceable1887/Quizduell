@@ -1,27 +1,43 @@
-<template> 
-    <LoginPage></LoginPage>
+<template>
+  <router-view v-bind:showLogin="showLogin"></router-view>
 </template>
 
 <script>
-import LoginPage from "./components/LoginPage.vue";
 
-export default {
+export default 
+{
   name: 'App',
   components: 
   {
-    LoginPage,
-  },  
+  
+  },
+  data()
+  {
+    return{
+      showLogin: true,
+    }
+  },
+  methods:
+  {
+    toggleRegisterForm() 
+    {
+      this.showLogin = !this.showLogin;
+    }
+  }
 }
 </script>
 
 <style>
-#app 
-{
-  display: flex;
-  justify-content: center;
-  font-family: 'Roboto', sans-serif;
-  font-style: bold;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  *
+  {
+    margin: 0;
+    padding: 0;
+  }
+  body
+  {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+  }
+
 </style>
