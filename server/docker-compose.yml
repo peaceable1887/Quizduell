@@ -13,6 +13,18 @@ services:
       - DB_PORT=3306
       - DB_USERNAME=root
       - DB_PASSWORD=root
+
+  nginx:
+    restart: always
+    build: ./nginx/
+    ports:
+      - "80:80"
+    volumes:
+      - web-static:/www/static
+      - web-logs:/var/log/nginx
+    links:
+      - authserver:authserver
+
   maria:
     restart: always
     image: mariadb:latest
@@ -23,3 +35,7 @@ services:
       - MARIADB_PASSWORD=admin
       - MARIADB_ROOT_PASSWORD=root
       - MARIADB_DATABASE=quizduell
+
+volumes:
+  web-static:
+  web-logs:
