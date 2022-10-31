@@ -28,9 +28,9 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import org.springframework.web.socket.sockjs.transport.handler.WebSocketTransportHandler;
 
-import gruppe_b.quizduell.lobbyserver.Models.Lobby;
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
