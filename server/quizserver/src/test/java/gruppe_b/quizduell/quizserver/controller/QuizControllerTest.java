@@ -37,7 +37,7 @@ public class QuizControllerTest {
         // Act
 
         // Assert
-        this.mvc.perform(post("/quiz/create")
+        this.mvc.perform(post("/v1/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jcreateRequest.toJSONString()))
                 .andExpect(status().isCreated());

@@ -69,7 +69,7 @@ public class SecurityConfig extends AbstractSecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/register").permitAll())
+                        .antMatchers("/v1/register").permitAll())
                 .authorizeRequests(auth -> auth
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)

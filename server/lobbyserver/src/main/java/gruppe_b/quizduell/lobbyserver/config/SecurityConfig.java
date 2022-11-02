@@ -48,7 +48,7 @@ public class SecurityConfig extends AbstractSecurityConfig {
                                 .authorizeRequests(auth -> auth
                                                 .antMatchers("/topic/*").permitAll())
                                 .authorizeRequests(auth -> auth
-                                                .antMatchers("/lobby/*").authenticated())
+                                                .antMatchers("/v1/*").authenticated())
                                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

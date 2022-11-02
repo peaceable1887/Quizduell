@@ -20,7 +20,7 @@ import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
 @RestController
-@RequestMapping("/lobby")
+@RequestMapping("/v1")
 public class LobbyController {
 
     private final LobbyService lobbyService;

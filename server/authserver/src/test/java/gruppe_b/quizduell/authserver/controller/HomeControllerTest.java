@@ -21,13 +21,13 @@ class HomeControllerTest {
 
     @Test
     void whenUnauthenticatedThen401() throws Exception {
-        this.mvc.perform(get("/"))
+        this.mvc.perform(get("/v1/"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser
     void withMockUserStatusIsOK() throws Exception {
-        this.mvc.perform(get("/")).andExpect(status().isOk());
+        this.mvc.perform(get("/v1/")).andExpect(status().isOk());
     }
 }

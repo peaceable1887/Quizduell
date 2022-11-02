@@ -50,7 +50,7 @@ class LobbyControllerTests {
         // Act
 
         // Assert
-        this.mvc.perform(get("/lobby/all"))
+        this.mvc.perform(get("/v1/all"))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -65,7 +65,7 @@ class LobbyControllerTests {
         // Act
 
         // Assert
-        this.mvc.perform(post("/lobby/create")
+        this.mvc.perform(post("/v1/create")
                 .header("Authorization", "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jcreateRequest.toJSONString()))
@@ -83,7 +83,7 @@ class LobbyControllerTests {
         String jwtToken = authHelper.generateToken();
 
         // Act
-        MvcResult result = this.mvc.perform(post("/lobby/connect")
+        MvcResult result = this.mvc.perform(post("/v1/connect")
                 .header("Authorization", "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jconnectRequest.toJSONString()))
@@ -106,7 +106,7 @@ class LobbyControllerTests {
         String jwtToken = authHelper.generateToken();
 
         // Act
-        MvcResult result = this.mvc.perform(get("/lobby/get")
+        MvcResult result = this.mvc.perform(get("/v1/get")
                 .header("Authorization", "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jgetRequest.toJSONString()))
@@ -130,7 +130,7 @@ class LobbyControllerTests {
         String jwtToken = authHelper.generateToken();
 
         // Act
-        MvcResult result = this.mvc.perform(get("/lobby/all")
+        MvcResult result = this.mvc.perform(get("/v1/all")
                 .header("Authorization", "Bearer " + jwtToken)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();

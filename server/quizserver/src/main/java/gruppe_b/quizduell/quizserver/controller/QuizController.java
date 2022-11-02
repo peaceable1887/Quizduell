@@ -12,7 +12,7 @@ import gruppe_b.quizduell.quizserver.models.Quiz;
 import gruppe_b.quizduell.quizserver.services.QuizService;
 
 @RestController
-@RequestMapping("/quiz")
+@RequestMapping("/v1")
 public class QuizController {
 
     private final QuizService quizService;

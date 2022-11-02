@@ -7,22 +7,22 @@ server {
         alias /www/static;
     }
 
-    location /auth {
-        return 302 /auth/;
+    location /api/auth {
+        return 302 /api/auth/;
     }
 
-    location /auth/ {
+    location /api/auth/ {
         proxy_pass http://authserver:8080/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
-    location /lobby {
-        return 302 /lobby/;
+    location /api/lobby {
+        return 302 /api/lobby/;
     }
 
-    location /lobby/ {
+    location /api/lobby/ {
         proxy_pass http://lobbyserver:8080/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

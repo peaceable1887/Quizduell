@@ -1,6 +1,7 @@
 package gruppe_b.quizduell.authserver.controller;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +29,13 @@ import static org.hamcrest.Matchers.containsString;
 @AutoConfigureMockMvc
 class AuthControllerTest {
 
+        static {
+                System.setProperty("DB_PORT", "3306");
+                System.setProperty("DB_HOSTNAME", "localhost");
+                System.setProperty("DB_USERNAME", "root");
+                System.setProperty("DB_PASSWORD", "root");
+        }
+
         @Autowired
         MockMvc mvc;
 
@@ -49,7 +57,7 @@ class AuthControllerTest {
                                 "salt");
                 createUserHandler.handle(command);
 
-                MvcResult result = this.mvc.perform(get("/token")
+                MvcResult result = this.mvc.perform(get("/v1/token")
                                 .with(httpBasic("john", "password")))
                                 .andExpect(status().isOk())
                                 .andReturn();
@@ -57,7 +65,7 @@ class AuthControllerTest {
                 String token = result.getResponse().getContentAsString();
 
                 // Act & Assert
-                this.mvc.perform(get("/")
+                this.mvc.perform(get("/v1/")
                                 .header("Authorization", "Bearer " + token))
                                 .andExpect(status().isOk())
                                 .andExpect(content().string(containsString("Hello, ")))
@@ -72,7 +80,7 @@ class AuthControllerTest {
                 jObject.put("password", "password");
 
                 // Act & Assert
-                this.mvc.perform(post("/register")
+                this.mvc.perform(post("/v1/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jObject.toJSONString()))
                                 .andExpect(status().isCreated());
@@ -86,11 +94,11 @@ class AuthControllerTest {
                 jObject.put("password", "password");
 
                 // Act
-                this.mvc.perform(post("/register")
+                this.mvc.perform(post("/v1/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jObject.toJSONString()));
 
-                MvcResult result = this.mvc.perform(get("/token")
+                MvcResult result = this.mvc.perform(get("/v1/token")
                                 .with(httpBasic("RegisterTestName2", "password")))
                                 .andExpect(status().isOk())
                                 .andReturn();
@@ -109,7 +117,7 @@ class AuthControllerTest {
                 // Act
 
                 // Assert
-                this.mvc.perform(get("/token")
+                this.mvc.perform(get("/v1/token")
                                 .with(httpBasic("unregisteredTest", "password")))
                                 .andExpect(status().isUnauthorized());
         }
@@ -122,7 +130,7 @@ class AuthControllerTest {
                 jObject.put("password", "password");
 
                 // Act & Assert
-                this.mvc.perform(post("/register")
+                this.mvc.perform(post("/v1/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(jObject.toJSONString()))
                                 .andExpect(status().isBadRequest());

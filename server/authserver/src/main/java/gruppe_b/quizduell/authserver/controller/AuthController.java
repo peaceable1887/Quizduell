@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import gruppe_b.quizduell.authserver.common.UserCredentialsDto;
@@ -23,6 +24,7 @@ import gruppe_b.quizduell.authserver.service.UserRegisterService;
  * @author Christopher Burmeister
  */
 @RestController
+@RequestMapping("/v1")
 public class AuthController {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
