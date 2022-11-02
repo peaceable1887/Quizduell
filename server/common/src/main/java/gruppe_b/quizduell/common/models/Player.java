@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.lobbyserver.Models;
+package gruppe_b.quizduell.common.models;
 
 import java.util.UUID;
 

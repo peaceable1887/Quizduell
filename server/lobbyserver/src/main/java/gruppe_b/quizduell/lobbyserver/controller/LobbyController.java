@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import gruppe_b.quizduell.lobbyserver.Models.Lobby;
 import gruppe_b.quizduell.lobbyserver.common.ConnectRequest;
 import gruppe_b.quizduell.lobbyserver.common.CreateRequest;
 import gruppe_b.quizduell.lobbyserver.common.LobbyRequest;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
 @RestController

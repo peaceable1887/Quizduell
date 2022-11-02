@@ -28,9 +28,9 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import org.springframework.web.socket.sockjs.transport.handler.WebSocketTransportHandler;
 
-import gruppe_b.quizduell.lobbyserver.Models.Lobby;
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -50,7 +50,7 @@ class WebSocketTest {
     static String WS_URI;
 
     static final String SUBSCRIBE_NEW_LOBBY_ENDPOINT = "/topic/new-lobby";
-    static final String SUBSCRIBE_NEW_PLAYER_IN_LOBBY_ENDPOINT = "/topic/lobby/";
+    static final String SUBSCRIBE_NEW_PLAYER_IN_LOBBY_ENDPOINT = "/topic/lobby";
 
     CompletableFuture<String> completableFuture;
 
@@ -81,7 +81,7 @@ class WebSocketTest {
                 new StompSessionHandlerAdapter() {
                 })
                 // "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJxdWl6ZHVlbGxfYXV0aHNlcnZlciIsInN1YiI6IjgzOTg0MWQ1LTgzMWMtNGNkMS1iOTExLTI3YThmZDA2ZTZiMSIsImV4cCI6MTY2NjUyMTQ2OCwiaWF0IjoxNjY2NTE3ODY4LCJzY29wZSI6IiJ9.oeiRkQAWBLwsiqIicH_U651IQOCQTSNknKBatoq_62fhNN77H8FP_AdMKHFjX4bqc4Rfu7KaYKOrIWCq288A6ocUz0mcdkO-hPBWpqYN4PvU0KQXIDjmzEdczDLeel4zf3OvjLQo3sSaW95frOMno48QKTJBasFpY_dLGOhOEBDrTjQCiyQIM9bNM3r6OZBjiip_MZGVuhcNDiB9kTzPC23IXIJqYdahsd3jvbKT6udSBe6Poj9fmpZaC_LJ3pOd9t--23WK9j87WUafnYqok5YTozUwu22QxSsYgnuZDDTSMIs6Mu43cRvhZqBZZoPWgJSq3syhlAKbSXEfLn0BrA")
-                .get(1, TimeUnit.SECONDS);
+                .get(100, TimeUnit.SECONDS);
 
         stompSession.subscribe(SUBSCRIBE_NEW_LOBBY_ENDPOINT,
                 new PublishLobbyStompFrameHandler());

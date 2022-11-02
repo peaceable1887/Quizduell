@@ -4,8 +4,8 @@ services:
   authserver:
     restart: always
     build: ./authserver
-    ports:
-      - "8080:8080"
+    expose:
+      - "8080"
     links:
       - maria:maria
     environment:
@@ -13,6 +13,12 @@ services:
       - DB_PORT=3306
       - DB_USERNAME=root
       - DB_PASSWORD=root
+
+  lobbyserver:
+    restart: always
+    build: ./lobbyserver
+    expose:
+      - "8080"
 
   nginx:
     restart: always

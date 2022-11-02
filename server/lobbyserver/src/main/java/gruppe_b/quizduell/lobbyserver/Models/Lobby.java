@@ -1,8 +1,10 @@
-package gruppe_b.quizduell.lobbyserver.Models;
+package gruppe_b.quizduell.lobbyserver.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import gruppe_b.quizduell.common.models.Player;
 
 public class Lobby {
 

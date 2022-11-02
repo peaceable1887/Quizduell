@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import gruppe_b.quizduell.lobbyserver.Models.Lobby;
-import gruppe_b.quizduell.lobbyserver.Models.Player;
+import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 @Service
 public class LobbyService {
