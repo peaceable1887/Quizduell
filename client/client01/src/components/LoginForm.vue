@@ -9,8 +9,9 @@
                 </div>
                 <div class="formData">
                     <label for="password">Passwort</label>
-                    <input type="text" name="password" v-model="password">
+                    <input type="password" name="password" v-model="password">
                 </div>
+                <div class="errMsg" v-html="errMsg"></div>
                 <Button type="submit" text="Anmelden"></Button>
             </form>
             <div class="register">
@@ -38,12 +39,21 @@ export default
         return{
             accountName: "",
             password: "",
+            errMsg: "",
         }
     },
     methods:
     {
         async onSubmit()
         {
+            if(!this.accountName)
+            {
+                his.errMsg = "Der Accountname fehlt!";
+            }
+            if(!this.password)
+            {
+                this.errMsg = "Das Password fehlt!";
+            }else{
             await axios.get("http://localhost:8080/auth/token",{
                     auth:
                     {
@@ -59,40 +69,7 @@ export default
                     console.log("Login fehlgeschlagen!")
                     console.log(err)
                 })
-
-            /*if(!this.accountName)
-            {
-                alert("Der Accountname fehlt!");
-                return;
             }
-            if(!this.eMail)
-            {
-                alert("Die E-Mail Adresse fehlt!");
-                return;
-            }
-            if(!this.password)
-            {
-                alert("Das Password fehlt!");
-                return;
-            }
-            if(this.password !== this.passwordRepeat)
-            {
-                alert("Passwort ist nicht identisch");
-                return;
-            }
-            const account = 
-            {
-                accountName: this.accountName,
-                password: this.password
-            }
-
-            this.$emit('auth-account', account);
-            console.log('auth-account', account);
-
-            this.accountName = '';
-            this.password = "";*/
-
-     
         },
        
     },
@@ -101,19 +78,6 @@ export default
 </script>
 
 <style scoped>
-.headline
-{
-    display: flex;
-    justify-content: center;
-    padding: 20%;
-}
-h2
-{
-    margin: 0;
-    padding: 0;
-    color: #184e98;
-    font-size: 100px;
-}
 #loginForm
 {
     display: flex;
@@ -135,6 +99,11 @@ h2
     margin: 0 0 0 40px;
     width: 300px;
 }
+.errMsg
+{
+    color: red;
+    font-style: bold;
+}
 Button
 {
     width: 260px;
@@ -148,14 +117,8 @@ Button
     padding: 6%;
     display: flex;
     justify-content: center;
-}
-.register 
-{
     color:#184e98;
-    background-color: white;
-    font-weight: bold;
-    align-self: flex-end;
-    border: none;
-   
 }
+
+
 </style>
