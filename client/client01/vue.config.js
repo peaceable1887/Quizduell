@@ -3,7 +3,7 @@ module.exports = defineConfig({
   transpileDependencies: true
 })
 
-module.exports = {
+/*module.exports = {
   devServer: {
     proxy: {
       '^/api': {
@@ -14,4 +14,12 @@ module.exports = {
       },
     },
   },
+}*/
+
+module.exports = {
+  devServer: {
+    proxy:{
+        target: "http://test.burmeister.hamburg:/",
+    } 
+  }
 }
