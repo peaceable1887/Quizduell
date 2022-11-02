@@ -13,17 +13,19 @@
                 </div>
                 <div class="formData">
                     <label for="password">Passwort</label>
-                    <input type="text" name="password" v-model="password">
+                    <input type="password" name="password" v-model="password">
                 </div>
                 <div class="formData">
                     <label for="passwordRepeat">Passwort wiederholen</label>
-                    <input type="text" name="passwordRepeat" v-model="passwordRepeat">
+                    <input type="password" name="passwordRepeat" v-model="passwordRepeat">
                 </div>
+                <div class="errMsg" v-html="errMsg"></div>
                 <div class="btnWrapper">
                     <router-link to="/"><Button text="Zurück"></Button></router-link>
                     <Button type="submit" text="Registrieren"></Button>               
                 </div>
             </form>
+            
         </div>        
     </div>
 </template>
@@ -48,13 +50,32 @@ export default
             eMail: "",
             password: "",
             passwordRepeat: "",
+            errMsg: "",
         }
     },
     methods:
     {
         async onSubmit()
         {
-            await fetch("http://localhost:8080/auth/register", {
+            if(!this.accountName)
+            {
+                his.errMsg = "Der Accountname fehlt!";
+            }
+            if(!this.eMail)//noch email validation einbauen (regex)
+            {
+                this.errMsg = "Die E-Mail Adresse fehlt!";
+            }
+            if(!this.password)
+            {
+                this.errMsg = "Das Password fehlt!";
+            }
+            if(this.password !== this.passwordRepeat)
+            {
+                this.errMsg = "Passwort ist nicht identisch!";
+            } 
+            else{
+            
+                await fetch("http://localhost:8080/auth/register", {
                     method: "POST",
                     headers: 
                     {
@@ -63,56 +84,20 @@ export default
                     body: JSON.stringify
                     ({
                         name: this.accountName,
+                        eMail: this.eMail,
                         password: this.password
                     })
                 }).then(res => {
                         if(res.ok){
                             console.log("Account wurde erfolgreich angelegt !")
-                            console.log(res);
+                            alert("Account wurde erfolgreich angelegt !")
                             this.$router.push("/")
                         }else{
-                            console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden" )
+                            console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden")
+                            this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden"
                         }
                     }) 
-            /*      
-            /*if(!this.accountName)
-            {
-                alert("Der Accountname fehlt!");
-                return;
-            }
-            if(!this.eMail)
-            {
-                alert("Die E-Mail Adresse fehlt!");
-                return;
-            }
-            if(!this.password)
-            {
-                alert("Das Password fehlt!");
-                return;
-            }
-            if(this.password !== this.passwordRepeat)
-            {
-                alert("Passwort ist nicht identisch");
-                return;
-            }
-
-            const newAccount = 
-            {
-                id: Math.floor(Math.random() * 100000),
-                accountName: this.accountName,
-                eMail: this.eMail,
-                password: this.password
-            }
-
-            this.$emit('new-account', newAccount);
-            console.log('new-account', newAccount);
-            alert("Account wurde erstellt!");
-
-            this.accountName = '';
-            this.eMail = '';
-            this.password = "";
-            this.passwordRepeat = "";*/
-
+                } 
         },
     },
 }
@@ -152,6 +137,11 @@ h2
 {
     margin: 0 0 0 40px;
     width: 300px;
+}
+.errMsg
+{
+    color: red;
+    font-style: bold;
 }
 .btnWrapper 
 {
