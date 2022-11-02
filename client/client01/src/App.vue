@@ -1,5 +1,7 @@
 <template>
-  <router-view v-bind:showLogin="showLogin"></router-view>
+  <div>
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
@@ -9,20 +11,18 @@ export default
   name: 'App',
   components: 
   {
-  
+    
   },
   data()
   {
     return{
-      showLogin: true,
+      
     }
   },
+
   methods:
   {
-    toggleRegisterForm() 
-    {
-      this.showLogin = !this.showLogin;
-    }
+    
   }
 }
 </script>

@@ -1,10 +1,8 @@
 <template>
     <div>
-        <div class="headline">
-            <h2>Registrieren</h2>
-        </div>
+        <Headline text="Registrieren"></Headline>
         <div>
-            <form id="registerForm" @submit="onSubmit">
+            <form id="registerForm" @submit.prevent="onSubmit">
                 <div class="formData">
                     <label for="accountName">Accountname</label>
                     <input type="text" name="accountName" v-model="accountName">
@@ -22,8 +20,8 @@
                     <input type="text" name="passwordRepeat" v-model="passwordRepeat">
                 </div>
                 <div class="btnWrapper">
-                    <button><router-link to="/">Zurück</router-link></button>
-                    <button><input type="submit" value="Registrieren"></button>               
+                    <router-link to="/"><Button text="Zurück"></Button></router-link>
+                    <Button type="submit" text="Registrieren"></Button>               
                 </div>
             </form>
         </div>        
@@ -31,9 +29,18 @@
 </template>
 
 <script>
+import axios from "axios";
+import Headline from "./Headline.vue"
+import Button from "./Button.vue"
+
 export default 
 {
     name: "RegisterForm",
+    components:
+    {
+        Headline,
+        Button
+    },
     data()
     {
         return{
@@ -45,10 +52,29 @@ export default
     },
     methods:
     {
-        onSubmit(e)
+        async onSubmit()
         {
-            e.preventDefault();
-
+            await fetch("http://localhost:8080/auth/register", {
+                    method: "POST",
+                    headers: 
+                    {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify
+                    ({
+                        name: this.accountName,
+                        password: this.password
+                    })
+                }).then(res => {
+                        if(res.ok){
+                            console.log("Account wurde erfolgreich angelegt !")
+                            console.log(res);
+                            this.$router.push("/")
+                        }else{
+                            console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden" )
+                        }
+                    }) 
+            /*      
             /*if(!this.accountName)
             {
                 alert("Der Accountname fehlt!");
@@ -68,7 +94,7 @@ export default
             {
                 alert("Passwort ist nicht identisch");
                 return;
-            }*/
+            }
 
             const newAccount = 
             {
@@ -85,8 +111,8 @@ export default
             this.accountName = '';
             this.eMail = '';
             this.password = "";
-            this.passwordRepeat = "";
-     
+            this.passwordRepeat = "";*/
+
         },
     },
 }
@@ -131,14 +157,13 @@ h2
 {
     display: flex;
     justify-content: space-around;
+    margin-top: 10%;
 }
-#registerForm button
+Button
 {
-    color: white;
-    background-color: #184e98;
+    width: 260px;
+    padding: 12px 0 12px 0;
     font-size: 22px;
-    border: none;
-    margin: 18% auto auto auto;
-    padding: 12px 80px 12px 80px;
 }
+
 </style>
