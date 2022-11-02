@@ -14,11 +14,11 @@ public class WebSocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
 
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
-        messages.simpTypeMatchers(SimpMessageType.CONNECT,
-                SimpMessageType.DISCONNECT, SimpMessageType.OTHER).permitAll()
-                .anyMessage().authenticated();
+        // messages.simpTypeMatchers(SimpMessageType.CONNECT,
+        // SimpMessageType.DISCONNECT, SimpMessageType.OTHER).permitAll()
+        // .anyMessage().authenticated();
         // messages.anyMessage().authenticated();
-        // messages.anyMessage().permitAll(); // TODO authentication will aktuell
+        messages.anyMessage().permitAll(); // TODO authentication will aktuell
         // nicht...
         logger.info("--> Message security set");
     }
