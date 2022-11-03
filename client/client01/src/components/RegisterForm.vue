@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <Headline text="Registrieren"></Headline>
         <div>
             <form id="registerForm" @submit.prevent="onSubmit">
@@ -59,7 +59,7 @@ export default
         {
             if(!this.accountName)
             {
-                his.errMsg = "Der Accountname fehlt!";
+                this.errMsg = "Der Accountname fehlt!";
             }
             if(!this.eMail)//noch email validation einbauen (regex)
             {
@@ -104,11 +104,10 @@ export default
 </script>
 
 <style scoped>
-.headline
+.container
 {
-    display: flex;
-    justify-content: center;
-    padding: 20%;
+    width:50%;
+    margin: auto;
 }
 h2
 {
@@ -136,7 +135,8 @@ h2
 .formData input
 {
     margin: 0 0 0 40px;
-    width: 300px;
+    height: 30px;
+    width: 40%;
 }
 .errMsg
 {
@@ -149,9 +149,12 @@ h2
     justify-content: space-around;
     margin-top: 10%;
 }
+a{
+    width: auto;
+}
 Button
 {
-    width: 260px;
+    width: 220px;
     padding: 12px 0 12px 0;
     font-size: 22px;
 }

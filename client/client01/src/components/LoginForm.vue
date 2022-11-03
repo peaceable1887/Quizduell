@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div class="container">
         <Headline text="Quizduell"></Headline>
         <div>
             <form id="loginForm" @submit.prevent="onSubmit">
@@ -48,7 +48,7 @@ export default
         {
             if(!this.accountName)
             {
-                his.errMsg = "Der Accountname fehlt!";
+                this.errMsg = "Der Accountname fehlt!";
             }
             if(!this.password)
             {
@@ -64,20 +64,24 @@ export default
                     console.log("Erfolgreich eingeloggt!")
                     console.log(resp);
                     localStorage.setItem("token", resp.data)
-                    this.$router.push("/MainMenu")
+                    this.$router.push("/main")
                 }).catch((err) => {
                     console.log("Login fehlgeschlagen!")
                     console.log(err)
                 })
             }
         },
-       
     },
 }
 
 </script>
 
 <style scoped>
+.container
+{
+    width:50%;
+    margin: auto;
+}
 #loginForm
 {
     display: flex;
@@ -97,7 +101,9 @@ export default
 .formData input
 {
     margin: 0 0 0 40px;
-    width: 300px;
+    height: 30px;
+    width: 40%;
+
 }
 .errMsg
 {
@@ -114,9 +120,8 @@ Button
 .register
 {
     margin: auto;
-    padding: 6%;
-    display: flex;
-    justify-content: center;
+    padding-top: 6%;
+    text-align: center;
     color:#184e98;
 }
 

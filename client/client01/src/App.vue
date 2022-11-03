@@ -1,7 +1,7 @@
-<template>
-  <div>
-    <router-view></router-view>
-  </div>
+<template> 
+    <main>
+      <router-view></router-view>
+    </main>
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default
   name: 'App',
   components: 
   {
-    
+  
   },
   data()
   {
@@ -19,10 +19,10 @@ export default
       
     }
   },
-
   methods:
   {
-    
+   
+  
   }
 }
 </script>
@@ -36,8 +36,12 @@ export default
   body
   {
     font-family: 'Roboto', sans-serif;
+  }
+  main
+  {
     display: flex;
     justify-content: center;
+    flex-direction: column;
   }
 
 </style>

@@ -1,9 +1,11 @@
 <template>
-    <headline text="Quizduell"></headline>
     <div class="container">
-        <Button text="Einzelspiel"></Button>
-        <Button text="Mehrspieler"></Button>
-        <Button text="Statistik"></Button>
+        <headline text="Quizduell"></headline>
+        <div class="menu">
+            <Button text="Einzelspiel"></Button>
+            <Button text="Mehrspieler"></Button>
+            <Button text="Statistik"></Button>
+        </div>
     </div>
 </template>
 
@@ -43,8 +45,12 @@ export default
 </script>
 
 <style scoped>
-    
     .container
+    {
+        width:50%;
+        margin: auto;
+    }
+    .menu
     {
         display:flex;
         justify-content: center;

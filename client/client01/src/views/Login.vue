@@ -12,6 +12,10 @@ export default
     {
         LoginForm,
     },
+    methods:
+    {
+      
+    }
 }
 
 </script>
