@@ -106,7 +106,7 @@ export default
 <style scoped>
 .container
 {
-    width:50%;
+    width:40%;
     margin: auto;
 }
 h2

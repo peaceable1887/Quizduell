@@ -1,4 +1,5 @@
 <template>
+    <HeaderProfil text="Felix"></HeaderProfil>
     <div class="container">
         <headline text="Quizduell"></headline>
         <div class="menu">
@@ -11,6 +12,7 @@
 
 <script>
 
+import HeaderProfil from "../components/HeaderProfil.vue";
 import Headline from "../components/Headline.vue";
 import Button from "../components/Button.vue";
 import axios from "axios";
@@ -20,6 +22,7 @@ export default
     name: "MainMenu",
     components:
     {
+        HeaderProfil,
         Headline,
         Button,
     },
@@ -47,7 +50,6 @@ export default
 <style scoped>
     .container
     {
-        width:50%;
         margin: auto;
     }
     .menu
@@ -63,8 +65,8 @@ export default
     }
     Button
     {
-        width: 260px;
-        margin: 20px auto auto auto;
+        width: 280px;
+        margin: 30px auto auto auto;
         padding: 12px 0 12px 0;
         font-size: 22px;
     }
