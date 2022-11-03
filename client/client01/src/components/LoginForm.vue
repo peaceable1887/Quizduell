@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <Headline text="Quizduell"></Headline>
+        <Headline class="headline" text="Quizduell"></Headline>
         <div>
             <form id="loginForm" @submit.prevent="onSubmit">
                 <div class="formData">
@@ -77,6 +77,10 @@ export default
 </script>
 
 <style scoped>
+.headline
+{
+    font-size: 80px;
+}
 .container
 {
     width: 40%;

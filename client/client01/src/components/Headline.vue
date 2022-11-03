@@ -26,6 +26,5 @@
         margin: 0;
         padding: 0;
         color: #184e98;
-        font-size: 100px;
     }
 </style>

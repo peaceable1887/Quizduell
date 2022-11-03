@@ -1,7 +1,7 @@
 <template>
     <HeaderProfil text="Felix"></HeaderProfil>
     <div class="container">
-        <headline text="Quizduell"></headline>
+        <Headline class="headline" text="Quizduell"></Headline>
         <div class="menu">
             <Button text="Einzelspiel"></Button>
             <Button text="Mehrspieler"></Button>
@@ -48,6 +48,10 @@ export default
 </script>
 
 <style scoped>
+    .headline
+    {
+        font-size: 80px;
+    }
     .container
     {
         margin: auto;
@@ -57,11 +61,6 @@ export default
         display:flex;
         justify-content: center;
         flex-direction: column;
-    }
-    /*noch ansehen warum das css nicht anspringt*/ 
-    Headline
-    {
-        color: black;
     }
     Button
     {

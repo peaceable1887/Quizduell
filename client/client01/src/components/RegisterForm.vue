@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <Headline text="Registrieren"></Headline>
+        <Headline class="headline" text="Registrieren"></Headline>
         <div>
             <form id="registerForm" @submit.prevent="onSubmit">
                 <div class="formData">
@@ -104,17 +104,14 @@ export default
 </script>
 
 <style scoped>
+.headline
+{
+    font-size: 50px;
+}
 .container
 {
     width:40%;
     margin: auto;
-}
-h2
-{
-    margin: 0;
-    padding: 0;
-    color: #184e98;
-    font-size: 100px;
 }
 #registerForm
 {
