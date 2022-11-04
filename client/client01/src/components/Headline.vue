@@ -20,7 +20,6 @@
     {
         display: flex;
         justify-content: center;
-        padding: 15% 0 15% 0;
     }
     h2
     {

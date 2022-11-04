@@ -12,7 +12,9 @@
                     <input type="password" name="password" v-model="password">
                 </div>
                 <div class="errMsg" v-html="errMsg"></div>
-                <Button type="submit" text="Anmelden"></Button>
+                <div class="btnWrapper">
+                    <Button type="submit" text="Anmelden"></Button>
+                </div>
             </form>
             <div class="register">
                 <router-link to="/register">Registrieren</router-link>
@@ -80,53 +82,75 @@ export default
 .headline
 {
     font-size: 80px;
+    padding: 100px 0 100px 0;
 }
 .container
 {
-    width: 40%;
+    display: flex;
+    flex-direction: column;
     margin: auto;
 }
 #loginForm
 {
     display: flex;
-    justify-content: center;
     flex-direction: column;
-
+    padding: 2%;
 }
 .formData
 {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: #184e98;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
     padding: 15px 0 15px 0;
 }
+.formData label
+{
+    text-align: center;
+}
 .formData input
 {
-    margin: 0 0 0 40px;
     height: 30px;
-    width: 40%;
-
+    width: 250px;
 }
 .errMsg
 {
     color: red;
     font-style: bold;
 }
+.btnWrapper
+{
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+}
 Button
 {
     width: 260px;
-    margin: 10% auto auto auto;
+   
     padding: 12px 0 12px 0;
     font-size: 22px;
 }
 .register
 {
-    margin: auto;
-    padding-top: 6%;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    padding-top: 30px;
     color:#184e98;
+}
+@media screen and (max-width:650px) 
+{
+    .headline{font-size: 60px}
+    #loginForm { width: 100%;}
+    .formData{font-size: 22px; }
+    .formData input{width: 200px; }
+    Button
+    {
+        width: 200px;
+        font-size: 20px;
+    }
 }
 
 

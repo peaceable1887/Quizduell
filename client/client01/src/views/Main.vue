@@ -51,6 +51,7 @@ export default
     .headline
     {
         font-size: 80px;
+        padding: 100px 0 100px 0;
     }
     .container
     {
@@ -69,5 +70,17 @@ export default
         padding: 12px 0 12px 0;
         font-size: 22px;
     }
+    @media screen and (max-width:650px) 
+{
+    .headline{font-size: 60px}
+    #loginForm { width: 100%;}
+    .formData{font-size: 22px; }
+    .formData input{width: 200px; }
+    Button
+    {
+        width: 250px;
+        font-size: 20px;
+    }
+}
 
 </style>
