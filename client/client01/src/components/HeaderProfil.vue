@@ -2,11 +2,11 @@
     <div class="container">
         <div class="profil">
             <div class="profilInfo">
-                <span>Hallo, {{text}}</span>
+                <span>{{text}}</span>
                 <div class="links">
                     <a href="/editProfil">Profil</a>
                     &nbsp;|&nbsp;
-                    <a href="/">Abmelden</a>
+                    <a href="javascript:void(0)" @click="handleClick">Abmelden</a>
                 </div>
             </div>
             <div class="profilIcon"></div>
@@ -21,7 +21,15 @@
         props:
         {
             text: String,
-        }  
+        },
+        methods:
+        {
+            handleClick()
+            {
+                localStorage.removeItem("token");
+                this.$router.push("/");
+            }
+        }
     }
 </script>
 

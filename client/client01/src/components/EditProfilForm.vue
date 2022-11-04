@@ -66,11 +66,14 @@
 <style scoped>
 .headline
 {
-    font-size: 50px;
+    font-size: 45px;
+    padding: 100px 0 100px 0;
+    text-align: center;
 }
 .container
 {
-    width:40%;
+    display: flex;
+    flex-direction: column;
     margin: auto;
 }
 #registerForm
@@ -78,6 +81,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
+    width: 600px;
 
 }
 .formData
@@ -85,15 +89,18 @@
     display: flex;
     justify-content: space-between;
     color: #184e98;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
-    padding: 15px 0 15px 0;
+    padding: 15px 15px 15px 15px;
+}
+.formData label
+{
+    text-align: center;
 }
 .formData input
 {
-    margin: 0 0 0 40px;
     height: 30px;
-    width: 40%;
+    width: 250px;
 }
 .errMsg
 {
@@ -104,7 +111,7 @@
 {
     display: flex;
     justify-content: space-around;
-    margin-top: 10%;
+    margin-top: 80px
 }
 a{
     width: auto;
@@ -115,6 +122,16 @@ Button
     padding: 12px 0 12px 0;
     font-size: 22px;
 }
-
+@media screen and (max-width:650px) 
+{
+    #registerForm { width: 100%; }
+    .formData{font-size: 22px; }
+    .formData input{width: 160px; }
+    Button
+    {
+        width: 150px;
+        font-size: 20px;
+    }
+}
 
 </style>

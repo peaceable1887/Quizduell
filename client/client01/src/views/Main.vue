@@ -1,11 +1,13 @@
 <template>
-    <HeaderProfil text="Felix"></HeaderProfil>
+    <HeaderProfil text="Hallo, Felix"></HeaderProfil>
     <div class="container">
+        <span v-if="token">{{token}}</span>
+        <span v-if="!token">You are not logged in!</span>
         <Headline class="headline" text="Quizduell"></Headline>
         <div class="menu">
             <Button text="Einzelspiel"></Button>
             <Button text="Mehrspieler"></Button>
-            <Button text="Statistik"></Button>
+            <Button text="Statistik"></Button>        
         </div>
     </div>
 </template>
@@ -20,6 +22,12 @@ import axios from "axios";
 export default 
 {
     name: "MainMenu",
+    data()
+    {
+        return{
+            token: null,
+        }
+    },
     components:
     {
         HeaderProfil,
@@ -31,18 +39,20 @@ export default
     {
         console.log("token: " + localStorage.getItem("token"))
 
-        await axios.get("http://localhost:8080/api/auth/v1/",{
-                    headers:
-                    {
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                    }
-                }).then(resp => {
-                    console.log("resp: " + JSON.stringify(resp.data))
-                    alert(JSON.stringify(resp.data))
-                }).catch((err) => {
-                    console.log("Nicht erfolgreich")
-                    console.log(err)
-                })
+        await axios.get("http://localhost:8080/api/auth/v1/",
+        {
+            headers:
+            {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        }).then(resp => {
+            console.log("resp: " + JSON.stringify(resp.data))
+            this.token = JSON.stringify(resp.data);
+
+        }).catch((err) => {
+            console.log("Nicht erfolgreich")
+            console.log(err)
+        })
     },   
 }
 </script>
@@ -71,16 +81,16 @@ export default
         font-size: 22px;
     }
     @media screen and (max-width:650px) 
-{
-    .headline{font-size: 60px}
-    #loginForm { width: 100%;}
-    .formData{font-size: 22px; }
-    .formData input{width: 200px; }
-    Button
     {
-        width: 250px;
-        font-size: 20px;
+        .headline{font-size: 60px}
+        #loginForm { width: 100%;}
+        .formData{font-size: 22px; }
+        .formData input{width: 200px; }
+        Button
+        {
+            width: 250px;
+            font-size: 20px;
+        }
     }
-}
 
 </style>

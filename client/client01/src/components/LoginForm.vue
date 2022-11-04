@@ -48,15 +48,9 @@ export default
     {
         async onSubmit()
         {
-            if(!this.accountName)
-            {
-                this.errMsg = "Der Accountname fehlt!";
-            }
-            if(!this.password)
-            {
-                this.errMsg = "Das Password fehlt!";
-            }else{
-            await axios.get("http://localhost:8080/api/auth/v1/token",{
+            
+                await axios.get("http://localhost:8080/api/auth/v1/token",
+                {
                     auth:
                     {
                         username: this.accountName,
@@ -68,10 +62,24 @@ export default
                     localStorage.setItem("token", resp.data)
                     this.$router.push("/main")
                 }).catch((err) => {
-                    console.log("Login fehlgeschlagen!")
+                    
+                    this.errMsg = "Accountname und/oder Passwort falsch!";
+                    
+                    if(!this.accountName)
+                    {
+                        this.errMsg = "Der Accountname fehlt!";
+                    }
+                    if(!this.password)
+                    {
+                        this.errMsg = "Das Password fehlt!";
+                    }
+                    if(!this.accountName && !this.password)
+                    {
+                        this.errMsg = "Accountname und Passwort fehlen!";
+                    }
                     console.log(err)
                 })
-            }
+            
         },
     },
 }
@@ -118,7 +126,6 @@ export default
 .errMsg
 {
     color: red;
-    font-style: bold;
 }
 .btnWrapper
 {
@@ -129,7 +136,6 @@ export default
 Button
 {
     width: 260px;
-   
     padding: 12px 0 12px 0;
     font-size: 22px;
 }
