@@ -54,7 +54,7 @@ export default
             {
                 this.errMsg = "Das Password fehlt!";
             }else{
-            await axios.get("http://localhost:8080/auth/token",{
+            await axios.get("http://localhost:8080/api/auth/v1/token",{
                     auth:
                     {
                         username: this.accountName,

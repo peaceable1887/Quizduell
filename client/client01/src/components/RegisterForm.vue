@@ -57,7 +57,7 @@ export default
     {
         async onSubmit()
         {
-            if(!this.accountName)
+            /*if(!this.accountName)
             {
                 this.errMsg = "Der Accountname fehlt!";
             }
@@ -73,9 +73,9 @@ export default
             {
                 this.errMsg = "Passwort ist nicht identisch!";
             } 
-            else{
+            else{*/
             
-                await fetch("http://localhost:8080/auth/register", {
+                await fetch("http://localhost:8080/api/auth/v1/register", {
                     method: "POST",
                     headers: 
                     {
@@ -84,7 +84,6 @@ export default
                     body: JSON.stringify
                     ({
                         name: this.accountName,
-                        eMail: this.eMail,
                         password: this.password
                     })
                 }).then(res => {
@@ -97,7 +96,7 @@ export default
                             this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden"
                         }
                     }) 
-                } 
+                /*} */
         },
     },
 }

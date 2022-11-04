@@ -31,7 +31,7 @@ export default
     {
         console.log("token: " + localStorage.getItem("token"))
 
-        await axios.get("http://localhost:8080/auth/",{
+        await axios.get("http://localhost:8080/api/auth/v1/",{
                     headers:
                     {
                         Authorization: "Bearer " + localStorage.getItem("token")
