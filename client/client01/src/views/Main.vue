@@ -5,9 +5,15 @@
         <span v-if="!token">You are not logged in!</span>
         <Headline class="headline" text="Quizduell"></Headline>
         <div class="menu">
-            <Button text="Einzelspiel"></Button>
-            <Button text="Mehrspieler"></Button>
-            <Button text="Statistik"></Button>        
+            <form action="">
+                <Button text="Einzelspiel"></Button>
+            </form>
+            <form action="">
+                <Button text="Mehrspieler"></Button>
+            </form>
+            <form action="/statistics">
+                <Button text="Statistik"></Button>  
+            </form>            
         </div>
     </div>
 </template>
@@ -70,8 +76,11 @@ export default
     .menu
     {
         display:flex;
-        justify-content: center;
         flex-direction: column;
+    }
+    form
+    {
+        display:flex;
     }
     Button
     {
