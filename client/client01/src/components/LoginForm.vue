@@ -57,10 +57,12 @@ export default
                         password: this.password
                     }
                 }).then(resp => {
+
                     console.log("Erfolgreich eingeloggt!")
                     console.log(resp);
                     localStorage.setItem("token", resp.data)
                     this.$router.push("/main")
+                    
                 }).catch((err) => {
                     
                     this.errMsg = "Accountname und/oder Passwort falsch!";

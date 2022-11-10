@@ -88,10 +88,13 @@ export default
                     })
                 }).then(res => {
                         if(res.ok){
+
                             console.log("Account wurde erfolgreich angelegt !")
                             alert("Account wurde erfolgreich angelegt !")
                             this.$router.push("/")
+
                         }else{
+                            
                             console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden")
                             this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden"
                         }

@@ -3,6 +3,8 @@ import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import Main from '../views/Main.vue';
 import EditProfil from '../views/EditProfil.vue';
+import Game from '../views/Game.vue';
+import QuestionEvaluation from '../views/QuestionEvaluation.vue';
 import Statistics from '../views/Statistics.vue';
 
 const routes = [
@@ -25,6 +27,16 @@ const routes = [
     path: '/editProfil',
     name: 'EditProfil',
     component: EditProfil,
+  },
+  {
+    path: '/game',
+    name: 'Game',
+    component: Game,
+  },
+  {
+    path: '/questionEvaluation',
+    name: 'QuestionEvaluation',
+    component: QuestionEvaluation,
   },
   {
     path: '/statistics',

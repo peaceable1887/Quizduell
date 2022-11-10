@@ -5,8 +5,8 @@
         <span v-if="!token">You are not logged in!</span>
         <Headline class="headline" text="Quizduell"></Headline>
         <div class="menu">
-            <form action="">
-                <Button text="Einzelspiel"></Button>
+            <form action="/game">
+                <Button text="Spiel starten"></Button>
             </form>
             <form action="">
                 <Button text="Mehrspieler"></Button>
