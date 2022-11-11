@@ -1,14 +1,27 @@
 <template>
     <div>
         QuestionEvaluation
+        <Button text="nächste Runde" @click="nextRound"></Button>
     </div>
 </template>
 
 <script>
-    export default 
+import Button from "../components/Button.vue";
+export default 
+{
+    name: "QuestionEvaluation",
+    components:
     {
-        name: "QuestionEvaluation"
+        Button
+    },
+    methods:
+    {
+        nextRound()
+        {
+            this.$router.push("/game")
+        }
     }
+}
 </script>
 
 <style scoped>

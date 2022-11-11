@@ -8,6 +8,11 @@
     export default 
     {
         name: "Header",
+
+        methods:
+        {
+       
+        }
     }
 </script>
 

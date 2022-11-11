@@ -1,8 +1,7 @@
 <template>
-    <HeaderProfil text="Hallo, Felix"></HeaderProfil>
+    <HeaderProfil v-if="token" :text="`${token}`"></HeaderProfil>
+    <HeaderProfil v-if="!token" text="Nicht eingeloggt!"></HeaderProfil>
     <div class="container">
-        <span v-if="token">{{token}}</span>
-        <span v-if="!token">You are not logged in!</span>
         <Headline class="headline" text="Quizduell"></Headline>
         <div class="menu">
             <form action="/game">

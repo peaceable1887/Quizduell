@@ -28,7 +28,7 @@
     background-color: #184e98;
     color: white;
     font-size: 30px;
-    width: 150px;
+    width: 250px;
     text-align: center;
     padding: 15px 80px 15px 80px;
     box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);

@@ -1,12 +1,12 @@
 <template>
-    <QuestionCategory topic="Geographie"></QuestionCategory>
+    <QuestionCategory :topic="`${category[this.rndNumber].name}`"></QuestionCategory>
     <div class="container">
         <div class="question">
             <div class="counter">
                 {{count}}/4
             </div>
             <div class="text">
-                Wie heißt die Hauptstadt von Deutschland ?
+                {{category[this.rndNumber].fragen[count-1].frage}}
             </div>            
         </div> 
         <div id="time">
@@ -14,12 +14,12 @@
         </div> 
         <form class="answers" @submit="nextQuestion">
             <div class="option">
-                <input type="submit" value="Berlin">
-                <input type="submit" value="Köln">
+                <input type="submit" :value="`${category[this.rndNumber].fragen[count-1].antworten[0]}`">
+                <input type="submit" :value="`${category[this.rndNumber].fragen[count-1].antworten[1]}`">
             </div>
             <div class="option">
-                <input type="submit" value="Hamburg">
-                <input type="submit" value="München">
+                <input type="submit" :value="`${category[this.rndNumber].fragen[count-1].antworten[2]}`">
+                <input type="submit" :value="`${category[this.rndNumber].fragen[count-1].antworten[3]}`">
             </div>
         </form>
     </div>
@@ -38,24 +38,102 @@ export default
     data()
     {
         return{
-            count: Number(localStorage.getItem("count")) ,
+            
+            count: Number(localStorage.getItem("count")),  
+            rndNumber: Number(localStorage.getItem("rndNumber")),
+            category:
+            [
+                {
+                    name: "Informatik",
+                    fragen: 
+                    [
+                        {
+                            frage: "Informatik Frage 1",
+                            antworten:["A11", "B11", "C11", "D11"]
+                        },
+                        {
+                            frage: "Informatik Frage 2",
+                            antworten:["A21", "B21", "C21", "D21"]
+                        },                       
+                        {
+                            frage: "Informatik Frage 3",
+                            antworten:["A31", "B31", "C31", "D31"]
+                        },
+                        {
+                            frage: "Informatik Frage 4",
+                            antworten:["A41", "B41", "C41", "D41"]
+                        },
+                    ],
+                },
+                {
+                    name: "Programmmierung",
+                    fragen: 
+                    [
+                        {
+                            frage: "Programmierung Frage 1",
+                            antworten:["A12", "B12", "C12", "D12"]
+                        },
+                        {
+                            frage: "Programmierung Frage 2",
+                            antworten:["A22", "B22", "C22", "D22"]
+                        },                       
+                        {
+                            frage: "Programmierung Frage 3",
+                            antworten:["A32", "B32", "C32", "D32"]
+                        },
+                        {
+                            frage: "Programmierung Frage 4",
+                            antworten:["A42", "B42", "C42", "D42"]
+                        },
+                    ],
+                },
+                {
+                    name: "Datenbanken",
+                    fragen: 
+                    [
+                        {
+                            frage: "Datenbanken Frage 1",
+                            antworten:["A13", "B13", "C13", "D13"]
+                        },
+                        {
+                            frage: "Datenbanken Frage 2",
+                            antworten:["A23", "B23", "C23", "D23"]
+                        },                       
+                        {
+                            frage: "Datenbanken Frage 3",
+                            antworten:["A33", "B33", "C33", "D33"]
+                        },
+                        {
+                            frage: "Datenbanken Frage 4",
+                            antworten:["A43", "B43", "C43", "D43"]
+                        },
+                    ],
+                }                          
+            ],                    
         }
     },
     created()
     {
+        if(!localStorage.getItem("rndNumber"))
+        {
+            this.rndNumber =  Math.floor(Math.random() * this.category.length);
+            localStorage.setItem("rndNumber", this.rndNumber);
+        }else
+        {
+            console.log(localStorage.getItem("rndNumber"))
+        }
+        
+        console.log("Zufallszahl: " + this.rndNumber);
+        console.log("Zähler: " + this.count);
+
         if(this.count == 0)
         {
             this.count = 1;
             localStorage.setItem("count", this.count)
         }
-        if(this.count == 5)
-        {
-            this.$router.push("/questionEvaluation")
-            localStorage.removeItem("count");      
-        }
     }, 
     mounted()
-    {       
+    {        
         let elem = this.$refs.bar;
         let width = 100;
         let id = setInterval(frame, 200);
@@ -83,16 +161,23 @@ export default
                 elem.style.backgroundColor = "red";
                 width--;
                 elem.style.width = width + "%";
-
             }
         }          
     },
     methods:
     {
         nextQuestion()
-        {
-            this.$router.push("/game")
-            localStorage.setItem("count", this.count++ +1) 
+        {       
+            if(this.count <= 3)
+            {
+                localStorage.setItem("count", this.count++ +1)
+                
+            }else
+            {
+                this.$router.push("/questionEvaluation")
+                localStorage.removeItem("count");
+                localStorage.removeItem("rndNumber");  
+            }                  
         },
     }   
 
@@ -174,7 +259,6 @@ export default
         .question .counter{font-size: 24px; padding: 5px 0 0 5px;}
         .question .text{font-size: 20px; height: 160px;}
         .answers{padding-top: 40px}
-    
         .answers .option input{width: 180px;height: 100px; font-size: 20px;}
     }
 </style>
