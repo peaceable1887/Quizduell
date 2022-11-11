@@ -39,6 +39,18 @@ public class LobbyService {
         return lobby;
     }
 
+    public void disconnectFromLobby(UUID playerId, UUID lobbyId) {
+        Lobby lobby = this.lobbyRepo.get(lobbyId);
+        lobby.removePlayer(playerId);
+
+        // Lobby löschen, wenn letzter Spieler disconnected.
+        if (lobby.getPlayers().size() == 0) {
+            this.lobbyRepo.remove(lobby.getId());
+        }
+
+        simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobby.getId().toString(), lobby);
+    }
+
     public Lobby publishLobby(UUID lobbyId) {
         Lobby lobby = this.lobbyRepo.get(lobbyId);
         simpMessagingTemplate.convertAndSend("/topic/new-lobby", lobby);

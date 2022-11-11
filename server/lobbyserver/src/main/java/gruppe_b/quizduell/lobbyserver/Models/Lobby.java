@@ -34,4 +34,8 @@ public class Lobby {
     public void addPlayer(Player player) {
         playerList.add(player);
     }
+
+    public void removePlayer(UUID playerId) {
+        playerList.removeIf(p -> p.getUserId().equals(playerId));
+    }
 }

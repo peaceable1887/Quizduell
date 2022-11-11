@@ -25,4 +25,8 @@ public class LobbyHelper {
     public void publishLobby(UUID lobbyId) {
         lobbyService.publishLobby(lobbyId);
     }
+
+    public LobbyBuilder getNewLobbyBuilder() {
+        return new LobbyBuilder(lobbyService);
+    }
 }

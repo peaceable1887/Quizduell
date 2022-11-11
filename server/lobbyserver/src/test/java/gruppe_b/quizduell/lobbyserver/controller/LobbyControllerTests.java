@@ -1,5 +1,6 @@
 package gruppe_b.quizduell.lobbyserver.controller;
 
+import org.hibernate.resource.jdbc.spi.JdbcSessionOwner;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,11 +16,13 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 import com.nimbusds.jose.shaded.json.parser.JSONParser;
 
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
+import gruppe_b.quizduell.lobbyserver.common.LobbyBuilder;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import net.bytebuddy.agent.VirtualMachine.ForHotSpot.Connection.Response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,113 +37,171 @@ import java.util.UUID;
 @AutoConfigureMockMvc
 class LobbyControllerTests {
 
-    @Autowired
-    MockMvc mvc;
+        @Autowired
+        MockMvc mvc;
 
-    @Autowired
-    AuthHelper authHelper;
+        @Autowired
+        AuthHelper authHelper;
 
-    @Autowired
-    LobbyHelper lobbyHelper;
+        @Autowired
+        LobbyHelper lobbyHelper;
 
-    @Test
-    void whenNotAuthenticated() throws Exception {
-        // Arrange
+        @Test
+        void whenNotAuthenticated() throws Exception {
+                // Arrange
 
-        // Act
+                // Act
 
-        // Assert
-        this.mvc.perform(get("/v1/all"))
-                .andExpect(status().isUnauthorized());
-    }
+                // Assert
+                this.mvc.perform(get("/v1/all"))
+                                .andExpect(status().isUnauthorized());
+        }
 
-    @Test
-    @WithMockUser
-    void whenCreateThenCreateNewLobby() throws Exception {
-        // Arrange
-        JSONObject jcreateRequest = new JSONObject();
-        jcreateRequest.put("name", "testLobby");
-        String jwtToken = authHelper.generateToken();
+        @Test
+        @WithMockUser
+        void whenCreateThenCreateNewLobby() throws Exception {
+                // Arrange
+                JSONObject jcreateRequest = new JSONObject();
+                jcreateRequest.put("name", "testLobby");
+                String jwtToken = authHelper.generateToken();
 
-        // Act
+                // Act
 
-        // Assert
-        this.mvc.perform(post("/v1/create")
-                .header("Authorization", "Bearer " + jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jcreateRequest.toJSONString()))
-                .andExpect(status().isCreated());
-    }
+                // Assert
+                this.mvc.perform(post("/v1/create")
+                                .header("Authorization", "Bearer " + jwtToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jcreateRequest.toJSONString()))
+                                .andExpect(status().isCreated());
+        }
 
-    @Test
-    @WithMockUser
-    void whenConnectThenAddPlayerToLobby() throws Exception {
-        // Arrange
-        UUID lobbyId = lobbyHelper.createLobby();
+        @Test
+        @WithMockUser
+        void whenConnectThenAddPlayerToLobby() throws Exception {
+                // Arrange
+                UUID lobbyId = lobbyHelper.createLobby();
 
-        JSONObject jconnectRequest = new JSONObject();
-        jconnectRequest.put("lobbyId", lobbyId.toString());
-        String jwtToken = authHelper.generateToken();
+                JSONObject jconnectRequest = new JSONObject();
+                jconnectRequest.put("lobbyId", lobbyId.toString());
+                String jwtToken = authHelper.generateToken();
 
-        // Act
-        MvcResult result = this.mvc.perform(post("/v1/connect")
-                .header("Authorization", "Bearer " + jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jconnectRequest.toJSONString()))
-                .andReturn();
+                // Act
+                MvcResult result = this.mvc.perform(post("/v1/connect")
+                                .header("Authorization", "Bearer " + jwtToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jconnectRequest.toJSONString()))
+                                .andReturn();
 
-        // Assert
-        assertEquals(200, result.getResponse().getStatus());
-        assertEquals("00000000-0000-0000-0000-000000000000",
-                lobbyHelper.getLobby(lobbyId).getPlayers().get(1).getUserId().toString());
-    }
+                // Assert
+                assertEquals(200, result.getResponse().getStatus());
+                assertEquals("00000000-0000-0000-0000-000000000000",
+                                lobbyHelper.getLobby(lobbyId).getPlayers().get(1).getUserId().toString());
+        }
 
-    @Test
-    @WithMockUser
-    void whenGetThenReturnLobby() throws Exception {
-        // Arrange
-        UUID lobbyId = lobbyHelper.createLobby();
+        @Test
+        @WithMockUser
+        void whenDisconnectThenRemovePlayerFromLobby() throws Exception {
+                // Arrange
+                LobbyBuilder builder = lobbyHelper.getNewLobbyBuilder();
+                UUID playerId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+                Lobby lobby = builder.buildLobby()
+                                .addPlayer(playerId)
+                                .getLobby();
 
-        JSONObject jgetRequest = new JSONObject();
-        jgetRequest.put("lobbyId", lobbyId.toString());
-        String jwtToken = authHelper.generateToken();
+                assertEquals(2, lobby.getPlayers().size());
 
-        // Act
-        MvcResult result = this.mvc.perform(get("/v1/get")
-                .header("Authorization", "Bearer " + jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jgetRequest.toJSONString()))
-                .andReturn();
+                JSONObject jdisconnectRequest = new JSONObject();
+                jdisconnectRequest.put("lobbyId", lobby.getId().toString());
 
-        String jsonStringLobby = result.getResponse().getContentAsString();
+                String jwtToken = authHelper.generateToken();
 
-        // Assert
-        assertEquals(200, result.getResponse().getStatus());
-        assertTrue(jsonStringLobby.contains(lobbyId.toString()));
-    }
+                // Act
+                MvcResult result = this.mvc.perform(post("/v1/disconnect")
+                                .header("Authorization", "Bearer " + jwtToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jdisconnectRequest.toJSONString()))
+                                .andReturn();
 
-    @Test
-    @WithMockUser
-    void whenAllThenReturnAllLobbies() throws Exception {
-        // Arrange
-        UUID lobbyId_1 = lobbyHelper.createLobby();
-        UUID lobbyId_2 = lobbyHelper.createLobby();
-        UUID lobbyId_3 = lobbyHelper.createLobby();
+                // Assert
+                assertEquals(200, result.getResponse().getStatus());
+                assertEquals(1, lobby.getPlayers().size());
+        }
 
-        String jwtToken = authHelper.generateToken();
+        @Test
+        @WithMockUser
+        void whenLastPlayerDisconnectThenRemoveLobby() throws Exception {
+                // Arrange
+                LobbyBuilder builder = lobbyHelper.getNewLobbyBuilder();
+                UUID playerId = UUID.fromString("00000000-0000-0000-0000-000000000000");
+                Lobby lobby = builder.buildLobby(playerId)
+                                .getLobby();
 
-        // Act
-        MvcResult result = this.mvc.perform(get("/v1/all")
-                .header("Authorization", "Bearer " + jwtToken)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andReturn();
+                assertEquals(1, lobby.getPlayers().size());
+                assertEquals(lobby, lobbyHelper.getLobby(lobby.getId()));
 
-        String jsonStringLobby = result.getResponse().getContentAsString();
+                JSONObject jdisconnectRequest = new JSONObject();
+                jdisconnectRequest.put("lobbyId", lobby.getId().toString());
 
-        // Assert
-        assertEquals(200, result.getResponse().getStatus());
-        assertTrue(jsonStringLobby.contains(lobbyId_1.toString()));
-        assertTrue(jsonStringLobby.contains(lobbyId_2.toString()));
-        assertTrue(jsonStringLobby.contains(lobbyId_3.toString()));
-    }
+                String jwtToken = authHelper.generateToken();
+
+                // Act
+                MvcResult result = this.mvc.perform(post("/v1/disconnect")
+                                .header("Authorization", "Bearer " + jwtToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jdisconnectRequest.toJSONString()))
+                                .andReturn();
+
+                // Assert
+                assertEquals(200, result.getResponse().getStatus());
+                assertNull(lobbyHelper.getLobby(lobby.getId()));
+        }
+
+        @Test
+        @WithMockUser
+        void whenGetThenReturnLobby() throws Exception {
+                // Arrange
+                UUID lobbyId = lobbyHelper.createLobby();
+
+                JSONObject jgetRequest = new JSONObject();
+                jgetRequest.put("lobbyId", lobbyId.toString());
+                String jwtToken = authHelper.generateToken();
+
+                // Act
+                MvcResult result = this.mvc.perform(get("/v1/get")
+                                .header("Authorization", "Bearer " + jwtToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jgetRequest.toJSONString()))
+                                .andReturn();
+
+                String jsonStringLobby = result.getResponse().getContentAsString();
+
+                // Assert
+                assertEquals(200, result.getResponse().getStatus());
+                assertTrue(jsonStringLobby.contains(lobbyId.toString()));
+        }
+
+        @Test
+        @WithMockUser
+        void whenAllThenReturnAllLobbies() throws Exception {
+                // Arrange
+                UUID lobbyId_1 = lobbyHelper.createLobby();
+                UUID lobbyId_2 = lobbyHelper.createLobby();
+                UUID lobbyId_3 = lobbyHelper.createLobby();
+
+                String jwtToken = authHelper.generateToken();
+
+                // Act
+                MvcResult result = this.mvc.perform(get("/v1/all")
+                                .header("Authorization", "Bearer " + jwtToken)
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andReturn();
+
+                String jsonStringLobby = result.getResponse().getContentAsString();
+
+                // Assert
+                assertEquals(200, result.getResponse().getStatus());
+                assertTrue(jsonStringLobby.contains(lobbyId_1.toString()));
+                assertTrue(jsonStringLobby.contains(lobbyId_2.toString()));
+                assertTrue(jsonStringLobby.contains(lobbyId_3.toString()));
+        }
 }

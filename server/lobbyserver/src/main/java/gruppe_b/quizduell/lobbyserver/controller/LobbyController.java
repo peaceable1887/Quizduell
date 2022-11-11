@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gruppe_b.quizduell.lobbyserver.common.ConnectRequest;
 import gruppe_b.quizduell.lobbyserver.common.CreateRequest;
+import gruppe_b.quizduell.lobbyserver.common.DisconnectRequest;
 import gruppe_b.quizduell.lobbyserver.common.LobbyRequest;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
@@ -39,6 +40,13 @@ public class LobbyController {
     public ResponseEntity<Lobby> connect(Principal principal, @RequestBody ConnectRequest request) {
         return ResponseEntity.ok(lobbyService.connectToLobby(
                 UUID.fromString(principal.getName()), request.lobbyId));
+    }
+
+    @PostMapping("disconnect")
+    public ResponseEntity<Void> disconnect(Principal principal, @RequestBody DisconnectRequest request) {
+        lobbyService.disconnectFromLobby(
+                UUID.fromString(principal.getName()), request.lobbyId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("get")

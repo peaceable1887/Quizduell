@@ -205,6 +205,28 @@
 
         200 OK
 
+- Disconnecten von Lobby
+
+  - Endpunkt
+
+        <host>:/api/lobby/v1/disconnect
+
+  - request method
+    - POST
+  - request header
+    - bearer token (JWT)
+  - request body
+
+        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
+
+  - response body
+
+        -
+
+  - response status
+
+        200 OK
+
 ### Quiz
 
 - \<dummy>
