@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,14 @@ import gruppe_b.quizduell.lobbyserver.models.Lobby;
 @Service
 public class LobbyService {
 
-    private final HashMap<UUID, Lobby> lobbyRepo;
+    // Thread-Safe HashMap
+    private final ConcurrentHashMap<UUID, Lobby> lobbyRepo;
 
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
 
     public LobbyService() {
-        this.lobbyRepo = new HashMap<>();
+        this.lobbyRepo = new ConcurrentHashMap<>();
     }
 
     public Lobby createLobby(UUID playerId, String name) {

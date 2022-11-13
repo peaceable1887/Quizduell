@@ -30,7 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @SpringBootTest()
 @ComponentScan(basePackageClasses = AuthHelper.class)
@@ -203,5 +208,41 @@ class LobbyControllerTests {
                 assertTrue(jsonStringLobby.contains(lobbyId_1.toString()));
                 assertTrue(jsonStringLobby.contains(lobbyId_2.toString()));
                 assertTrue(jsonStringLobby.contains(lobbyId_3.toString()));
+        }
+
+        @Test
+        @WithMockUser
+        void multithreadTest() throws Exception {
+                // Arrange
+                int threadCount = 10;
+                int threadLoopCount = 1_000;
+
+                ExecutorService executor = Executors.newFixedThreadPool(100);
+                Collection<Callable<Void>> tasks = new ArrayList<>();
+
+                JSONObject jcreateRequest = new JSONObject();
+                jcreateRequest.put("name", "testLobby");
+                String jwtToken = authHelper.generateToken();
+
+                // Act
+                for (int i = 0; i < threadCount; i++) {
+                        Callable<Void> task = () -> {
+                                for (int j = 0; j < threadLoopCount; j++) {
+                                        mvc.perform(post("/v1/create")
+                                                        .header("Authorization", "Bearer " + jwtToken)
+                                                        .contentType(MediaType.APPLICATION_JSON)
+                                                        .content(jcreateRequest.toJSONString()))
+                                                        .andExpect(status().isCreated());
+                                }
+                                return null;
+                        };
+
+                        tasks.add(task);
+                }
+
+                executor.invokeAll(tasks);
+
+                // Assert
+                assertEquals(threadCount * threadLoopCount, lobbyHelper.getLobbyService().getAllLobbies().size());
         }
 }

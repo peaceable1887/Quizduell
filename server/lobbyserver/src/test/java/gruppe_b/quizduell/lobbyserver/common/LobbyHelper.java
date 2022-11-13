@@ -14,6 +14,10 @@ public class LobbyHelper {
     @Autowired
     LobbyService lobbyService;
 
+    public LobbyService getLobbyService() {
+        return lobbyService;
+    }
+
     public UUID createLobby() {
         return lobbyService.createLobby(UUID.randomUUID(), "test").getId();
     }
