@@ -31,7 +31,6 @@ public class UserRepositoryAdapter implements UserRepository {
         return user.createEntity();
     }
 
-    @Override
     public User findByUUID(UUID id) {
         Optional<DbUser> user = repo.findById(id);
         if (!user.isPresent()) {
