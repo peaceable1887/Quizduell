@@ -1,6 +1,8 @@
 package gruppe_b.quizduell.lobbyserver.common;
 
-public class CreateRequest {
+import java.io.Serializable;
+
+public class CreateRequest implements Serializable {
 
     public String name;
 }

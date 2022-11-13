@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -14,6 +15,7 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
 import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommand;
+import gruppe_b.quizduell.authserver.controller.common.AuthHelper;
 import gruppe_b.quizduell.domain.entities.User;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +46,9 @@ class AuthControllerTest {
 
         @Autowired
         RequestHandler<CreateUserCommand, User> createUserHandler;
+
+        @Autowired
+        AuthHelper authHelper;
 
         @Test
         void whenAuthenticatedThenSaysHelloUser() throws Exception {
@@ -135,5 +140,21 @@ class AuthControllerTest {
                                 .content(jObject.toJSONString()))
                                 .andExpect(status().isBadRequest());
                 // .andExpect(jsonPath("$.name", Is.is("Name is mandatory")));
+        }
+
+        @Test
+        @WithMockUser
+        void whenGetUserDetailsThenReturnUserDetails() throws Exception {
+                // Arrange
+                String userId = authHelper.generateUser().toString();
+                String jwtToken = authHelper.generateToken(userId);
+
+                // Act
+                MvcResult result = this.mvc.perform(get("/v1/details")
+                                .header("Authorization", "Bearer " + jwtToken))
+                                .andExpect(status().isOk()).andReturn();
+
+                // Assert
+                assertTrue(result.getResponse().getContentAsString().contains("authHelper"));
         }
 }

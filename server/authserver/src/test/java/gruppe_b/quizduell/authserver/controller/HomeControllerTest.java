@@ -16,6 +16,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // @Import({ SecurityConfig.class, TokenService.class })
 class HomeControllerTest {
 
+    static {
+        System.setProperty("DB_PORT", "3306");
+        System.setProperty("DB_HOSTNAME", "localhost");
+        System.setProperty("DB_USERNAME", "root");
+        System.setProperty("DB_PASSWORD", "root");
+    }
+
     @Autowired
     MockMvc mvc;
 

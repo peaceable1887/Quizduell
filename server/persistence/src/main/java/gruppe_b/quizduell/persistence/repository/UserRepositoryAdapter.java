@@ -1,5 +1,8 @@
 package gruppe_b.quizduell.persistence.repository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -26,6 +29,15 @@ public class UserRepositoryAdapter implements UserRepository {
             return null;
         }
         return user.createEntity();
+    }
+
+    @Override
+    public User findByUUID(UUID id) {
+        Optional<DbUser> user = repo.findById(id);
+        if (!user.isPresent()) {
+            return null;
+        }
+        return user.get().createEntity();
     }
 
     @Override

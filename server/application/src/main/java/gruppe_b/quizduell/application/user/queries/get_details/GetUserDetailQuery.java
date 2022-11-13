@@ -1,7 +1,8 @@
 package gruppe_b.quizduell.application.user.queries.get_details;
 
 /**
- * Query für die einen User. Wird an einen QueryHandler übergeben.
+ * Query zum Laden eines Users, anhand eines Usernames. Wird an einen
+ * QueryHandler übergeben.
  * 
  * @author Christopher Burmeister
  */

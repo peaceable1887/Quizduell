@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.lobbyserver.common;
+package gruppe_b.quizduell.authserver.controller.common;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
 import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommand;
-import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommandHandler;
 import gruppe_b.quizduell.domain.entities.User;
 
 @Service
@@ -20,6 +19,9 @@ public class AuthHelper {
 
     @Autowired
     private final JwtEncoder jwtEncoder;
+
+    @Autowired
+    private RequestHandler<CreateUserCommand, User> createUserHandler;
 
     public AuthHelper(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
@@ -39,5 +41,10 @@ public class AuthHelper {
 
     public String generateToken() {
         return generateToken("00000000-0000-0000-0000-000000000000");
+    }
+
+    public UUID generateUser() {
+        User user = createUserHandler.handle(new CreateUserCommand("authHelper", "john@john.de", "password", "salt"));
+        return user.getId();
     }
 }

@@ -216,6 +216,7 @@ class LobbyControllerTests {
                 // Arrange
                 int threadCount = 10;
                 int threadLoopCount = 1_000;
+                int preTestLobbyCount = lobbyHelper.getLobbyService().getAllLobbies().size();
 
                 ExecutorService executor = Executors.newFixedThreadPool(100);
                 Collection<Callable<Void>> tasks = new ArrayList<>();
@@ -243,6 +244,7 @@ class LobbyControllerTests {
                 executor.invokeAll(tasks);
 
                 // Assert
-                assertEquals(threadCount * threadLoopCount, lobbyHelper.getLobbyService().getAllLobbies().size());
+                assertEquals(threadCount * threadLoopCount + preTestLobbyCount,
+                                lobbyHelper.getLobbyService().getAllLobbies().size());
         }
 }
