@@ -247,6 +247,47 @@
 
         200 OK
 
+### Lobby STOMP Websockets
+
+- Endpunkt zum Verbinden
+
+      ws://<host>/lobby-websocket
+
+- Websocket zum Abonieren für neues Lobbies
+
+      ws://<host>/topic/new-lobby
+
+  - Message
+
+        {
+            "id": "cc884343-578b-4c95-9ef3-541d311c8682",
+            "name": "TestLobby",
+            "players": [
+                {
+                    "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+                }
+            ]
+        }
+
+- Websocket zum Abonieren für neue Spieler in einer Lobby
+
+      ws://<host>/topic/lobby/<lobby-UUID>
+
+  - Message
+
+        {
+            "id": "cc884343-578b-4c95-9ef3-541d311c8682",
+            "name": "TestLobby",
+            "players": [
+                {
+                    "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+                },
+                {
+                    "userId": "1db739fe-6054-4567-b443-2e8e38822068"
+                }
+            ]
+        }
+
 ### Quiz
 
 - \<dummy>
