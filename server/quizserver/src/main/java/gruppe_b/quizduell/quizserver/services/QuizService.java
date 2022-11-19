@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.quizserver.models.Quiz;
 
 @Service
@@ -23,9 +22,18 @@ public class QuizService {
         this.quizRepo = new HashMap<>();
     }
 
-    public Quiz createQuiz(UUID lobbyId) {
+    public Quiz createQuiz(UUID lobbyId, List<UUID> playerIdList) {
         Quiz newQuiz = new Quiz(lobbyId);
+
+        for (UUID playerId : playerIdList) {
+            newQuiz.addPlayer(playerId);
+        }
+
         quizRepo.put(newQuiz.getId(), newQuiz);
         return newQuiz;
+    }
+
+    public Quiz getQuiz(UUID quizId) {
+        return quizRepo.get(quizId);
     }
 }

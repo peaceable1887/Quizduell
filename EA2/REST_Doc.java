@@ -1,32 +1,47 @@
-package gruppe_b.quizduell.lobbyserver.controller;
+/**
+ * Rest-Controller zum Registrieren und für den Login bzw. das Erzeugen eines
+ * JWT.
+ */
+@RestController
+@RequestMapping("/api/auth/v1")
+public class AuthController {
 
-import java.security.Principal;
-import java.util.List;
-import java.util.UUID;
+    /**
+     * Erzeugt bei erfolgreicher Authentifizierung ein JWT.
+     * 
+     * @param authentication Spring Security Objekt mit Username und Passwort
+     * @return JWT
+     */
+    @GetMapping("/token")
+    public ResponseEntity<String> token(Authentication authentication) {
+    }
 
-import org.apache.catalina.connector.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+    /**
+     * Registriert einen neuen User.
+     * 
+     * @param userCredentialsDto request enthält Username, Mail (optional), Password
+     */
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@Valid @RequestBody UserCredentialsDto userCredentialsDto) {
+    }
 
-import gruppe_b.quizduell.lobbyserver.common.ConnectRequest;
-import gruppe_b.quizduell.lobbyserver.common.CreateRequest;
-import gruppe_b.quizduell.lobbyserver.common.DisconnectRequest;
-import gruppe_b.quizduell.lobbyserver.common.LobbyRequest;
-import gruppe_b.quizduell.lobbyserver.models.Lobby;
-import gruppe_b.quizduell.lobbyserver.services.LobbyService;
+    /**
+     * Gibt die Details zu einem User zurück.
+     * 
+     * @param principal enthält die UserId und wird durch Spring Security im
+     *                  authentication Prozess erzeugt.
+     * @return Details zum User
+     */
+    @GetMapping("/details")
+    public ResponseEntity<UserDetailsDto> details(Principal principal) {
+    }
+}
 
 /**
  * Rest-Controller zum Erstellen, Betreten und Auflisten von Lobbies.
- * 
- * @author Christopher Burmeister
  */
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/api/lobby/v1")
 public class LobbyController {
 
     private final LobbyService lobbyService;
@@ -45,8 +60,6 @@ public class LobbyController {
      */
     @PostMapping("/create")
     public ResponseEntity<Lobby> create(Principal principal, @RequestBody CreateRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(lobbyService.createLobby(
-                UUID.fromString(principal.getName()), request.name));
     }
 
     /**
@@ -59,8 +72,6 @@ public class LobbyController {
      */
     @PostMapping("/connect")
     public ResponseEntity<Lobby> connect(Principal principal, @RequestBody ConnectRequest request) {
-        return ResponseEntity.ok(lobbyService.connectToLobby(
-                UUID.fromString(principal.getName()), request.lobbyId));
     }
 
     /**
@@ -72,9 +83,6 @@ public class LobbyController {
      */
     @PostMapping("/disconnect")
     public ResponseEntity<Void> disconnect(Principal principal, @RequestBody DisconnectRequest request) {
-        lobbyService.disconnectFromLobby(
-                UUID.fromString(principal.getName()), request.lobbyId);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
@@ -85,7 +93,6 @@ public class LobbyController {
      */
     @GetMapping("/get")
     public ResponseEntity<Lobby> get(@RequestBody LobbyRequest request) {
-        return ResponseEntity.ok(lobbyService.getLobby(request.lobbyId));
     }
 
     /**
@@ -95,6 +102,33 @@ public class LobbyController {
      */
     @GetMapping("/all")
     public ResponseEntity<List<Lobby>> all() {
-        return ResponseEntity.ok(lobbyService.getAllLobbies());
+    }
+}
+
+/**
+ * Rest-Controller für das Quiz
+ */
+@RestController
+@RequestMapping("/v1")
+public class QuizController {
+
+    /**
+     * Erstellt eine Quiz-Session.
+     * 
+     * @param request enthält die LobbyId und die PlayerId's.
+     * @return Quiz
+     */
+    @PostMapping("/create")
+    public ResponseEntity<Quiz> create(@RequestBody CreateRequest request) {
+    }
+
+    /**
+     * Gib eine angefragte Quiz-Session zurück.
+     * 
+     * @param request enthält die QuizId
+     * @return Quiz
+     */
+    @GetMapping("/get")
+    public ResponseEntity<Quiz> get(@RequestBody QuizRequest request) {
     }
 }

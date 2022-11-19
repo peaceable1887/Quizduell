@@ -9,8 +9,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
+
+import gruppe_b.quizduell.quizserver.common.QuizHelper;
+import gruppe_b.quizduell.quizserver.models.Quiz;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,6 +32,9 @@ public class QuizControllerTest {
     @Autowired
     MockMvc mvc;
 
+    @Autowired
+    QuizHelper quizHelper;
+
     @Test
     @WithMockUser
     void whenCreateThenCreateNewQuiz() throws Exception {
@@ -34,12 +42,44 @@ public class QuizControllerTest {
         JSONObject jcreateRequest = new JSONObject();
         jcreateRequest.put("lobbyId", UUID.randomUUID().toString());
 
-        // Act
+        String player1Id = UUID.randomUUID().toString();
+        String player2Id = UUID.randomUUID().toString();
 
-        // Assert
-        this.mvc.perform(post("/v1/create")
+        JSONArray jPlayerArray = new JSONArray();
+        jPlayerArray.add(player1Id);
+        jPlayerArray.add(player2Id);
+
+        jcreateRequest.put("playerIdList", jPlayerArray);
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jcreateRequest.toJSONString()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated()).andReturn();
+
+        // Assert
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains(player1Id));
+        assertTrue(content.contains(player2Id));
+    }
+
+    @Test
+    @WithMockUser
+    void whenGetThenReturnQuiz() throws Exception {
+        // Arrange
+        Quiz quiz = quizHelper.createQuiz();
+
+        JSONObject jquizRequest = new JSONObject();
+        jquizRequest.put("quizId", quiz.getId().toString());
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/get")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jquizRequest.toJSONString()))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains(quiz.getId().toString()));
     }
 }

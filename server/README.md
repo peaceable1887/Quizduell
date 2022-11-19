@@ -253,7 +253,7 @@
 
       ws://<host>/lobby-websocket
 
-- Websocket zum Abonieren für neues Lobbies
+- Endpunkt zum Abonnieren für neue Lobbies
 
       ws://<host>/topic/new-lobby
 
@@ -269,7 +269,7 @@
             ]
         }
 
-- Websocket zum Abonieren für neue Spieler in einer Lobby
+- Endpunkt zum Abonnieren für Änderungen in einer Lobby
 
       ws://<host>/topic/lobby/<lobby-UUID>
 

@@ -66,7 +66,7 @@ public class AuthController {
     /**
      * Registriert einen neuen User.
      * 
-     * @param userCredentialsDto
+     * @param userCredentialsDto request enthält Username, Mail (optional), Password
      * @return Http Status
      */
     @PostMapping("/register")
@@ -78,8 +78,9 @@ public class AuthController {
     /**
      * Gibt die Details zu einem User zurück.
      * 
-     * @param principal
-     * @return
+     * @param principal enthält die UserId und wird durch Spring Security im
+     *                  authentication Prozess erzeugt.
+     * @return Details zum User
      */
     @GetMapping("/details")
     public ResponseEntity<UserDetailsDto> details(Principal principal) {

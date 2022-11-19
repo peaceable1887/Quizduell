@@ -6,4 +6,5 @@ import java.util.UUID;
 public class CreateRequest {
 
     public UUID lobbyId;
+    public List<UUID> playerIdList;
 }

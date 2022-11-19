@@ -30,4 +30,8 @@ public class Quiz {
     public List<Player> getPlayers() {
         return playerList;
     }
+
+    public void addPlayer(UUID id) {
+        playerList.add(new Player(id));
+    }
 }
