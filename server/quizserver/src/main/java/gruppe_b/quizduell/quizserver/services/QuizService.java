@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.quizserver.models.Quiz;
 
+/**
+ * Service zum Managen von Quiz-Games.
+ * 
+ * @author Christopher Burmeister
+ */
 @Service
 public class QuizService {
 

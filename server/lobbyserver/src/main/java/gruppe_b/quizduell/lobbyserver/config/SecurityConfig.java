@@ -15,6 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import gruppe_b.quizduell.common.config.AbstractSecurityConfig;
 import gruppe_b.quizduell.common.config.RsaKeyProperties;
 
+/**
+ * Konfigurations-Klasse für die Security Einstellungen.
+ * 
+ * @author Christopher Burmeister
+ */
 @Configuration
 @Order(1)
 public class SecurityConfig extends AbstractSecurityConfig {

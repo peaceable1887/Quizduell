@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
+/**
+ * Service zum Managen von Lobbies.
+ * 
+ * @author Christopher Burmeister
+ */
 @Service
 public class LobbyService {
 
