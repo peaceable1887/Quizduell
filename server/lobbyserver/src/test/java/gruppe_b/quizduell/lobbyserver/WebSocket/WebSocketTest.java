@@ -50,7 +50,7 @@ class WebSocketTest {
     static String WS_URI;
 
     static final String SUBSCRIBE_NEW_LOBBY_ENDPOINT = "/topic/new-lobby";
-    static final String SUBSCRIBE_NEW_PLAYER_IN_LOBBY_ENDPOINT = "/topic/lobby";
+    static final String SUBSCRIBE_NEW_PLAYER_IN_LOBBY_ENDPOINT = "/topic/lobby/";
 
     CompletableFuture<String> completableFuture;
 
@@ -86,9 +86,61 @@ class WebSocketTest {
         stompSession.subscribe(SUBSCRIBE_NEW_LOBBY_ENDPOINT,
                 new PublishLobbyStompFrameHandler());
 
+        completableFuture = new CompletableFuture<>();
+
         // Act
         lobbyHelper.publishLobby(lobbyId);
 
+        String lobby = completableFuture.get(10, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(lobby);
+        assertTrue(lobby.contains(lobbyId.toString()));
+    }
+
+    @Test
+    void whenSubscribeNewLobbyThenReturnLobby() throws Exception {
+        // Arrange
+        UUID lobbyId1 = lobbyHelper.createLobby();
+        UUID lobbyId2 = lobbyHelper.createLobby();
+        UUID lobbyId3 = lobbyHelper.createLobby();
+
+        WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
+                asList(new WebSocketTransport(new StandardWebSocketClient()))));
+
+        StompSession stompSession = stompClient.connect(WS_URI,
+                new StompSessionHandlerAdapter() {
+                }).get(10, TimeUnit.SECONDS);
+
+        stompSession.subscribe(SUBSCRIBE_NEW_LOBBY_ENDPOINT,
+                new PublishLobbyStompFrameHandler());
+
+        // Act
+        String lobby = completableFuture.get(10, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(lobby);
+        assertTrue(lobby.contains(lobbyId1.toString()));
+        assertTrue(lobby.contains(lobbyId2.toString()));
+        assertTrue(lobby.contains(lobbyId3.toString()));
+    }
+
+    @Test
+    void whenSubscribeLobbyIdThenReturnLobby() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createLobby();
+
+        WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
+                asList(new WebSocketTransport(new StandardWebSocketClient()))));
+
+        StompSession stompSession = stompClient.connect(WS_URI,
+                new StompSessionHandlerAdapter() {
+                }).get(10, TimeUnit.SECONDS);
+
+        stompSession.subscribe(SUBSCRIBE_NEW_PLAYER_IN_LOBBY_ENDPOINT + lobbyId.toString(),
+                new PublishLobbyStompFrameHandler());
+
+        // Act
         String lobby = completableFuture.get(10, TimeUnit.SECONDS);
 
         // Assert

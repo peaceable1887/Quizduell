@@ -10,6 +10,8 @@
 
       ws://<host>/topic/new-lobby
 
+  - Message on Subscribe: Json Array mit allen Lobbies
+
   - Message
 
         {
@@ -25,6 +27,8 @@
 - Endpunkt zum Abonnieren für Änderungen in einer Lobby
 
       ws://<host>/topic/lobby/<lobby-UUID>
+
+  - Message on Subscribe: aktueller State der abonnierten Lobby
 
   - Message
 

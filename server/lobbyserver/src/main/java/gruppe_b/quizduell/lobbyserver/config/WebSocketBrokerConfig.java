@@ -52,9 +52,9 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // Prefix für die Endpunkte zum Senden an den Server.
-        registry.setApplicationDestinationPrefixes("/lobby");
+        registry.setApplicationDestinationPrefixes("/topic");
         logger.info("--> WebSocket prefixes set");
-        // Prefix für die Endpunkte zum Abonnieren durch den Client.
+        // Prefix für die Endpunkte bzw. den Message-Broker, der an die Clients sendet.
         registry.enableSimpleBroker("/topic");
         logger.info("--> Simple Broker enabled");
     }

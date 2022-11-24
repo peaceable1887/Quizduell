@@ -36,6 +36,9 @@ public class LobbyService {
     public Lobby createLobby(UUID playerId, String name) {
         Lobby newLobby = new Lobby(name, new Player(playerId));
         this.lobbyRepo.put(newLobby.getId(), newLobby);
+
+        // Publish new lobby on websocket /topic/new-lobby
+        publishLobby(newLobby.getId());
         return newLobby;
     }
 
