@@ -30,6 +30,7 @@ services:
       - web-logs:/var/log/nginx
     links:
       - authserver:authserver
+      - lobbyserver:lobbyserver
 
   maria:
     restart: always
