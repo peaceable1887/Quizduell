@@ -74,7 +74,7 @@ class LobbyControllerTests {
 
         // Assert
         this.mvc.perform(post("/v1/create")
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jcreateRequest.toJSONString()))
                 .andExpect(status().isCreated());
@@ -92,7 +92,7 @@ class LobbyControllerTests {
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/connect")
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jconnectRequest.toJSONString()))
                 .andReturn();
@@ -122,7 +122,7 @@ class LobbyControllerTests {
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/disconnect")
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jdisconnectRequest.toJSONString()))
                 .andReturn();
@@ -151,7 +151,7 @@ class LobbyControllerTests {
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/disconnect")
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jdisconnectRequest.toJSONString()))
                 .andReturn();
@@ -173,7 +173,7 @@ class LobbyControllerTests {
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get")
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jgetRequest.toJSONString()))
                 .andReturn();
@@ -197,7 +197,7 @@ class LobbyControllerTests {
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/all")
-                .header("Authorization", "Bearer " + jwtToken)
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
 
@@ -230,7 +230,7 @@ class LobbyControllerTests {
             Callable<Void> task = () -> {
                 for (int j = 0; j < threadLoopCount; j++) {
                     mvc.perform(post("/v1/create")
-                            .header("Authorization", "Bearer " + jwtToken)
+                            .header("Authorization", jwtToken)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(jcreateRequest.toJSONString()))
                             .andExpect(status().isCreated());

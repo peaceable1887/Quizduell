@@ -34,7 +34,7 @@ public class AuthHelper {
                 .subject(id)
                 .claim("scope", "")
                 .build();
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return "Bearer " + this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
     public String generateToken() {

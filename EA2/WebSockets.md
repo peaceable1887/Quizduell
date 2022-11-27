@@ -49,15 +49,17 @@
 
 - Endpunkt zum Mitteilen, dass der Spieler bereit ist, oder nicht mehr bereit ist
 
-      ws://<host>/lobby/<lobby-UUID>/status
+      ws://<host>/app/lobby/<lobby-UUID>/status
 
   - Message
 
         {
+            "playerId": <UUID>
             "status": "ready"
         }
 
         {
+            "playerId": <UUID>
             "status": "wait"
         }
 
@@ -83,7 +85,7 @@
 
 - Endpunkt zum Senden einer Antwort
 
-      ws://<host>/quiz/<quiz-UUID>/answer
+      ws://<host>/app/quiz/<quiz-UUID>/answer
 
   - Message
 

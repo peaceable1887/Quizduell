@@ -29,22 +29,8 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        // registry.addEndpoint("/lobby-websocket")
-        // .setAllowedOrigins("*") // muss wohl gesetzt werden, damit die Client-Apps
-        // den Endpunkt nutzen können,
-        // // weil sie nicht vom selben Host kommen.
-        // .withSockJS()
-        // // .setWebSocketEnabled(false) // TODO: brauche ich das mit NGINX?
-        // // 22.10. Test failt aktuell mit diesem Parameter
-        // .setSessionCookieNeeded(false);
-
         registry.addEndpoint("/lobby-websocket")
                 .withSockJS();
-
-        // registry.addEndpoint("/lobby-websocket")
-        // .addInterceptors(new JwtHandshakeInterceptor())
-        // .setAllowedOrigins("*")
-        // .withSockJS();
 
         logger.info("--> Stomp Endpoints registered");
     }
@@ -52,7 +38,7 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // Prefix für die Endpunkte zum Senden an den Server.
-        registry.setApplicationDestinationPrefixes("/topic");
+        registry.setApplicationDestinationPrefixes("/app", "/topic");
         logger.info("--> WebSocket prefixes set");
         // Prefix für die Endpunkte bzw. den Message-Broker, der an die Clients sendet.
         registry.enableSimpleBroker("/topic");

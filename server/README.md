@@ -249,6 +249,14 @@
 
 ### Lobby STOMP Websockets
 
+#### Im Header wird der JWT zur Authentication benötigt.
+
+Beispiel:
+
+    { Authorization: "Bearer <token>" }
+
+#### Endpunkte
+
 - Endpunkt zum Verbinden
 
       ws://<host>/lobby-websocket

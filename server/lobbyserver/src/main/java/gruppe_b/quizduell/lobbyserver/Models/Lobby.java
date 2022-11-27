@@ -35,6 +35,15 @@ public class Lobby {
         playerList.add(player);
     }
 
+    public Player getPlayer(UUID playerId) {
+        for (Player player : playerList) {
+            if (player.getUserId().compareTo(playerId) == 0) {
+                return player;
+            }
+        }
+        return null;
+    }
+
     public void removePlayer(UUID playerId) {
         playerList.removeIf(p -> p.getUserId().equals(playerId));
     }

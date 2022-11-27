@@ -34,18 +34,6 @@ public class SecurityConfig extends AbstractSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         logger.info("--> SecurityFilterChain set");
 
-        // return http
-        // .csrf(csrf -> csrf.disable())
-        // .authorizeRequests(auth -> auth
-        // .antMatchers("/lobby-websocket/info").permitAll())
-        // .authorizeRequests(auth -> auth
-        // .anyRequest().authenticated())
-        // .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-        // .sessionManagement(session ->
-        // session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // .httpBasic(Customizer.withDefaults())
-        // .build();
-
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
@@ -59,7 +47,5 @@ public class SecurityConfig extends AbstractSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
                 .build();
-
-        // return http.authorizeRequests(auth -> auth.anyRequest().permitAll()).build();
     }
 }
