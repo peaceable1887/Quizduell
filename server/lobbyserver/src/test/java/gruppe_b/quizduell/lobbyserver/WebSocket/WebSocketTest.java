@@ -163,7 +163,6 @@ class WebSocketTest {
         jwtToken = authHelper.generateToken(playerId);
 
         PlayerStatusDto dto = new PlayerStatusDto();
-        dto.playerId = playerId;
         dto.status = "ready";
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(dto);
@@ -241,7 +240,7 @@ class WebSocketTest {
 
         // Assert
         assertNotNull(lobby);
-        assertTrue(lobby.contains("playerId null"));
+        assertTrue(lobby.contains("status null"));
     }
 
     @Test

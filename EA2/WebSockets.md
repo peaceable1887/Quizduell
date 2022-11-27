@@ -54,12 +54,10 @@
   - Message
 
         {
-            "playerId": <UUID>
             "status": "ready"
         }
 
         {
-            "playerId": <UUID>
             "status": "wait"
         }
 

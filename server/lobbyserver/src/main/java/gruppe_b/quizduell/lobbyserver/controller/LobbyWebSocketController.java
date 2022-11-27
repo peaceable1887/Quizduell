@@ -54,10 +54,6 @@ public class LobbyWebSocketController {
             Principal principal)
             throws UnknownPlayerStatusException, AttributeNullException {
 
-        if (status.playerId == null) {
-            throw new AttributeNullException("playerId null");
-        }
-
         if (status.status == null) {
             throw new AttributeNullException("status null");
         }
