@@ -40,4 +40,21 @@ public class AuthHelper {
     public String generateToken() {
         return generateToken("00000000-0000-0000-0000-000000000000");
     }
+
+    public String generateExpiredToken(String id) throws Exception {
+        Instant now = Instant.now();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("quizduell_authserver")
+                .issuedAt(now.minus(2, ChronoUnit.HOURS))
+                .expiresAt(now.minus(1, ChronoUnit.HOURS))
+                .subject(id)
+                .claim("scope", "")
+                .build();
+
+        return "Bearer " + this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateExpiredToken() throws Exception {
+        return generateExpiredToken("00000000-0000-0000-0000-000000000000");
+    }
 }

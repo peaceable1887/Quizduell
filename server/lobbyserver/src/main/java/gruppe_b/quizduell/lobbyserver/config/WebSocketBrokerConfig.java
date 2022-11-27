@@ -41,7 +41,7 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
         registry.setApplicationDestinationPrefixes("/app", "/topic");
         logger.info("--> WebSocket prefixes set");
         // Prefix für die Endpunkte bzw. den Message-Broker, der an die Clients sendet.
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/topic", "/queue");
         logger.info("--> Simple Broker enabled");
     }
 }

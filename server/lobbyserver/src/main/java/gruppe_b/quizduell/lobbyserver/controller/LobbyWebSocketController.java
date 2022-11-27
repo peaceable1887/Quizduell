@@ -8,23 +8,29 @@ import java.util.UUID;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpAttributes;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpSessionScope;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.socket.WebSocketMessage;
 
 import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.lobbyserver.common.PlayerStatusDto;
+import gruppe_b.quizduell.lobbyserver.exceptions.AttributeNullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
 @Controller
+@ControllerAdvice
 public class LobbyWebSocketController {
 
     @Autowired
@@ -46,7 +52,15 @@ public class LobbyWebSocketController {
     @SendTo("/topic/lobby/{lobbyId}")
     public Lobby playerStatus(@DestinationVariable String lobbyId, PlayerStatusDto status,
             Principal principal)
-            throws UnknownPlayerStatusException {
+            throws UnknownPlayerStatusException, AttributeNullException {
+
+        if (status.playerId == null) {
+            throw new AttributeNullException("playerId null");
+        }
+
+        if (status.status == null) {
+            throw new AttributeNullException("status null");
+        }
 
         Lobby lobby = lobbyService.getLobby(UUID.fromString(lobbyId));
         Player player = lobby.getPlayer(UUID.fromString(principal.getName()));
@@ -85,5 +99,11 @@ public class LobbyWebSocketController {
     @SendTo("/topic/test")
     public String test(String msg) {
         return "hello from @MessageMapping /test";
+    }
+
+    @MessageExceptionHandler
+    @SendToUser("/queue/errors")
+    public String handleException(Exception e) {
+        return e.getMessage();
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.lang.Nullable;
+import org.springframework.messaging.simp.stomp.ConnectionLostException;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -37,6 +38,7 @@ import gruppe_b.quizduell.lobbyserver.common.PlayerStatusDto;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -188,8 +190,63 @@ class WebSocketTest {
     }
 
     @Test
-    void sendToTestMessageMapping() throws Exception {
+    void whenTokenExpiredThenThrowExpiredException() throws Exception {
+        // Arrange
+        WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
+                asList(new WebSocketTransport(new StandardWebSocketClient()))));
 
+        WebSocketHttpHeaders handshakeHeaders = new WebSocketHttpHeaders();
+        StompHeaders connectHeaders = new StompHeaders();
+        connectHeaders.add("Authorization", authHelper.generateExpiredToken());
+
+        // Act
+        try {
+            StompSession stompSession = stompClient.connect(WS_URI, handshakeHeaders, connectHeaders,
+                    new StompSessionHandlerAdapter() {
+                    }).get(5, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            // Assert
+            assertEquals(ConnectionLostException.class, e.getCause().getClass());
+        }
+    }
+
+    @Test
+    void whenMissingAttributesThenThrowException() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createLobby();
+        String playerId = lobbyHelper.getLobby(
+                lobbyId).getPlayers().get(0).getUserId().toString();
+        jwtToken = authHelper.generateToken(playerId);
+
+        PlayerStatusDto dto = new PlayerStatusDto();
+        // dto.playerId = playerId;
+        // dto.status = "ready";
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(dto);
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe("/user/queue/errors",
+                new PublishLobbyStompFrameHandler());
+
+        Thread.sleep(2000);
+
+        // Act
+        completableFuture = new CompletableFuture<>();
+
+        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status",
+                json.getBytes());
+
+        String lobby = completableFuture.get(5, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(lobby);
+        assertTrue(lobby.contains("playerId null"));
+    }
+
+    @Test
+    void sendToTestMessageMapping() throws Exception {
+        // Arrange
         WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(
                 asList(new WebSocketTransport(new StandardWebSocketClient()))));
 
