@@ -3,21 +3,27 @@ module.exports = defineConfig({
   transpileDependencies: true
 })
 
-/*module.exports = {
+module.exports = {
   devServer: {
     proxy: {
       '^/api': {
         target: 'http://test.burmeister.hamburg/',
         changeOrigin: true,
-        logLevel: 'debug',
+        logLevel: "debug",
+      },
+      '^/lobby-websocket': {
+        target: 'http://test.burmeister.hamburg/',
+        changeOrigin: true,
+        logLevel: "debug",
+        ws: true,
       },
     },
   },
-}*/
-
+}
+/*
 module.exports = {
   devServer: {
     proxy: 'http://test.burmeister.hamburg/'
   }
 }
-
+*/

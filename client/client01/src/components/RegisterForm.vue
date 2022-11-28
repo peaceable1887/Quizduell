@@ -9,7 +9,7 @@
                 </div>
                 <div class="formData">
                     <label for="eMail">E-Mail</label>
-                    <input type="text" name="eMail" v-model="eMail">
+                    <input type="email" name="eMail" v-model="eMail">
                 </div>
                 <div class="formData">
                     <label for="password">Passwort</label>

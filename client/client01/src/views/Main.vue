@@ -7,7 +7,7 @@
             <form action="/game">
                 <Button text="Spiel starten"></Button>
             </form>
-            <form action="">
+            <form action="/lobby">
                 <Button text="Mehrspieler"></Button>
             </form>
             <form action="/statistics">
