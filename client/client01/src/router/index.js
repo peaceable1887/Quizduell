@@ -6,6 +6,8 @@ import EditProfil from '../views/EditProfil.vue';
 import Game from '../views/Game.vue';
 import QuestionEvaluation from '../views/QuestionEvaluation.vue';
 import MultiplayerLobby from '../views/MultiplayerLobby.vue';
+import CreateGame from '../views/CreateGame.vue';
+import GameLobby from '../views/GameLobby.vue';
 import Statistics from '../views/Statistics.vue';
 
 const routes = [
@@ -43,6 +45,16 @@ const routes = [
     path: '/lobby',
     name: 'MultiplayerLobby',
     component: MultiplayerLobby,
+  },
+  {
+    path: '/createGame',
+    name: 'CreateGame',
+    component: CreateGame,
+  },
+  {
+    path: '/gameLobby',
+    name: 'GameLobby',
+    component: GameLobby,
   },
   {
     path: '/statistics',

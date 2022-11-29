@@ -6,22 +6,20 @@
             <JoinCreatedGame></JoinCreatedGame>
         </div>
         <div class="btnWrapper">
-            <form action="/main">
+            <router-link to="/main">
                 <Button text="Zurück"></Button>
-            </form>
-            <form action="/createGame">
+            </router-link>
+            <router-link to="/createGame">
                 <Button text="Spiel erstellen"></Button>
-            </form> 
+            </router-link>
         </div>
     </div>
-    WebSocket Verbinung testen:<button @click="sendMessage('Test Erfolgreich!')">Test</button>
 </template>
 
 <script>
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
-
 import Header from "../components/Header.vue";
 import Headline from "../components/Headline.vue";
 import Button from "../components/Button.vue";
@@ -45,26 +43,9 @@ export default
     },
     created()
     {
-       /*
-        console.log("Starte die Verbindung zum WebSocket Server")
-        console.log(localStorage.getItem("token"))
-        this.connection = new WebSocket("wss://demo.piesocket.com/v3/channel_123?api_key=VCXCEuvhGcBDP7XhiJJUDvR1e1D3eiVjgZ9VRiaV&notify_self")
-        //this.connection = new WebSocket("ws://test.burmeister.hamburg/lobby-websocket")
-
-        this.connection.onopen = function(event) 
-        {
-            console.log(event)
-            console.log("Erfolgreich verbunden mit dem WebSocket Server")
-        }
-
-        this.connection.onmessage = function(event) 
-        {
-            console.log("onmessage")
-            console.log(event)        
-        }*/
-
         const token = "Bearer " + localStorage.getItem("token");
         console.log(token);
+        let sub_first_msg_new_lobby = true;
       
         this.connection = new SockJS("http://localhost:8080/lobby-websocket");
         const stompClient = Stomp.over(this.connection);
@@ -72,7 +53,7 @@ export default
         console.log("---1---");
         stompClient.onConnect = function (frame) 
         {
-            console.log("Verbunden!");
+            console.log(frame);
         };
 
         console.log("---2---");
@@ -92,7 +73,7 @@ export default
                 stompClient.subscribe("/topic/test", 
                     function (message) 
                     {
-                        showTest(message.body);
+                        showLobbies(message.body);
                     }
                 );
 
@@ -143,14 +124,15 @@ export default
     .containerLobby
     {
         display: flex;
-        align-items: center;
         flex-direction: column;
+        margin: 0 15% 0 15%;
     }
     .btnWrapper
     {
         display: flex;
-        justify-content: space-around;
-        width: 40%;
+        justify-content: space-evenly;
+        width: 100%;
+        bottom: 0;
     }
     Button
     {

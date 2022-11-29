@@ -1,7 +1,6 @@
 <template> 
     <main>
       <router-view></router-view>
-      
     </main>
 </template>
 
@@ -23,6 +22,8 @@ export default
   body
   {
     font-family: 'Roboto', sans-serif;
+    width: 100%;
+    height: 100%;
   }
   main
   {
