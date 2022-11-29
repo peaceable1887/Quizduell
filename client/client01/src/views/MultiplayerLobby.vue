@@ -2,8 +2,8 @@
     <Header></Header>
     <Headline class="headline" text="Mehrspieler"></Headline>   
     <div class="containerLobby">
-        <div class="activLobbyWrapper">
-            <JoinCreatedGame></JoinCreatedGame>
+        <div class="activLobbyWrapper" v-for="lobby in lobbies" :key="lobby">
+            <JoinCreatedGame :lobbyName="`${lobby.name}`" :playerName="`${lobby.players[0].userId}`"></JoinCreatedGame>
         </div>
         <div class="btnWrapper">
             <router-link to="/main">
@@ -39,6 +39,9 @@ export default
     {
         return{
             connection: null,
+            lobbies: [],
+            gameName: "",
+            userName: "",
         }
     },
     created()
@@ -50,44 +53,39 @@ export default
         this.connection = new SockJS("http://localhost:8080/lobby-websocket");
         const stompClient = Stomp.over(this.connection);
 
-        console.log("---1---");
-        stompClient.onConnect = function (frame) 
-        {
-            console.log(frame);
-        };
-
-        console.log("---2---");
         stompClient.connect({ Authorization: token }, 
-            function (frame) 
+            (frame) =>
             {
                 console.log("Connected: " + frame);
                 
                 stompClient.subscribe("/topic/new-lobby", 
-                    function (message) 
+                    (message) =>
                     {
+                        console.log("new lobby");
                         let json = JSON.parse(message.body);
-                        showLobbies(json);
+                        this.lobbies = json;
+                        showLobbies(json); 
                     }
                 );
 
-                stompClient.subscribe("/topic/test", 
+                /*stompClient.subscribe("/topic/test", 
                     function (message) 
                     {
+                        console.log("topic/test");
                         showLobbies(message.body);
                     }
-                );
+                );*/
 
-                stompClient.send("/app/test", {}, "test");
+                //stompClient.send("/app/test", {}, "test");
             }
         );
-
-        console.log("---3---");
+        
         function showLobbies(lobbyJson)
         {
             if (sub_first_msg_new_lobby) 
             {
                 sub_first_msg_new_lobby = false;
-
+                
                 for (let i = 0; i < lobbyJson.length; i++) 
                 {
                     console.log(lobbyJson[i]);
@@ -95,11 +93,14 @@ export default
 
             }else
             {
-                    
                 console.log("---- NEW LOBBY ----");
                 console.log(lobbyJson);
             }
         }
+
+    },
+    async mounted()
+    {
 
     },
     methods:

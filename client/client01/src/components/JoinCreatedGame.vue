@@ -1,9 +1,9 @@
 <template>
     <div class="container">
-        <h5>Spiel 1</h5>
+        <h5>{{lobbyName}}</h5>
         <div class="gameInfos">
-            <span>Anzahl der Runden:</span>
-            <span>erstellt von:</span>
+            <span><b>Anzahl der Runden:</b> {{roundQuantity}}</span>
+            <span><b>erstellt von:</b> {{playerName}}</span>
             <form>
                 <Button text="beitreten"></Button>
             </form>
@@ -20,6 +20,12 @@ export default
     components:
     {
         Button,
+    },
+    props:
+    {
+        lobbyName: String,
+        roundQuantity: String,
+        playerName: String,
     }
 }
 </script>
