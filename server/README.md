@@ -263,7 +263,7 @@ Beispiel:
 
 - Endpunkt zum Abonnieren für neue Lobbies
 
-      ws://<host>/topic/new-lobby
+      /topic/new-lobby
 
   - Message
 
@@ -279,7 +279,7 @@ Beispiel:
 
 - Endpunkt zum Abonnieren für Änderungen in einer Lobby
 
-      ws://<host>/topic/lobby/<lobby-UUID>
+      /topic/lobby/<lobby-UUID>
 
   - Message
 
@@ -294,6 +294,16 @@ Beispiel:
                     "userId": "1db739fe-6054-4567-b443-2e8e38822068"
                 }
             ]
+        }
+
+- Endpunkt zum Abonnieren für Lobbies die gelöscht werden
+
+      /topic/lobby/delete-lobby
+
+  - Message
+
+        {
+          "cc884343-578b-4c95-9ef3-541d311c8682"
         }
 
 ### Quiz

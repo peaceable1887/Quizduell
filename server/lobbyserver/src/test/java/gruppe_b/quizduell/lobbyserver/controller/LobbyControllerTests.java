@@ -1,6 +1,5 @@
 package gruppe_b.quizduell.lobbyserver.controller;
 
-import org.hibernate.resource.jdbc.spi.JdbcSessionOwner;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,22 +10,17 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
-import com.nimbusds.jose.shaded.json.parser.JSONParser;
 
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyBuilder;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
-import net.bytebuddy.agent.VirtualMachine.ForHotSpot.Connection.Response;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

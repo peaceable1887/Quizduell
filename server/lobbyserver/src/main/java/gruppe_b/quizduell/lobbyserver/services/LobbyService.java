@@ -75,6 +75,7 @@ public class LobbyService {
         // Lobby löschen, wenn letzter Spieler disconnected.
         if (lobby.getPlayers().isEmpty()) {
             this.lobbyRepo.remove(lobby.getId());
+            simpMessagingTemplate.convertAndSend("/topic/lobby/delete-lobby", lobby.getId());
         }
 
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobby.getId().toString(), lobby);

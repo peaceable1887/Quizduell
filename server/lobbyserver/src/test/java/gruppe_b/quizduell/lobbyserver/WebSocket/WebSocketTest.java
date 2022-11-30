@@ -4,48 +4,51 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.websocket.ContainerProvider;
-import javax.websocket.WebSocketContainer;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.simp.stomp.ConnectionLostException;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-import org.springframework.web.socket.sockjs.transport.handler.WebSocketTransportHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jwt.JWT;
+import com.nimbusds.jose.shaded.json.JSONObject;
 
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 import gruppe_b.quizduell.lobbyserver.common.PlayerStatusDto;
-import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.lang.reflect.Type;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 class WebSocketTest {
+
+    @Autowired
+    MockMvc mvc;
 
     @Autowired
     AuthHelper authHelper;
@@ -59,6 +62,7 @@ class WebSocketTest {
 
     static final String SUBSCRIBE_NEW_LOBBY_ENDPOINT = "/topic/new-lobby";
     static final String SUBSCRIBE_LOBBY_UPDATE_ENDPOINT = "/topic/lobby/";
+    static final String SUBSCRIBE_DELETE_LOBBY_ENDPOINT = "/topic/lobby/delete-lobby";
     static final String SEND_ENDPOINT_PLAYER_STATUS_UPDATE = "/app/lobby/";
 
     CompletableFuture<String> completableFuture;
@@ -155,7 +159,7 @@ class WebSocketTest {
     }
 
     @Test
-    void whenSendStatusThenSendLobbyUpdate() throws Exception {
+    void whenSendStatusUpdateThenSendLobbyUpdate() throws Exception {
         // Arrange
         UUID lobbyId = lobbyHelper.createLobby();
         String playerId = lobbyHelper.getLobby(
@@ -174,9 +178,9 @@ class WebSocketTest {
 
         Thread.sleep(2000);
 
-        // Act
         completableFuture = new CompletableFuture<>();
 
+        // Act
         stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status",
                 json.getBytes());
 
@@ -186,6 +190,38 @@ class WebSocketTest {
         assertNotNull(lobby);
         assertTrue(lobby.contains(lobbyId.toString()));
         assertTrue(lobby.contains(playerId + "\",\"status\":\"ready"));
+    }
+
+    @Test
+    void whenLastPlayerDisconnectThenSendDeleteLobby() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createLobby();
+        String playerId = lobbyHelper.getLobby(
+                lobbyId).getPlayers().get(0).getUserId().toString();
+        jwtToken = authHelper.generateToken(playerId);
+
+        JSONObject jdisconnectRequest = new JSONObject();
+        jdisconnectRequest.put("lobbyId", lobbyId.toString());
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_DELETE_LOBBY_ENDPOINT,
+                new PublishLobbyStompFrameHandler());
+
+        completableFuture = new CompletableFuture<>();
+
+        // Act
+        this.mvc.perform(post("/v1/disconnect")
+                .header("Authorization", jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jdisconnectRequest.toJSONString()))
+                .andReturn();
+
+        String result = completableFuture.get(500, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals("\"" + lobbyId.toString() + "\"", result);
     }
 
     @Test
@@ -230,9 +266,9 @@ class WebSocketTest {
 
         Thread.sleep(2000);
 
-        // Act
         completableFuture = new CompletableFuture<>();
 
+        // Act
         stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status",
                 json.getBytes());
 
