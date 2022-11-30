@@ -2,7 +2,7 @@
     <div class="container">
         <Headline class="headline" text="Spiel erstellen"></Headline>
         <div>
-            <form id="createGameForm" @submit.prevent="onSubmit">
+            <form id="createGameForm" @submit.prevent="createLobby">
                 <div class="formData">
                     <label for="gameName">Name des Spiels</label>
                     <input type="text" name="gameName" v-model="gameName">
@@ -52,34 +52,41 @@ export default
         Headline,
         Button
     }, 
+    data()
+    {
+        return{
+            gameName: "",
+            passwordProtected: false,
+            password: "",
+        }
+    },
     methods:
     {
-        async onSubmit()
+        async createLobby()
         {
-            this.$router.push("/gameLobby")
-            
-           /* await fetch("http://localhost:8080/api/auth/v1/register", {
+            await fetch("http://localhost:8080/api/lobby/v1/create", {
                 method: "POST",
                 headers: 
                 {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
                 },
                 body: JSON.stringify
                 ({
-                    name: this.accountName,
-                    password: this.password
+                    name: this.gameName,
                 })
             }).then(res => {
                     if(res.ok){
 
+                        alert("Spiel wurde erfolgreich erstellt!")
                         this.$router.push("/gameLobby")
 
                     }else{
                         
-                        console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden")
-                        this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden"
+                        console.log("Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden")
+                        this.errMsg = "Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden"
                     }
-                }) */
+                }) 
              
         },
     },
