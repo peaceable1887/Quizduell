@@ -1,5 +1,5 @@
 <template>
-    <HeaderProfil v-if="token" :text="`${token}`"></HeaderProfil>
+    <HeaderProfil v-if="token" :text="`${this.name}`"></HeaderProfil>
     <HeaderProfil v-if="!token" text="Nicht eingeloggt!"></HeaderProfil>
     <div class="container">
         <Headline class="headline" text="Quizduell"></Headline>
@@ -31,6 +31,8 @@ export default
     {
         return{
             token: null,
+            name: "",
+            eMail: "",
         }
     },
     components:
@@ -53,6 +55,23 @@ export default
         }).then(resp => {
             console.log("resp: " + JSON.stringify(resp.data))
             this.token = JSON.stringify(resp.data);
+
+        }).catch((err) => {
+            console.log("Nicht erfolgreich")
+            console.log(err)
+        })
+        await axios.get("http://localhost:8080/api/auth/v1/details",
+        {
+            headers:
+            {
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        }).then(resp => {
+    
+            let removeChars = JSON.stringify(resp.data.name);
+            removeChars = removeChars.split('"').join('');      
+            this.name = removeChars;
+            localStorage.setItem("userName", this.name);
 
         }).catch((err) => {
             console.log("Nicht erfolgreich")

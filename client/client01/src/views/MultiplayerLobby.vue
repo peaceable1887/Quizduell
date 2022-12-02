@@ -3,7 +3,12 @@
     <Headline class="headline" text="Mehrspieler"></Headline>   
     <div class="containerLobby">
         <div class="activLobbyWrapper" v-for="lobby in lobbies" :key="lobby">
-            <JoinCreatedGame :lobbyName="`${lobby.name}`" :playerName="`${lobby.players[0].userId}`"></JoinCreatedGame>
+            <JoinCreatedGame 
+                :lobbyName="`${lobby.name}`" 
+                :playerName="`${lobby.players[0].userId}`" 
+                :lobbyId="`${lobby.id}`"
+                @connect-lobby="connectLobby(lobby.id)">  
+            </JoinCreatedGame>
         </div>
         <div class="btnWrapper">
             <router-link to="/main">
@@ -17,7 +22,6 @@
 </template>
 
 <script>
-
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import Header from "../components/Header.vue";
@@ -40,6 +44,7 @@ export default
         return{
             connection: null,
             lobbies: [],
+            lobbyId: "",
             gameName: "",
             userName: "",
         }
@@ -47,9 +52,7 @@ export default
     created()
     {
         const token = "Bearer " + localStorage.getItem("token");
-        console.log(token);
-        let sub_first_msg_new_lobby = true;
-      
+
         this.connection = new SockJS("http://localhost:8080/lobby-websocket");
         const stompClient = Stomp.over(this.connection);
 
@@ -61,56 +64,53 @@ export default
                 stompClient.subscribe("/topic/new-lobby", 
                     (message) =>
                     {
-                        console.log("new lobby");
                         let json = JSON.parse(message.body);
                         this.lobbies = json;
-                        showLobbies(json); 
                     }
                 );
-
-                /*stompClient.subscribe("/topic/test", 
-                    function (message) 
+                stompClient.subscribe("/topic/lobby/delete-lobby", 
+                    (message) =>
                     {
-                        console.log("topic/test");
-                        showLobbies(message.body);
+                        console.log("deleted lobbies");
+                        let json = JSON.parse(message.body);
+                        console.log("gelöschte lobbies:" + JSON.stringify(json))
                     }
-                );*/
-
-                //stompClient.send("/app/test", {}, "test");
+                );
             }
         );
         
-        function showLobbies(lobbyJson)
-        {
-            if (sub_first_msg_new_lobby) 
-            {
-                sub_first_msg_new_lobby = false;
-                
-                for (let i = 0; i < lobbyJson.length; i++) 
-                {
-                    console.log(lobbyJson[i]);
-                }
-
-            }else
-            {
-                console.log("---- NEW LOBBY ----");
-                console.log(lobbyJson);
-            }
-        }
-
-    },
-    async mounted()
-    {
-
     },
     methods:
-    {
-        /*sendMessage(message)
+    { 
+        async connectLobby(lobbyId)
         {
-            console.log("message")
-            console.log(this.connection)          
-            this.connection.send(message)
-        }*/
+            console.log(lobbyId)
+
+            fetch("http://localhost:8080/api/lobby/v1/connect",
+            {
+                method: "POST",
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify(
+                {
+                    lobbyId: lobbyId,
+                })
+            })
+            .then(res => 
+                {
+                    if(res.ok)
+                    {
+                        console.log("Erfolgreich mit der Lobby verbunden!")
+                    }else{
+                        console.log("Fehler beim verbinden mit der Lobby!")
+                    }
+                })
+            .then(data => console.log(data))
+            .catch(error => console.log("ERROR"))       
+        },
     }
 
 }

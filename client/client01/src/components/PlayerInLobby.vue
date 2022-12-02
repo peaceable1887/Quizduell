@@ -2,9 +2,8 @@
     <div class="container">
         <span class="playerName">Spieler: {{playerName}}</span>
         <div class="playerCheck">
-            <label for="playerCheck">Nicht bereit {{isReady}}</label> 
             <div class="checkboxContainer">
-                <input type="checkbox" name="playerCheck" v-model="playerCheck">
+                <button @click="$emit('toggleBtn')">{{btnText}}</button>
             </div>
         </div>
     </div>
@@ -12,15 +11,15 @@
 
 <script>
 
-
 export default 
 {
-    name: "PlayerLobby",
+    name: "PlayerInLobby",
     props:
     {
         playerName: String,
-        isReady: false,
-    }
+        status: String,
+        btnText: String,
+    },
 }
 </script>
 
@@ -46,5 +45,9 @@ export default
     width: 150px;
     justify-content: space-between;
     align-items: center;
+}
+.checkboxContainer
+{
+
 }
 </style>

@@ -1,17 +1,21 @@
 <template>
     <Header></Header>
     <div class="containerGame">
-        <Headline class="headline" text="Spiel 1"></Headline>
+        <Headline class="headline" :text="`${lobby.name}`"></Headline>
         <div class="gameInfos">
             <span>Anzahl der Runden: 4</span>
-            <span>erstellt von: Felix</span>
+            <span>erstellt von: {{lobby.players[0].userId}}</span>
         </div>
-        <div class="playerContainer">
-            <PlayerLobby playerName="Felix"></PlayerLobby>
+        <div class="playerContainer" v-for="player in players" :key="player">
+            <PlayerInLobby 
+                :playerName="`${player.userId}`" 
+                @toggleBtn="toggle()"
+                :btnText="`${playerStatus ? 'Bereit' : 'Nicht bereit'}`">
+            </PlayerInLobby>
         </div>
         <div class="btnWrapper">
             <router-link to="/lobby">
-                <Button text="Verlassen"></Button>
+                <Button @click="deleteLobby(this.urlId)" text="Verlassen"></Button>
             </router-link>
             <Button type="submit" text="Spiel starten"></Button>                 
         </div>
@@ -19,9 +23,11 @@
 </template>
 
 <script>
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 import Header from "../components/Header.vue";
 import Headline from "../components/Headline.vue";
-import PlayerLobby from "../components/PlayerLobby";
+import PlayerInLobby from "../components/PlayerInLobby";
 import Button from "../components/Button.vue"
 
 export default 
@@ -31,9 +37,99 @@ export default
     {
         Header,
         Headline,
-        PlayerLobby,
+        PlayerInLobby,
         Button,
+    },
+    data()
+    {
+        return{
+            connection: null,
+            lobby: [],
+            urlId: "",
+            players:[],
+            playerStatus: false,
+            token: "",
+        }
+    },
+    created()
+    {
+        const url = window.location.href;
+        const lastSegment = url.split("/").pop();
+        this.urlId = lastSegment;
+        
+        const token = "Bearer " + localStorage.getItem("token");
+    
+        this.connection = new SockJS("http://localhost:8080/lobby-websocket");
+        const stompClient = Stomp.over(this.connection);
+
+        stompClient.connect({ Authorization: token }, 
+            (frame) =>
+            {
+                console.log("Connected: " + frame);
+                
+                stompClient.subscribe("/topic/lobby/" + this.urlId, 
+                    (message) =>
+                    {
+                        console.log("new lobby");
+                        let json = JSON.parse(message.body);
+                        this.lobby = json;
+                        this.players = this.lobby.players;
+
+                        console.log("hier:" + JSON.stringify(this.lobby.players[0].userId))
+
+                    }
+                );
+                stompClient.subscribe("/topic/lobby/" + this.urlId + "/status", 
+                    (message) =>
+                    {
+                        console.log("change status");
+                        let json = JSON.parse(message.body);
+                        console.log(JSON.stringify(json))
+                    }
+                );
+            }
+        );
+        
+        
+
+    },
+    methods:
+    {
+        async deleteLobby(lobbyId)
+        {
+            fetch("http://localhost:8080/api/lobby/v1/disconnect",
+            {
+                method: "POST",
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify(
+                {
+                    lobbyId: lobbyId,
+                })
+            })
+            .then(res => 
+                {
+                    if(res.ok)
+                    {
+                        console.log("Lobby wurde gelöscht!")
+                    }else{
+                        console.log("Fehler beim löschen der Lobby!")
+                    }
+                })
+            .then(data => console.log(data))
+            .catch(error => console.log("ERROR"))       
+        },
+
+        toggle() 
+        {
+            this.playerStatus = this.playerStatus ? false : true;
+        },
+
     }
+
 }
 </script>
 

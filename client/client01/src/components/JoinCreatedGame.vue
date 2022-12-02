@@ -4,9 +4,9 @@
         <div class="gameInfos">
             <span><b>Anzahl der Runden:</b> {{roundQuantity}}</span>
             <span><b>erstellt von:</b> {{playerName}}</span>
-            <form>
-                <Button text="beitreten"></Button>
-            </form>
+            <router-link :to="'/gameLobby/' + lobbyId">
+                <Button text="beitreten" @click="$emit('connect-lobby')"></Button>
+            </router-link>
         </div>
     </div>
 </template>
@@ -26,7 +26,8 @@ export default
         lobbyName: String,
         roundQuantity: String,
         playerName: String,
-    }
+        lobbyId: String,
+    },
 }
 </script>
 

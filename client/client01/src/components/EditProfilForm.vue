@@ -59,6 +59,25 @@
                 errMsg: "",
             }
         },
+        async created()
+        {
+            
+            await fetch("http://localhost:8080/api/auth/v1/details", {
+                method: "GET",
+                headers: 
+                {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+            .then(res => res.json())
+            .then(data => 
+            {
+                this.accountName = data.name;
+                this.eMail = data.mail;
+            })
+            
+        }
         
     }
 </script>

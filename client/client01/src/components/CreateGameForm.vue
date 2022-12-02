@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Headline from "./Headline.vue"
 import Button from "./Button.vue"
 
@@ -79,14 +78,16 @@ export default
                     if(res.ok){
 
                         alert("Spiel wurde erfolgreich erstellt!")
-                        this.$router.push("/gameLobby")
-
+                        return res.json()
                     }else{
                         
                         console.log("Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden")
                         this.errMsg = "Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden"
                     }
-                }) 
+                }).then(data => {
+                    console.log(data.id)
+                    this.$router.push("/gameLobby/"+ data.id)
+                })
              
         },
     },
