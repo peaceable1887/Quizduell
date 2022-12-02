@@ -23,17 +23,14 @@
     justify-content: center;
     background-color: #184e98;
     height: 50px;
-    box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
-    -webkit-box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
-    -moz-box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
 }
 .headline
 {
     display: flex;
     align-items: center;
     padding: 0 40px 0 40px;    
-    background-color: white;
-    color: #184e98;
+    color: white;
+    background-color: #184e98;
     font-size: 30px;
     font-weight: bold;
 }
