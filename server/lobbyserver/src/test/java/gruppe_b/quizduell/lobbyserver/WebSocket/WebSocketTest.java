@@ -269,7 +269,7 @@ class WebSocketTest {
         completableFuture = new CompletableFuture<>();
 
         // Act
-        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status",
+        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
                 json.getBytes());
 
         String lobby = completableFuture.get(5, TimeUnit.SECONDS);
