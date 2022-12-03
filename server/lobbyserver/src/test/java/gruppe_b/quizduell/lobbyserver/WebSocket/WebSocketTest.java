@@ -29,13 +29,16 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
 
+import gruppe_b.quizduell.enums.LobbyStatus;
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
+import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.lobbyserver.common.PlayerStatusDto;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,6 +66,7 @@ class WebSocketTest {
     static final String SUBSCRIBE_NEW_LOBBY_ENDPOINT = "/topic/new-lobby";
     static final String SUBSCRIBE_LOBBY_UPDATE_ENDPOINT = "/topic/lobby/";
     static final String SUBSCRIBE_DELETE_LOBBY_ENDPOINT = "/topic/lobby/delete-lobby";
+    static final String SUBSCRIBE_LOBBY_START = "/topic/lobby/";
     static final String SEND_ENDPOINT_PLAYER_STATUS_UPDATE = "/app/lobby/";
 
     CompletableFuture<String> completableFuture;
@@ -222,6 +226,130 @@ class WebSocketTest {
         // Assert
         assertNotNull(result);
         assertEquals("\"" + lobbyId.toString() + "\"", result);
+    }
+
+    @Test
+    void whenAllPlayerReadyThenStartCountdown() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createFullLobby();
+        lobbyHelper.getLobby(lobbyId).getPlayers().get(1).setReady();
+        String playerId = lobbyHelper.getLobby(
+                lobbyId).getPlayers().get(0).getUserId().toString();
+        jwtToken = authHelper.generateToken(playerId);
+
+        PlayerStatusDto dto = new PlayerStatusDto();
+        dto.status = "ready";
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(dto);
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_LOBBY_START + lobbyId.toString() + "/start-lobby",
+                new PublishLobbyStompFrameHandler());
+
+        completableFuture = new CompletableFuture<>();
+
+        // Act
+        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
+                json.getBytes());
+
+        String status;
+        LobbyStartDto lobbyStartDto;
+
+        // Countdown 3
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+        assertEquals(3, lobbyStartDto.countdown);
+        assertEquals("start", lobbyStartDto.status);
+        assertNull(lobbyStartDto.gameToken);
+
+        // Countdown 2
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+        assertEquals(2, lobbyStartDto.countdown);
+        assertEquals("start", lobbyStartDto.status);
+        assertNull(lobbyStartDto.gameToken);
+
+        // Countdown 1
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+        assertEquals(1, lobbyStartDto.countdown);
+        assertEquals("start", lobbyStartDto.status);
+        assertNull(lobbyStartDto.gameToken);
+
+        // Start
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+
+        // Assert
+        assertNotNull(lobbyStartDto);
+        assertEquals(0, lobbyStartDto.countdown);
+        assertEquals("start", lobbyStartDto.status);
+        assertNotNull(lobbyStartDto.gameToken);
+    }
+
+    @Test
+    void whenCountdownIsRunningAndPlayerSendStatusWaitThenAbortCountdown() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createFullLobby();
+        lobbyHelper.getLobby(lobbyId).getPlayers().get(1).setReady();
+        String playerId = lobbyHelper.getLobby(
+                lobbyId).getPlayers().get(0).getUserId().toString();
+        jwtToken = authHelper.generateToken(playerId);
+
+        PlayerStatusDto dto = new PlayerStatusDto();
+        dto.status = "ready";
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(dto);
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_LOBBY_START + lobbyId.toString() + "/start-lobby",
+                new PublishLobbyStompFrameHandler());
+
+        completableFuture = new CompletableFuture<>();
+
+        // Act
+        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
+                json.getBytes());
+
+        String status;
+        LobbyStartDto lobbyStartDto;
+
+        // Countdown 3
+        status = completableFuture.get(500, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+        assertEquals(3, lobbyStartDto.countdown);
+        assertEquals("start", lobbyStartDto.status);
+        assertNull(lobbyStartDto.gameToken);
+
+        // Abort
+        dto.status = "wait";
+        json = objectMapper.writeValueAsString(dto);
+        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
+                json.getBytes());
+
+        int counter = 0;
+        while (true) {
+            status = completableFuture.get(500, TimeUnit.SECONDS);
+            completableFuture = new CompletableFuture<>();
+            lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+            if (lobbyStartDto.status.equals("abort")) {
+                break;
+            }
+            counter++;
+            assertTrue(counter < 10);
+        }
+
+        // Assert
+        assertNotNull(lobbyStartDto);
+        assertEquals("abort", lobbyStartDto.status);
+        assertNull(lobbyStartDto.gameToken);
     }
 
     @Test

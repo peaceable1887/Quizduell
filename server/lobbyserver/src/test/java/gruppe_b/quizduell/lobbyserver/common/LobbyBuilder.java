@@ -25,11 +25,11 @@ public class LobbyBuilder {
         return this;
     }
 
-    public LobbyBuilder addPlayer() {
+    public LobbyBuilder addPlayer() throws Exception {
         return addPlayer(UUID.randomUUID());
     }
 
-    public LobbyBuilder addPlayer(UUID playerId) {
+    public LobbyBuilder addPlayer(UUID playerId) throws Exception {
         lobby.addPlayer(new Player(playerId));
         return this;
     }

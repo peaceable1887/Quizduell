@@ -18,6 +18,7 @@ import gruppe_b.quizduell.lobbyserver.common.CreateRequest;
 import gruppe_b.quizduell.lobbyserver.common.DisconnectRequest;
 import gruppe_b.quizduell.lobbyserver.common.LobbyRequest;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
+import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
@@ -60,12 +61,14 @@ public class LobbyController {
      */
     @PostMapping("/connect")
     public ResponseEntity<Lobby> connect(Principal principal, @RequestBody ConnectRequest request)
-            throws LobbyFullException {
+            throws LobbyFullException, LobbyStatusException {
         Lobby lobby = null;
         try {
             lobby = lobbyService.connectToLobby(
                     UUID.fromString(principal.getName()), request.lobbyId);
         } catch (LobbyFullException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (LobbyStatusException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 

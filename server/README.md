@@ -298,7 +298,7 @@ Beispiel:
 
 - Endpunkt zum Senden für Status-Update des Spielers
 
-      /topic/lobby/<lobby-UUID>/status-player
+      /app/lobby/<lobby-UUID>/status-player
 
   - Message
 
@@ -308,6 +308,30 @@ Beispiel:
 
         {
           "status": "wait"
+        }
+
+- Endpunkt zum Abonnieren, der über Start, Countdown und Abbruch informiert
+
+      /topic/lobby/<lobby-UUID>/status-lobby
+
+  - Message
+
+        {
+          "status": "start",
+          "countdown": "3",
+          "token": ""
+        }
+
+        {
+          "status": "start",
+          "countdown": "0",
+          "token": "<JWT>"
+        }
+
+        {
+          "status": "abort",
+          "countdown": "3",
+          "token": ""
         }
 
 - Endpunkt zum Abonnieren für Lobbies die gelöscht werden

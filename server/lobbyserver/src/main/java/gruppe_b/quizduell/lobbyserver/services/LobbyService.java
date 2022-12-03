@@ -1,17 +1,25 @@
 package gruppe_b.quizduell.lobbyserver.services;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.enums.LobbyStatus;
 import gruppe_b.quizduell.enums.PlayerStatus;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
+import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
 import gruppe_b.quizduell.lobbyserver.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
@@ -30,6 +38,9 @@ public class LobbyService {
 
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    JwtEncoder jwtEncoder;
 
     public LobbyService() {
         this.lobbyRepo = new ConcurrentHashMap<>();
@@ -58,7 +69,8 @@ public class LobbyService {
      * @param lobbyId  id der Lobby, die der Spieler beitreten möchte.
      * @return Lobby der beigetreten wurde.
      */
-    public Lobby connectToLobby(UUID playerId, UUID lobbyId) throws LobbyFullException {
+    public Lobby connectToLobby(UUID playerId, UUID lobbyId)
+            throws LobbyFullException, LobbyStatusException {
         Lobby lobby = this.lobbyRepo.get(lobbyId);
 
         if (MAX_PLAYER_COUNT <= lobby.playerCount()) {
@@ -82,8 +94,7 @@ public class LobbyService {
 
         // Lobby löschen, wenn letzter Spieler disconnected.
         if (lobby.getPlayers().isEmpty()) {
-            this.lobbyRepo.remove(lobby.getId());
-            simpMessagingTemplate.convertAndSend("/topic/lobby/delete-lobby", lobby.getId());
+            deleteLobby(lobby);
         }
 
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobby.getId().toString(), lobby);
@@ -125,6 +136,50 @@ public class LobbyService {
             throw new UnknownPlayerStatusException(status.toString());
         }
 
+        // Alle Spieler ready?
+        if (lobby.allPlayersReady()) {
+            // Spieler sind ready. Start countdown.
+            startLobbyCountdown(lobby);
+        }
+
         return lobby;
+    }
+
+    private void deleteLobby(Lobby lobby) {
+        this.lobbyRepo.remove(lobby.getId());
+        simpMessagingTemplate.convertAndSend(
+                "/topic/lobby/delete-lobby", lobby.getId());
+    }
+
+    private void startLobbyCountdown(Lobby lobby) {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new LobbyStartCountDown(
+                lobby,
+                simpMessagingTemplate,
+                this), 1_000, 1_000);
+    }
+
+    public String startGame(Lobby lobby) {
+        lobby.setLobbyStarted();
+        deleteLobby(lobby);
+        return createGameToken(lobby);
+    }
+
+    /**
+     * Erzeugt ein JWT über den die Spieler eine Game-Session auf dem Quiz-Server
+     * erstellen können
+     * 
+     * @param lobby Lobby für die ein Token erstellt werden soll.
+     * @return JWT
+     */
+    private String createGameToken(Lobby lobby) {
+        Instant now = Instant.now();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("quizduell_lobbyserver")
+                .issuedAt(now)
+                .expiresAt(now.plus(5, ChronoUnit.MINUTES))
+                .subject(lobby.getId().toString())
+                .build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 }
