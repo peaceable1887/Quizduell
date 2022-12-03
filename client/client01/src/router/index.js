@@ -52,7 +52,7 @@ const routes = [
     component: CreateGame,
   },
   {
-    path: '/gameLobby',
+    path: '/gameLobby/:id',
     name: 'GameLobby',
     component: GameLobby,
   },

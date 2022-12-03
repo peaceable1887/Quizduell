@@ -48,7 +48,6 @@ export default
     {
         async onSubmit()
         {
-            
                 await axios.get("http://localhost:8080/api/auth/v1/token",
                 {
                     auth:

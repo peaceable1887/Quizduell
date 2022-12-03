@@ -1,10 +1,9 @@
 <template>
     <div class="container">
-        <span class="playerName">Spieler: {{playerName}}</span>
+        <span class="playerName"><b>Spieler:</b> {{playerName}}</span>
         <div class="playerCheck">
-            <label for="playerCheck">Nicht bereit {{isReady}}</label> 
             <div class="checkboxContainer">
-                <input type="checkbox" name="playerCheck" v-model="playerCheck">
+                <button @click="$emit('toggleBtn')">{{btnText}}</button>
             </div>
         </div>
     </div>
@@ -12,15 +11,15 @@
 
 <script>
 
-
 export default 
 {
-    name: "PlayerLobby",
+    name: "PlayerInLobby",
     props:
     {
         playerName: String,
-        isReady: false,
-    }
+        status: String,
+        btnText: String,
+    },
 }
 </script>
 
@@ -32,13 +31,20 @@ export default
     justify-content: space-between;
     padding: 2% 1% 2% 1%;
     margin-bottom: 30px;
-    border: 1px solid #184e98;
+    border-radius: 5px;
+    border: 1px rgb(168, 168, 168) solid;
+    box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
+    -webkit-box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
+    -moz-box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
 }
 .playerName
 {
+    font-size: 20px;
+}
+.playerName b
+{
     color: #184e98;
     font-size: 20px;
-    font-weight: bold;
 }
 .playerCheck
 {
@@ -46,5 +52,9 @@ export default
     width: 150px;
     justify-content: space-between;
     align-items: center;
+}
+.checkboxContainer
+{
+
 }
 </style>

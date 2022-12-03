@@ -2,7 +2,7 @@
     <div class="container">
         <div class="profil">
             <div class="profilInfo">
-                <span>{{text}}</span>
+                <span>Hallo, {{text}}</span>
                 <div class="links">
                     <a href="/editProfil">Profil</a>
                     &nbsp;|&nbsp;

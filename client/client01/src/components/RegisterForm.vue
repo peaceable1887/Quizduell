@@ -84,6 +84,7 @@ export default
                     body: JSON.stringify
                     ({
                         name: this.accountName,
+                        mail: this.eMail,
                         password: this.password
                     })
                 }).then(res => {
