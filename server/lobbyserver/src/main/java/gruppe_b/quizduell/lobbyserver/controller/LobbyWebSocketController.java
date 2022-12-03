@@ -73,7 +73,7 @@ public class LobbyWebSocketController {
      *                                      unbekannt/ nicht erlaubt
      * @throws AttributeNullException       fehlendes Attribut im 'status' Objekt
      */
-    @MessageMapping("/lobby/{lobbyId}/status")
+    @MessageMapping("/lobby/{lobbyId}/status-player")
     @SendTo("/topic/lobby/{lobbyId}")
     public Lobby playerStatus(@DestinationVariable String lobbyId, PlayerStatusDto status,
             Principal principal)
