@@ -296,6 +296,20 @@ Beispiel:
             ]
         }
 
+- Endpunkt zum Senden für Status-Update des Spielers
+
+      /topic/lobby/<lobby-UUID>/status-player
+
+  - Message
+
+        {
+          "status": "ready"
+        }
+
+        {
+          "status": "wait"
+        }
+
 - Endpunkt zum Abonnieren für Lobbies die gelöscht werden
 
       /topic/lobby/delete-lobby
