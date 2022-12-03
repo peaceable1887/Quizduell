@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.enums.PlayerStatus;
+import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
@@ -21,6 +22,8 @@ import gruppe_b.quizduell.lobbyserver.models.Lobby;
  */
 @Service
 public class LobbyService {
+
+    static final int MAX_PLAYER_COUNT = 2;
 
     // Thread-Safe HashMap
     private final ConcurrentHashMap<UUID, Lobby> lobbyRepo;
@@ -55,8 +58,13 @@ public class LobbyService {
      * @param lobbyId  id der Lobby, die der Spieler beitreten möchte.
      * @return Lobby der beigetreten wurde.
      */
-    public Lobby connectToLobby(UUID playerId, UUID lobbyId) {
+    public Lobby connectToLobby(UUID playerId, UUID lobbyId) throws LobbyFullException {
         Lobby lobby = this.lobbyRepo.get(lobbyId);
+
+        if (MAX_PLAYER_COUNT <= lobby.playerCount()) {
+            throw new LobbyFullException("Lobby full. Max player count: " + MAX_PLAYER_COUNT);
+        }
+
         lobby.addPlayer(new Player(playerId));
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobby.getId().toString(), lobby);
         return lobby;

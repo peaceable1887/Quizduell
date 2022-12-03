@@ -47,4 +47,13 @@ public class Lobby {
     public void removePlayer(UUID playerId) {
         playerList.removeIf(p -> p.getUserId().equals(playerId));
     }
+
+    /**
+     * Gibt die Anzahl der Spieler zurück in der Lobby.
+     * 
+     * @return Anzahl Spieler
+     */
+    public int playerCount() {
+        return playerList.size();
+    }
 }

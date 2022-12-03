@@ -206,6 +206,29 @@ class LobbyControllerTests {
 
     @Test
     @WithMockUser
+    void whenConnectAndMaxPlayerCountReachedThenThrowException() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createFullLobby();
+
+        JSONObject jconnectRequest = new JSONObject();
+        jconnectRequest.put("lobbyId", lobbyId.toString());
+        String jwtToken = authHelper.generateToken();
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jconnectRequest.toJSONString()))
+                .andReturn();
+
+        // Assert
+        assertEquals(400, result.getResponse().getStatus());
+        assertEquals("Lobby full. Max player count: 2",
+                result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @WithMockUser
     void multithreadTest() throws Exception {
         // Arrange
         int threadCount = 10;

@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
@@ -20,6 +21,13 @@ public class LobbyHelper {
 
     public UUID createLobby() {
         return lobbyService.createLobby(UUID.randomUUID(), "test").getId();
+    }
+
+    public UUID createFullLobby() {
+        Lobby lobby = lobbyService.createLobby(UUID.randomUUID(), "test");
+        lobby.addPlayer(new Player(UUID.randomUUID()));
+        lobby.addPlayer(new Player(UUID.randomUUID()));
+        return lobby.getId();
     }
 
     public Lobby getLobby(UUID lobbyId) {
