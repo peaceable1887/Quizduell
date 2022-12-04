@@ -10,10 +10,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 
 @SpringBootTest()
 public class LobbyServiceTests {
+
+    @Autowired
+    LobbyHelper lobbyHelper;
 
     @Test
     void multithreadTest() throws Exception {
@@ -24,7 +30,7 @@ public class LobbyServiceTests {
         ExecutorService executor = Executors.newFixedThreadPool(100);
         Collection<Callable<Void>> tasks = new ArrayList<>();
 
-        LobbyService lobbyService = new LobbyService();
+        LobbyService lobbyService = lobbyHelper.getLobbyService();
 
         // Act
         for (int i = 0; i < threadCount; i++) {
