@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.enums;
+package gruppe_b.quizduell.lobbyserver.enums;
 
 public enum LobbyStatus {
     WAIT, STARTED

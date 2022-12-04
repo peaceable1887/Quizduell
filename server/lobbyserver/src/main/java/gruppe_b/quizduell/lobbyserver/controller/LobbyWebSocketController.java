@@ -15,9 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import gruppe_b.quizduell.common.models.Player;
-import gruppe_b.quizduell.enums.PlayerStatus;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.lobbyserver.common.PlayerStatusDto;
+import gruppe_b.quizduell.lobbyserver.enums.PlayerStatus;
 import gruppe_b.quizduell.lobbyserver.exceptions.AttributeNullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
