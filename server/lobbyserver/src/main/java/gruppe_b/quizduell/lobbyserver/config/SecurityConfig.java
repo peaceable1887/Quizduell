@@ -33,35 +33,35 @@ import gruppe_b.quizduell.common.config.RsaKeyProperties;
 @Order(1)
 public class SecurityConfig extends AbstractSecurityConfig {
 
-        private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
-        public SecurityConfig(RsaKeyProperties rsaKeys) {
-                super(rsaKeys);
-        }
+    public SecurityConfig(RsaKeyProperties rsaKeys) {
+        super(rsaKeys);
+    }
 
-        @Bean
-        JwtEncoder jwtEncoder() {
-                JWK jwk = new RSAKey.Builder(getRsaKeys().publicKey()).privateKey(getRsaKeys().privateKey()).build();
-                JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-                return new NimbusJwtEncoder(jwks);
-        }
+    @Bean
+    JwtEncoder jwtEncoder() {
+        JWK jwk = new RSAKey.Builder(getRsaKeys().publicKey()).privateKey(getRsaKeys().privateKey()).build();
+        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwks);
+    }
 
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-                logger.info("--> SecurityFilterChain set");
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        logger.info("--> SecurityFilterChain set");
 
-                return http
-                                .csrf(csrf -> csrf.disable())
-                                .authorizeRequests(auth -> auth
-                                                .antMatchers("/lobby-websocket/info").permitAll())
-                                .authorizeRequests(auth -> auth
-                                                .antMatchers("/topic/*").permitAll())
-                                .authorizeRequests(auth -> auth
-                                                .antMatchers("/v1/*").authenticated())
-                                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
-                                .sessionManagement(session -> session
-                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                                .httpBasic(Customizer.withDefaults())
-                                .build();
-        }
+        return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeRequests(auth -> auth
+                        .antMatchers("/lobby-websocket/info").permitAll())
+                .authorizeRequests(auth -> auth
+                        .antMatchers("/topic/*").permitAll())
+                .authorizeRequests(auth -> auth
+                        .antMatchers("/v1/*").authenticated())
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .httpBasic(Customizer.withDefaults())
+                .build();
+    }
 }
