@@ -55,8 +55,6 @@ public class SecurityConfig extends AbstractSecurityConfig {
                 .authorizeRequests(auth -> auth
                         .antMatchers("/lobby-websocket/info").permitAll())
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/topic/*").permitAll())
-                .authorizeRequests(auth -> auth
                         .antMatchers("/v1/*").authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(session -> session
