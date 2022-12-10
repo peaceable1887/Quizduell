@@ -71,7 +71,7 @@ public class Lobby {
      */
     public boolean allPlayersReady() {
         for (Player player : playerList) {
-            // Hat der Spieler einen anderne Status als ready?
+            // Hat der Spieler einen anderen Status als ready?
             if (!player.getStatus().equals("ready")) {
                 // Spieler ist nicht ready!
                 return false;

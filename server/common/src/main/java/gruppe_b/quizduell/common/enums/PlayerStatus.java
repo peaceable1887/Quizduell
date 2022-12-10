@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.lobbyserver.enums;
+package gruppe_b.quizduell.common.enums;
 
 public enum PlayerStatus {
     READY, WAIT

@@ -11,10 +11,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jose.shaded.json.JSONObject;
 
+import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
+import gruppe_b.quizduell.quizserver.common.ConnectRequest;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
+import gruppe_b.quizduell.quizserver.common.QuizRequest;
 import gruppe_b.quizduell.quizserver.models.Quiz;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,30 +42,61 @@ public class QuizControllerTest {
 
     @Test
     @WithMockUser
-    void whenCreateThenCreateNewQuiz() throws Exception {
+    void whenFirstPlayerConnectThenCreateGameAndReturn() throws Exception {
         // Arrange
-        JSONObject jcreateRequest = new JSONObject();
-        jcreateRequest.put("lobbyId", UUID.randomUUID().toString());
+        Player player = quizHelper.createPlayer();
+        Lobby lobby = quizHelper.createLobby(player.getUserId());
+        String token = quizHelper.createToken(lobby);
 
-        String player1Id = UUID.randomUUID().toString();
-        String player2Id = UUID.randomUUID().toString();
+        ConnectRequest connectRequest = new ConnectRequest();
+        connectRequest.playerId = player.getUserId();
+        connectRequest.lobbyId = lobby.getId();
+        connectRequest.gameToken = token;
 
-        JSONArray jPlayerArray = new JSONArray();
-        jPlayerArray.add(player1Id);
-        jPlayerArray.add(player2Id);
-
-        jcreateRequest.put("playerIdList", jPlayerArray);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(connectRequest);
 
         // Act
-        MvcResult result = this.mvc.perform(post("/v1/create")
+        MvcResult result = this.mvc.perform(post("/v1/connect")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jcreateRequest.toJSONString()))
-                .andExpect(status().isCreated()).andReturn();
+                .content(json))
+                .andExpect(status().isOk()).andReturn();
 
         // Assert
         String content = result.getResponse().getContentAsString();
-        assertTrue(content.contains(player1Id));
-        assertTrue(content.contains(player2Id));
+        assertTrue(content.contains(player.getUserId().toString()));
+        assertTrue(content.contains(lobby.getId().toString()));
+    }
+
+    @Test
+    @WithMockUser
+    void whenSecondPlayerConnectedThenConnectToGameAndReturn() throws Exception {
+        // Arrange
+        Player player = quizHelper.createPlayer();
+        Player player2 = quizHelper.createPlayer();
+        Lobby lobby = quizHelper.createLobby(player.getUserId());
+        String token = quizHelper.createToken(lobby);
+        quizHelper.createQuiz(player, lobby, token);
+
+        ConnectRequest connectRequest = new ConnectRequest();
+        connectRequest.playerId = player2.getUserId();
+        connectRequest.lobbyId = lobby.getId();
+        connectRequest.gameToken = token;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(connectRequest);
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/connect")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert
+        String content = result.getResponse().getContentAsString();
+        assertTrue(content.contains(player.getUserId().toString()));
+        assertTrue(content.contains(player2.getUserId().toString()));
+        assertTrue(content.contains(lobby.getId().toString()));
     }
 
     @Test
@@ -68,14 +104,16 @@ public class QuizControllerTest {
     void whenGetThenReturnQuiz() throws Exception {
         // Arrange
         Quiz quiz = quizHelper.createQuiz();
+        QuizRequest quizRequest = new QuizRequest();
+        quizRequest.lobbyId = quiz.getLobbyId();
 
-        JSONObject jquizRequest = new JSONObject();
-        jquizRequest.put("quizId", quiz.getId().toString());
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(quizRequest);
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jquizRequest.toJSONString()))
+                .content(json))
                 .andExpect(status().isOk()).andReturn();
 
         // Assert

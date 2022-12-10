@@ -22,6 +22,7 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/quiz-websocket")
+                .setAllowedOriginPatterns("*")
                 .withSockJS();
 
         logger.info("--> Stomp Endpoints registered");
@@ -30,10 +31,10 @@ public class WebSocketBrokerConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // Prefix für die Endpunkte zum Senden an den Server.
-        registry.setApplicationDestinationPrefixes("/quiz");
+        registry.setApplicationDestinationPrefixes("/app", "/topic");
         logger.info("--> WebSocket prefixes set");
         // Prefix für die Endpunkte zum Abonnieren durch den Client.
-        registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/topic", "/queue");
         logger.info("--> Simple Broker enabled");
     }
 }

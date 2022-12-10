@@ -288,10 +288,12 @@ Beispiel:
             "name": "TestLobby",
             "players": [
                 {
-                    "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+                    "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b",
+                    "status": "ready"
                 },
                 {
-                    "userId": "1db739fe-6054-4567-b443-2e8e38822068"
+                    "userId": "1db739fe-6054-4567-b443-2e8e38822068",
+                    "status": "wait"
                 }
             ]
         }
@@ -346,10 +348,138 @@ Beispiel:
 
 ### Quiz
 
-- \<dummy>
+- Mit Quiz verbinden
+
   - Endpunkt
+
+        <host>:/api/quiz/v1/connect
+
   - request method
+    - POST
   - request header
+    - bearer token (JWT)
   - request body
+
+        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
+
   - response body
+
+        {
+            "id": "cb4aedc0-4a1c-44f0-a07c-d68d10151267",
+            "lobbyId": "cc884343-578b-4c95-9ef3-541d311c8682",
+            "players": [
+                {
+                    "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+                },
+                {
+                    "userId": "1db739fe-6054-4567-b443-2e8e38822068"
+                }
+            ]
+        }
+
   - response status
+
+        200 OK
+
+- Einzelnes Quiz holen
+
+  - Endpunkt
+
+          <host>:/api/quiz/v1/get
+
+  - request method
+    - GET
+  - request header
+    - bearer token (JWT)
+  - request body
+
+        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
+
+  - response body
+
+        {
+            "id": "cb4aedc0-4a1c-44f0-a07c-d68d10151267",
+            "lobbyId": "cc884343-578b-4c95-9ef3-541d311c8682",
+            "players": [
+                {
+                    "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+                },
+               {
+                    "userId": "1db739fe-6054-4567-b443-2e8e38822068"
+                }
+            ]
+        }
+
+  - response status
+
+        200 OK
+
+### Quiz STOMP Websockets
+
+#### Im Header wird der JWT zur Authentication benötigt.
+
+Beispiel:
+
+    { Authorization: "Bearer <token>" }
+
+#### Endpunkte
+
+- Endpunkt zum Verbinden
+
+      ws://<host>/quiz-websocket
+
+- Endpunkt zum Abonnieren für Änderungen an einem Quiz
+
+      /topic/lquiz/<lobby-UUID>
+
+  - Message
+
+        {
+            "id": "cb4aedc0-4a1c-44f0-a07c-d68d10151267",
+            "lobbyId": "cc884343-578b-4c95-9ef3-541d311c8682",
+            "players": [
+                {
+                    "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b",
+                    "status": "ready"
+                },
+                {
+                    "userId": "1db739fe-6054-4567-b443-2e8e38822068",
+                    "status": "wait"
+                }
+            ]
+        }
+
+- Endpunkt zum Senden für Status-Update des Spielers
+
+      /app/quiz/<lobby-UUID>/status-player
+
+  - Message
+
+        {
+          "status": "ready"
+        }
+
+        {
+          "status": "wait"
+        }
+
+- Endpunkt zum Abonnieren, der über Start, Countdown und Abbruch informiert
+
+      /topic/lobby/<lobby-UUID>/status-quiz
+
+  - Message
+
+        {
+          "status": "start",
+          "countdown": "3",
+        }
+
+        {
+          "status": "start",
+          "countdown": "0",
+        }
+
+        {
+          "status": "abort",
+          "countdown": "3",
+        }

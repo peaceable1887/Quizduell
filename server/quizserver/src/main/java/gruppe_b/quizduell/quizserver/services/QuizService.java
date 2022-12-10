@@ -1,44 +1,148 @@
 package gruppe_b.quizduell.quizserver.services;
 
-import java.util.HashMap;
-import java.util.List;
+import java.net.URL;
+import java.time.Instant;
+import java.util.Timer;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.common.enums.PlayerStatus;
+import gruppe_b.quizduell.common.exceptions.JwtIsExpiredException;
+import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
+import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.quizserver.exceptions.JwtNotIssuedByLobbyServerException;
+import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
+import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
 import gruppe_b.quizduell.quizserver.models.Quiz;
 
 /**
  * Service zum Managen von Quiz-Games.
+ * 
+ * TODO: QuizService und LobbyService teilen sich viel Code, den man generisch
+ * umbauen kann...
  * 
  * @author Christopher Burmeister
  */
 @Service
 public class QuizService {
 
-    private final HashMap<UUID, Quiz> quizRepo;
+    private final ConcurrentHashMap<UUID, Quiz> quizRepo;
+
+    private final ConcurrentHashMap<UUID, Player> playerRepo;
 
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
 
+    @Autowired
+    JwtDecoder jwtDecoder;
+
     public QuizService() {
-        this.quizRepo = new HashMap<>();
+        this.quizRepo = new ConcurrentHashMap<>();
+        this.playerRepo = new ConcurrentHashMap<>();
     }
 
-    public Quiz createQuiz(UUID lobbyId, List<UUID> playerIdList) {
-        Quiz newQuiz = new Quiz(lobbyId);
+    /**
+     * Spieler mit einem Spiel verbinden.
+     * Existiert das Spiel noch nicht, wird es erstellt und der Spieler verbunden.
+     * 
+     * @param lobbyId  id der Lobby, aus der das Spiel gestartet wird.
+     * @param playerId id des Spieler, der sich verbinden möchte.
+     * @param token    JWT zum Nachweis, dass das Spiel über eine Lobby erstellt
+     *                 wurde.
+     * @return das Spiel.
+     * @throws PlayerAlreadyConnectedException
+     * @throws PlayerAlreadyInOtherGameException
+     */
+    public Quiz connectToQuiz(UUID lobbyId, UUID playerId, String token)
+            throws PlayerAlreadyConnectedException,
+            PlayerAlreadyInOtherGameException,
+            JwtNotIssuedByLobbyServerException,
+            JwtIsExpiredException {
 
-        for (UUID playerId : playerIdList) {
-            newQuiz.addPlayer(playerId);
+        /* Prüfen ob der Token vom Lobby-Server erstellt wurde und gültig ist. */
+        Jwt jwt = jwtDecoder.decode(token);
+        if (jwt.getExpiresAt() == null) {
+            throw new JwtIsExpiredException("Missing expires at date!");
+            /*
+             * Der Token ist gültig bis 12:05 und es ist jetzt 12:02,
+             * dann muss geprüft werden, ob die Gültigkeit vor der
+             * aktuellen Zeit liegt. Ist es 12:06, ist der Token nicht
+             * mehr gültig.
+             */
+        } else if (jwt.getExpiresAt().isBefore(Instant.now())) {
+            throw new JwtIsExpiredException("Token is expired: " + jwt.getExpiresAt());
+        }
+        String issuer = jwt.getClaimAsString("iss");
+        if (!issuer.equals("quizduell_lobbyserver")) {
+            throw new JwtNotIssuedByLobbyServerException("Wrong JWT issuer! JWT issuer: " + jwt.getIssuer());
         }
 
-        quizRepo.put(newQuiz.getId(), newQuiz);
-        return newQuiz;
+        Quiz quiz;
+
+        // Gibt es das Spiel schon?
+        if (quizRepo.containsKey(lobbyId)) {
+            // Ja.
+            quiz = quizRepo.get(lobbyId);
+        } else {
+            // Nein. Spiel erstellen.
+            quiz = new Quiz(lobbyId);
+            quizRepo.put(lobbyId, quiz);
+        }
+
+        Player player = playerRepo.get(playerId);
+
+        // Ist der Spieler schon in dem Spiel oder einem anderen?
+        if (player != null && quiz.getPlayers().contains(player)) {
+            // Spieler ist bereits in dem Spiel.
+            throw new PlayerAlreadyConnectedException("Player already connected to the game!");
+        } else if (player != null) {
+            // Spieler ist in einem anderen Spiel.
+            throw new PlayerAlreadyInOtherGameException("Player already connected to other game!");
+        } else {
+            // Nein. Spieler dem Spiel hinzufügen.
+            Player newPlayer = quiz.addPlayer(playerId);
+            playerRepo.put(playerId, newPlayer);
+        }
+
+        return quiz;
     }
 
-    public Quiz getQuiz(UUID quizId) {
-        return quizRepo.get(quizId);
+    public Quiz getQuiz(UUID lobbyId) {
+        return quizRepo.get(lobbyId);
+    }
+
+    public Quiz updatePlayerStatus(UUID lobbyId, UUID playerId, PlayerStatus status)
+            throws UnknownPlayerStatusException {
+        Quiz quiz = getQuiz(lobbyId);
+        Player player = quiz.getPlayer(playerId);
+
+        if (status == PlayerStatus.READY) {
+            player.setReady();
+        } else if (status == PlayerStatus.WAIT) {
+            player.setWait();
+        } else {
+            throw new UnknownPlayerStatusException(status.toString());
+        }
+
+        // Alle Spieler ready?
+        if (quiz.allPlayersReady()) {
+            // Spieler sind ready. Start countdown.
+            startQuizCountdown(quiz);
+        }
+
+        return quiz;
+    }
+
+    private void startQuizCountdown(Quiz quiz) {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new QuizStartCountDown(
+                quiz,
+                simpMessagingTemplate), 1_000, 1_000);
     }
 }

@@ -20,6 +20,19 @@ services:
     expose:
       - "8080"
 
+  quizserver:
+    restart: always
+    build: ./quizserver
+    expose:
+      - "8080"
+    links:
+      - maria:maria
+    environment:
+      - DB_HOSTNAME=maria
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+
   nginx:
     restart: always
     build: ./nginx/
@@ -31,6 +44,7 @@ services:
     links:
       - authserver:authserver
       - lobbyserver:lobbyserver
+      - quizserver:quizserver
 
   maria:
     restart: always

@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.lobbyserver.exceptions;
+package gruppe_b.quizduell.common.exceptions;
 
 public class AttributeNullException extends Exception {
     public AttributeNullException(String msg) {

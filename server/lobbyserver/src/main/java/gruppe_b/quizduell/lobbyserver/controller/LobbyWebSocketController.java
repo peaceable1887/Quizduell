@@ -14,12 +14,11 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
-import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.common.dto.PlayerStatusDto;
+import gruppe_b.quizduell.common.enums.PlayerStatus;
+import gruppe_b.quizduell.common.exceptions.AttributeNullException;
+import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
-import gruppe_b.quizduell.lobbyserver.common.PlayerStatusDto;
-import gruppe_b.quizduell.lobbyserver.enums.PlayerStatus;
-import gruppe_b.quizduell.lobbyserver.exceptions.AttributeNullException;
-import gruppe_b.quizduell.lobbyserver.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
@@ -59,7 +58,7 @@ public class LobbyWebSocketController {
     }
 
     /**
-     * Endpunkt zum Updaten des Status eines User.
+     * Endpunkt zum Updaten des Status eines Users.
      * Wird ein Status-Update an den Endpunkt gesendet, wird der neue Status der
      * Lobby gesendet.
      * 

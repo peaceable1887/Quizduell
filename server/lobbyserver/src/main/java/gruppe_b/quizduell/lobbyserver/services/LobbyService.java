@@ -15,16 +15,18 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.common.enums.PlayerStatus;
+import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.common.models.Player;
-import gruppe_b.quizduell.lobbyserver.enums.LobbyStatus;
-import gruppe_b.quizduell.lobbyserver.enums.PlayerStatus;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
-import gruppe_b.quizduell.lobbyserver.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 /**
  * Service zum Managen von Lobbies.
+ * 
+ * TODO: QuizService und LobbyService teilen sich viel Code, den man generisch
+ * umbauen kann...
  * 
  * @author Christopher Burmeister
  */
@@ -49,7 +51,7 @@ public class LobbyService {
     /**
      * Neue Lobby erstellen.
      * 
-     * @param playerId erster Spieler, der die Lobby erstellt.
+     * @param playerId erster Spieler der die Lobby erstellt.
      * @param name     name der Lobby
      * @return erstellte Lobby
      */
@@ -172,7 +174,7 @@ public class LobbyService {
      * @param lobby Lobby für die ein Token erstellt werden soll.
      * @return JWT
      */
-    private String createGameToken(Lobby lobby) {
+    public String createGameToken(Lobby lobby) {
         Instant now = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("quizduell_lobbyserver")
