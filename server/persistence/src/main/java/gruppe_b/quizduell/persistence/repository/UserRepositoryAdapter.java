@@ -48,6 +48,26 @@ public class UserRepositoryAdapter implements UserRepository {
                 user.getSalt()));
     }
 
+    @Override
+    public User update(User user) {
+        Optional<DbUser> result = repo.findById(user.getId());
+
+        if (!result.isPresent()) {
+            return null;
+        }
+
+        DbUser dbEntity = result.get();
+
+        dbEntity.setName(user.getName());
+        dbEntity.setMail(user.getMail());
+        dbEntity.setPasswordHash(user.getPasswordHash());
+        dbEntity.setSalt(user.getSalt());
+
+        repo.save(dbEntity);
+
+        return dbEntity;
+    }
+
     public void deleteAll() {
         repo.deleteAll();
     }

@@ -1,6 +1,8 @@
 package gruppe_b.quizduell.persistence;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +30,7 @@ class UserRepositoryAdapterTest {
     }
 
     @Test
-    void createsNewUserOnSave() {
+    void whenSaveNewUserThenCreateAndReturnNewUser() {
         // Arrange
         User user = new User("test", "test", "test", "test");
 
@@ -36,17 +38,37 @@ class UserRepositoryAdapterTest {
         User result = repo.save(user);
 
         // Assert
-        assertThat(result).isNotNull();
+        assertNotNull(result);
+        assertNotNull(result);
+        assertEquals(user.getName(), result.getName());
+        assertEquals(user.getMail(), result.getMail());
+        assertEquals(user.getPasswordHash(), result.getPasswordHash());
+        assertEquals(user.getSalt(), result.getSalt());
     }
 
     @Test
-    void findsUser() {
+    void whenFindUserByNameThenReturnUser() {
         // Arrange
 
         // Act
         User result = repo.findByName(john.getName());
 
         // Assert
-        assertThat(result).isNotNull();
+        assertNotNull(result);
+        assertEquals(john.getId(), result.getId());
+        assertEquals(john.getName(), result.getName());
+    }
+
+    @Test
+    void whenFindUserByIdThenReturnUser() {
+        // Arrange
+
+        // Act
+        User result = repo.findByUUID(john.getId());
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(john.getId(), result.getId());
+        assertEquals(john.getName(), result.getName());
     }
 }
