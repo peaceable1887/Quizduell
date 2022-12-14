@@ -2,7 +2,7 @@ package gruppe_b.quizduell.lobbyserver.common;
 
 import java.util.UUID;
 
-import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 

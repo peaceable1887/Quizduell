@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.lobbyserver.enums.LobbyStatus;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
 

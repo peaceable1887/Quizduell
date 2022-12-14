@@ -15,9 +15,9 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
-import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;

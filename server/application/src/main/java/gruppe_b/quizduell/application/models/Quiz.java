@@ -1,11 +1,10 @@
-package gruppe_b.quizduell.quizserver.models;
+package gruppe_b.quizduell.application.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import gruppe_b.quizduell.common.models.Player;
-import gruppe_b.quizduell.quizserver.enums.QuizStatus;
+import gruppe_b.quizduell.application.enums.QuizStatus;
 
 public class Quiz {
 

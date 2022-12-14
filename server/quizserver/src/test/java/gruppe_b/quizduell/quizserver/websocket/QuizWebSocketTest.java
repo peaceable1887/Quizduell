@@ -29,13 +29,13 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import gruppe_b.quizduell.application.models.Player;
+import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.common.dto.PlayerStatusDto;
-import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.quizserver.common.AuthHelper;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
 import gruppe_b.quizduell.quizserver.common.QuizStartDto;
-import gruppe_b.quizduell.quizserver.models.Quiz;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;

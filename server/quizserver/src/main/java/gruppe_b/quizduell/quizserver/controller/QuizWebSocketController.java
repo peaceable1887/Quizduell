@@ -11,11 +11,11 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.common.dto.PlayerStatusDto;
 import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.AttributeNullException;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
-import gruppe_b.quizduell.quizserver.models.Quiz;
 import gruppe_b.quizduell.quizserver.services.QuizService;
 
 @Controller

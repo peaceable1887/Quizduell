@@ -1,6 +1,5 @@
 package gruppe_b.quizduell.quizserver.services;
 
-import java.net.URL;
 import java.time.Instant;
 import java.util.Timer;
 import java.util.UUID;
@@ -12,14 +11,16 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.application.game.QuizSession;
+import gruppe_b.quizduell.application.interfaces.StartQuiz;
+import gruppe_b.quizduell.application.models.Player;
+import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.JwtIsExpiredException;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
-import gruppe_b.quizduell.common.models.Player;
 import gruppe_b.quizduell.quizserver.exceptions.JwtNotIssuedByLobbyServerException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
-import gruppe_b.quizduell.quizserver.models.Quiz;
 
 /**
  * Service zum Managen von Quiz-Games.
@@ -30,11 +31,13 @@ import gruppe_b.quizduell.quizserver.models.Quiz;
  * @author Christopher Burmeister
  */
 @Service
-public class QuizService {
+public class QuizService implements StartQuiz {
 
     private final ConcurrentHashMap<UUID, Quiz> quizRepo;
 
     private final ConcurrentHashMap<UUID, Player> playerRepo;
+
+    private final ConcurrentHashMap<UUID, QuizSession> sessionRepo;
 
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
@@ -45,6 +48,7 @@ public class QuizService {
     public QuizService() {
         this.quizRepo = new ConcurrentHashMap<>();
         this.playerRepo = new ConcurrentHashMap<>();
+        this.sessionRepo = new ConcurrentHashMap<>();
     }
 
     /**
@@ -143,6 +147,13 @@ public class QuizService {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new QuizStartCountDown(
                 quiz,
-                simpMessagingTemplate), 1_000, 1_000);
+                simpMessagingTemplate,
+                this), 1_000, 1_000);
+    }
+
+    public void startQuiz(Quiz quiz) {
+        // QuizSession session = new QuizSession(quiz);
+        // sessionRepo.put(quiz.getLobbyId(), session);
+        // session.start();
     }
 }

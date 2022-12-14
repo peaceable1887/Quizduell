@@ -4,19 +4,23 @@ import java.util.TimerTask;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import gruppe_b.quizduell.application.interfaces.StartQuiz;
+import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.quizserver.common.QuizStartDto;
-import gruppe_b.quizduell.quizserver.models.Quiz;
 
 public class QuizStartCountDown extends TimerTask {
 
     private final Quiz quiz;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private int counter = 3;
+    private StartQuiz startQuizCallBack;
 
     public QuizStartCountDown(Quiz quiz,
-            SimpMessagingTemplate simpMessagingTemplate) {
+            SimpMessagingTemplate simpMessagingTemplate,
+            StartQuiz startQuiz) {
         this.quiz = quiz;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.startQuizCallBack = startQuiz;
     }
 
     @Override
@@ -33,6 +37,7 @@ public class QuizStartCountDown extends TimerTask {
             this.cancel();
             quiz.setQuizStarted();
             sendMessage(createDto("start", counter));
+            startQuizCallBack.startQuiz(quiz);
         }
 
         sendMessage(createDto("start", counter));

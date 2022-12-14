@@ -9,12 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import gruppe_b.quizduell.common.models.Player;
+import gruppe_b.quizduell.application.models.Player;
+import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
-import gruppe_b.quizduell.quizserver.models.Quiz;
 
 @SpringBootTest
 public class QuizServiceTests {
