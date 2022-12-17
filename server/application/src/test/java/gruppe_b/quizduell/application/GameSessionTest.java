@@ -2,6 +2,7 @@ package gruppe_b.quizduell.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Repeat;
 
 import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
@@ -27,6 +28,7 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
@@ -154,6 +156,7 @@ class GameSessionTest {
     }
 
     @Test
+    @RepeatedTest(10)
     void whenTwoPlayerSendAnswerThenSendTwoUpdates() throws Exception {
         // Arrange
         UUID playerId1 = quiz.getPlayers().get(0).getUserId();
@@ -167,7 +170,7 @@ class GameSessionTest {
 
         session.playerAnswer(playerId1, 1);
 
-        Thread.sleep(500);
+        Thread.sleep(1_000);
 
         session.playerAnswer(playerId2, 1);
 
@@ -251,8 +254,11 @@ class GameSessionTest {
         verify(sendToPlayerService, times(3)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 any(GameSessionDto.class));
 
-        verify(sendToPlayerService, times(2)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 argThat(getGameSessionArgumentMatcher(1)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundFinish(1)));
 
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 argThat(getGameSessionArgumentMatcher(2)));
@@ -304,7 +310,7 @@ class GameSessionTest {
     ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcherRoundFinish(int currentRound) {
         return x -> x.maxRounds == 6 &&
                 x.currentRound == currentRound &&
-                x.correctAnswer == 0 &&
+                x.correctAnswer != 0 &&
                 x.questionText.length() > 0 &&
                 x.answerOne.length() > 0 &&
                 x.answerTwo.length() > 0 &&
@@ -316,7 +322,7 @@ class GameSessionTest {
     ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcherRoundAndPlayerFinish(int currentRound) {
         return x -> x.maxRounds == 6 &&
                 x.currentRound == 1 &&
-                x.correctAnswer == 0 &&
+                x.correctAnswer != 0 &&
                 x.questionText.length() > 0 &&
                 x.answerOne.length() > 0 &&
                 x.answerTwo.length() > 0 &&
