@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -69,31 +70,31 @@ public class QuizSession extends Thread {
                     return;
                 }
 
-                lock.lock();
-
                 try {
-                    countdown = calcRemainingSeconds();
+                    if (lock.tryLock()) {
+                        countdown = calcRemainingSeconds();
 
-                    // Gab es eine Antwort von einem Spieler und die Zeit muss noch verkürzt werden?
-                    if (getCurrentRoundNum().getPlayerAnswered().size() == 1 &&
-                            countdown > maxRoundLengthAfterAnswer) {
-                        countdown = maxRoundLengthAfterAnswer;
-                        currentMaxRoundLength = maxRoundLengthAfterAnswer + 1;
-                        // Haben alle Spieler geantwortet?
-                    } else if (getCurrentRoundNum().getPlayerAnswered().size() >= playerCount) {
-                        break;
-                    }
+                        // Gab es eine Antwort von einem Spieler und die Zeit muss noch verkürzt werden?
+                        if (getCurrentRoundNum().getPlayerAnswered().size() == 1 &&
+                                countdown > maxRoundLengthAfterAnswer) {
+                            countdown = maxRoundLengthAfterAnswer;
+                            currentMaxRoundLength = maxRoundLengthAfterAnswer + 1;
+                            // Haben alle Spieler geantwortet?
+                        } else if (getCurrentRoundNum().getPlayerAnswered().size() >= playerCount) {
+                            break;
+                        }
 
-                    // Für jede vergangene Sekunde den Countdown an die Spieler senden
-                    if (lastSendetCountdown > countdown) {
-                        send.sendRoundCountdown(quiz.getLobbyId(), countdown);
-                        lastSendetCountdown = countdown;
-                    }
+                        // Für jede vergangene Sekunde den Countdown an die Spieler senden
+                        if (lastSendetCountdown > countdown) {
+                            send.sendRoundCountdown(quiz.getLobbyId(), countdown);
+                            lastSendetCountdown = countdown;
+                        }
 
-                    // Update der aktuellen Runde schicken, wenn ein Update aussteht
-                    if (sendUpdate) {
-                        send.sendGameSessionUpdate(quiz.getLobbyId(), createGameSessionDto());
-                        sendUpdate = false;
+                        // Update der aktuellen Runde schicken, wenn ein Update aussteht
+                        if (sendUpdate) {
+                            send.sendGameSessionUpdate(quiz.getLobbyId(), createGameSessionDto());
+                            sendUpdate = false;
+                        }
                     }
                 } finally {
                     lock.unlock();
@@ -114,9 +115,6 @@ public class QuizSession extends Thread {
             } catch (InterruptedException e) {
 
             }
-
-            // neue Runde starten
-            nextRound();
         }
 
         System.out.println("Thread " + threadName + " exiting.");
@@ -133,44 +131,62 @@ public class QuizSession extends Thread {
     }
 
     public void playerAnswer(UUID playerId, int answer) {
-        QuizPlayer player = new QuizPlayer(quiz.getPlayer(playerId));
+        Player playerObj = quiz.getPlayer(playerId);
 
-        lock.lock();
+        if (playerObj == null) {
+            return;
+        }
+
+        QuizPlayer player = new QuizPlayer(playerObj);
 
         try {
-            if (player == null || cancel || currentRoundClose) {
-                return;
+            if (lock.tryLock()) {
+                if (cancel || currentRoundClose) {
+                    return;
+                }
+
+                player.setAnswer(answer);
+
+                if (getCurrentRoundNum().getPlayerAnswered().containsKey(player.getUserId())) {
+                    return;
+                }
+
+                getCurrentRoundNum().getPlayerAnswered().put(player.getUserId(), player);
+
+                if (calcRemainingSeconds() > 0) {
+                    sendUpdate = true;
+                }
             }
-
-            player.setAnswer(answer);
-
-            if (getCurrentRoundNum().getPlayerAnswered().contains(player)) {
-                return;
-            }
-
-            getCurrentRoundNum().getPlayerAnswered().add(player);
-
-            if (calcRemainingSeconds() > 0) {
-                sendUpdate = true;
-            }
-
         } finally {
             lock.unlock();
         }
     }
 
     private void nextRound() {
-        currentRoundNum++;
-        roundList.add(new QuizRound(getNewQuestion()));
-        roundStartTime = Instant.now();
-        currentMaxRoundLength = maxRoundLength;
-        currentRoundClose = false;
+        try {
+            if (lock.tryLock()) {
+                currentRoundNum++;
+                roundList.add(new QuizRound(getNewQuestion()));
+                roundStartTime = Instant.now();
+                currentMaxRoundLength = maxRoundLength;
+                currentRoundClose = false;
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
     private void endRound() {
-        currentRoundClose = true;
-        GameSessionDto dto = createGameSessionDto();
-        send.sendGameSessionUpdate(quiz.getLobbyId(), dto);
+        try {
+            if (lock.tryLock()) {
+                currentRoundClose = true;
+                GameSessionDto dto = createGameSessionDto();
+                dto.roundStatus = RoundStatus.CLOSE;
+                send.sendGameSessionUpdate(quiz.getLobbyId(), dto);
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
     private Question getNewQuestion() {
@@ -209,11 +225,13 @@ public class QuizSession extends Thread {
             GameSessionPlayerDto playerDto = new GameSessionPlayerDto();
             playerDto.playerId = player.getUserId();
 
-            if (getCurrentRoundNum().getPlayerAnswered().contains(player)) {
+            if (getCurrentRoundNum().getPlayerAnswered().containsKey(player.getUserId())) {
                 playerDto.playerRoundStatus = PlayerRoundStatus.FINISH;
             } else {
                 playerDto.playerRoundStatus = PlayerRoundStatus.GUESS;
             }
+
+            playerDtoList.add(playerDto);
         }
 
         dto.playerList = playerDtoList;

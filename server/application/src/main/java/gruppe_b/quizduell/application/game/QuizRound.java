@@ -1,7 +1,9 @@
 package gruppe_b.quizduell.application.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import gruppe_b.quizduell.application.models.QuizPlayer;
 import gruppe_b.quizduell.domain.entities.Question;
@@ -9,18 +11,18 @@ import gruppe_b.quizduell.domain.entities.Question;
 public class QuizRound {
 
     private final Question question;
-    private final List<QuizPlayer> playerAnswered;
+    private final HashMap<UUID, QuizPlayer> playerAnswered;
 
     public QuizRound(Question question) {
         this.question = question;
-        this.playerAnswered = new ArrayList<>();
+        this.playerAnswered = new HashMap<>();
     }
 
     public Question getQuestion() {
         return question;
     }
 
-    public List<QuizPlayer> getPlayerAnswered() {
+    public HashMap<UUID, QuizPlayer> getPlayerAnswered() {
         return playerAnswered;
     }
 }
