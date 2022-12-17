@@ -124,16 +124,7 @@ class GameSessionTest {
         // Arrange
         UUID playerId = quiz.getPlayers().get(0).getUserId();
 
-        ArgumentMatcher<GameSessionDto> matcherUpdate = x -> x.maxRounds == 6 &&
-                x.currentRound == 1 &&
-                x.correctAnswer == 0 &&
-                x.questionText.length() > 0 &&
-                x.answerOne.length() > 0 &&
-                x.answerTwo.length() > 0 &&
-                x.answerThree.length() > 0 &&
-                x.answerFour.length() > 0 &&
-                x.playerList.get(0).playerRoundStatus == PlayerRoundStatus.FINISH &&
-                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.GUESS;
+        ArgumentMatcher<GameSessionDto> matcherUpdate = getGameSessionArgumentMatcherRoundOpenOnePlayerFinish(1);
 
         // Act
         session.start();
@@ -182,6 +173,9 @@ class GameSessionTest {
 
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 argThat(getGameSessionArgumentMatcherRoundOpen(1)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundOpenOnePlayerFinish(1)));
 
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 argThat(getGameSessionArgumentMatcherRoundAndPlayerFinish(1)));
@@ -298,6 +292,96 @@ class GameSessionTest {
     }
 
     @Test
+    void fullQuizSessionTest() throws Exception {
+        // Arrange
+        UUID playerId1 = quiz.getPlayers().get(0).getUserId();
+        UUID playerId2 = quiz.getPlayers().get(1).getUserId();
+        assertNotEquals(playerId1, playerId2);
+
+        // Act
+        session.start();
+
+        Thread.sleep(100);
+
+        // Round 1
+        session.playerAnswer(playerId1, 1);
+        session.playerAnswer(playerId2, 2);
+
+        Thread.sleep(8_000);
+
+        // Round 2
+        session.playerAnswer(playerId1, 1);
+        Thread.sleep(500);
+        session.playerAnswer(playerId2, 2);
+
+        Thread.sleep(8_000);
+
+        // Round 3
+        session.playerAnswer(playerId1, 1);
+        session.playerAnswer(playerId2, 2);
+
+        Thread.sleep(8_000);
+
+        // Round 4
+        session.playerAnswer(playerId1, 1);
+        session.playerAnswer(playerId2, 2);
+
+        Thread.sleep(8_000);
+
+        // Round 5
+        session.playerAnswer(playerId1, 1);
+        session.playerAnswer(playerId2, 2);
+
+        Thread.sleep(8_000);
+
+        // Round 6
+        session.playerAnswer(playerId1, 1);
+        session.playerAnswer(playerId2, 2);
+
+        Thread.sleep(8_000);
+
+        // Assert
+        verify(sendToPlayerService, times(13)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                any(GameSessionDto.class));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(1)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundFinish(1)));
+
+        verify(sendToPlayerService, times(2)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(2)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundOpenOnePlayerFinish(2)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(3)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundFinish(3)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(4)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundFinish(4)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(5)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundFinish(5)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(6)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundFinish(6)));
+    }
+
+    @Test
     void calcRemainingSecondsTest() throws Exception {
         // Arrange
 
@@ -334,6 +418,19 @@ class GameSessionTest {
                 x.answerFour.length() > 0 &&
                 x.roundStatus == RoundStatus.OPEN &&
                 x.playerList.get(0).playerRoundStatus == PlayerRoundStatus.GUESS &&
+                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.GUESS;
+    }
+
+    ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcherRoundOpenOnePlayerFinish(int currentRound) {
+        return x -> x.maxRounds == 6 &&
+                x.currentRound == currentRound &&
+                x.correctAnswer == 0 &&
+                x.questionText.length() > 0 &&
+                x.answerOne.length() > 0 &&
+                x.answerTwo.length() > 0 &&
+                x.answerThree.length() > 0 &&
+                x.answerFour.length() > 0 &&
+                x.playerList.get(0).playerRoundStatus == PlayerRoundStatus.FINISH &&
                 x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.GUESS;
     }
 
