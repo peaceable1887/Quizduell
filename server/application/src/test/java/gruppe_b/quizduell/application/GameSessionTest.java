@@ -188,6 +188,36 @@ class GameSessionTest {
     }
 
     @Test
+    @RepeatedTest(10)
+    void whenTwoPlayerSendAnswerThenSendTwoUpdates2() throws Exception {
+        // Arrange
+        UUID playerId1 = quiz.getPlayers().get(0).getUserId();
+        UUID playerId2 = quiz.getPlayers().get(1).getUserId();
+        assertNotEquals(playerId1, playerId2);
+
+        // Act
+        session.start();
+
+        Thread.sleep(100);
+
+        session.playerAnswer(playerId1, 1);
+
+        session.playerAnswer(playerId2, 1);
+
+        Thread.sleep(2000);
+
+        // Assert
+        verify(sendToPlayerService, times(2)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                any(GameSessionDto.class));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundOpen(1)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundAndPlayerFinish(1)));
+    }
+
+    @Test
     void whenPlayerSendAnswerThenReduceCountdown() throws Exception {
         // Arrange
         UUID playerId = quiz.getPlayers().get(0).getUserId();
