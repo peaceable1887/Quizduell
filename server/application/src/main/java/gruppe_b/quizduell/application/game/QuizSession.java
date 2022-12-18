@@ -62,50 +62,7 @@ public class QuizSession extends Thread {
             // neue Runde starten
             nextRound();
 
-            int countdown = 1;
-
-            // Schleife für eine Runde
-            while (countdown > 0) {
-                if (cancel) {
-                    return;
-                }
-
-                lock.lock();
-
-                try {
-                    countdown = calcRemainingSeconds();
-
-                    // Gab es eine Antwort von einem Spieler und die Zeit muss noch verkürzt werden?
-                    if (getCurrentRound().getPlayerAnswered().size() == 1 &&
-                            countdown > maxRoundLengthAfterAnswer) {
-                        countdown = maxRoundLengthAfterAnswer;
-                        currentMaxRoundLength = maxRoundLengthAfterAnswer + 1;
-                        // Haben alle Spieler geantwortet?
-                    } else if (getCurrentRound().getPlayerAnswered().size() >= playerCount) {
-                        break;
-                    }
-
-                    // Für jede vergangene Sekunde den Countdown an die Spieler senden
-                    if (lastSendetCountdown > countdown) {
-                        send.sendRoundCountdown(quiz.getLobbyId(), countdown);
-                        lastSendetCountdown = countdown;
-                    }
-
-                    // Update der aktuellen Runde schicken, wenn ein Update aussteht
-                    if (sendUpdate) {
-                        send.sendGameSessionUpdate(quiz.getLobbyId(), createGameSessionDto());
-                        sendUpdate = false;
-                    }
-                } finally {
-                    lock.unlock();
-                }
-
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-
-                }
-            }
+            quizLoop(lastSendetCountdown);
 
             // Ende der aktuellen Runde
             endRound();
@@ -118,6 +75,53 @@ public class QuizSession extends Thread {
         }
 
         System.out.println("Thread " + threadName + " exiting.");
+    }
+
+    private void quizLoop(int lastSendetCountdown) {
+        int countdown = 1;
+
+        // Schleife für eine Runde
+        while (countdown > 0) {
+            if (cancel) {
+                return;
+            }
+
+            lock.lock();
+
+            try {
+                countdown = calcRemainingSeconds();
+
+                // Gab es eine Antwort von einem Spieler und die Zeit muss noch verkürzt werden?
+                if (getCurrentRound().getPlayerAnswered().size() == 1 &&
+                        countdown > maxRoundLengthAfterAnswer) {
+                    countdown = maxRoundLengthAfterAnswer;
+                    currentMaxRoundLength = maxRoundLengthAfterAnswer + 1;
+                    // Haben alle Spieler geantwortet?
+                } else if (getCurrentRound().getPlayerAnswered().size() >= playerCount) {
+                    break;
+                }
+
+                // Für jede vergangene Sekunde den Countdown an die Spieler senden
+                if (lastSendetCountdown > countdown) {
+                    send.sendRoundCountdown(quiz.getLobbyId(), countdown);
+                    lastSendetCountdown = countdown;
+                }
+
+                // Update der aktuellen Runde schicken, wenn ein Update aussteht
+                if (sendUpdate) {
+                    send.sendGameSessionUpdate(quiz.getLobbyId(), createGameSessionDto());
+                    sendUpdate = false;
+                }
+            } finally {
+                lock.unlock();
+            }
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+
+            }
+        }
     }
 
     @Override
