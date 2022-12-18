@@ -57,7 +57,7 @@
 			<groupId>gruppe_b.quizduell</groupId>
 			<artifactId>lobbyserver</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-			<scope>test</scope>
+			<!-- <scope>test</scope> -->
 		</dependency>
 
 		<dependency>
