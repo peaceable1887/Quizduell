@@ -25,6 +25,13 @@ public class QuizServiceTests {
     @Autowired
     QuizService quizService;
 
+    static {
+        System.setProperty("DB_PORT", "3306");
+        System.setProperty("DB_HOSTNAME", "localhost");
+        System.setProperty("DB_USERNAME", "root");
+        System.setProperty("DB_PASSWORD", "root");
+    }
+
     @Test
     void whenConnectToGameThenCreateGame() throws Exception {
         assertNotNull(quizHelper.createQuiz());

@@ -29,6 +29,17 @@ public class CategoryRepositoryAdapterTest {
         c3 = repo.save(new Category("PC", "PC test category"));
     }
 
+    // @Test
+    // void testSeeding() throws Exception {
+    // // Arrange
+
+    // // Act
+    // Category result = repo.findByName("Pattern");
+
+    // // Assert
+    // assertNotNull(result);
+    // }
+
     @Test
     void whenSaveNewCategoryThenCreateAndReturnNewCategory() {
         // Arrange

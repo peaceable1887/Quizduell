@@ -61,6 +61,13 @@ public class QuizSessionWebSocketTest {
     @Autowired
     QuizService quizService;
 
+    static {
+        System.setProperty("DB_PORT", "3306");
+        System.setProperty("DB_HOSTNAME", "localhost");
+        System.setProperty("DB_USERNAME", "root");
+        System.setProperty("DB_PASSWORD", "root");
+    }
+
     @Value("${local.server.port}")
     private int port;
 

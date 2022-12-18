@@ -19,5 +19,7 @@ public interface QuestionRepository {
 
     Question update(Question question);
 
+    Question random();
+
     void deleteAll();
 }

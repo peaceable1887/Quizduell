@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.GameSessionPlayerDto;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
@@ -17,6 +19,8 @@ import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.application.models.QuizPlayer;
+import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQuery;
+import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
 import gruppe_b.quizduell.domain.entities.Question;
 
 public class QuizSession extends Thread {
@@ -41,6 +45,9 @@ public class QuizSession extends Thread {
     private final Lock lock;
 
     private boolean sendUpdate = true;
+
+    @Autowired
+    GetQuestionRandomQueryHandler questionRandomHandler;
 
     public QuizSession(Quiz quiz, SendToPlayerService sendToPlayerService) {
         this.send = sendToPlayerService;
@@ -209,6 +216,7 @@ public class QuizSession extends Thread {
                 "antwort3",
                 "antwort4",
                 2);
+        // return questionRandomHandler.handle(new GetQuestionRandomQuery());
     }
 
     private GameSessionDto createGameSessionDto() {

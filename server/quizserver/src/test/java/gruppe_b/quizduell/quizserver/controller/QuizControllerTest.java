@@ -40,6 +40,13 @@ public class QuizControllerTest {
     @Autowired
     QuizHelper quizHelper;
 
+    static {
+        System.setProperty("DB_PORT", "3306");
+        System.setProperty("DB_HOSTNAME", "localhost");
+        System.setProperty("DB_USERNAME", "root");
+        System.setProperty("DB_PASSWORD", "root");
+    }
+
     @Test
     @WithMockUser
     void whenFirstPlayerConnectThenCreateGameAndReturn() throws Exception {

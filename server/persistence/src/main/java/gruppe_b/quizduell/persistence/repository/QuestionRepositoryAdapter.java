@@ -1,6 +1,7 @@
 package gruppe_b.quizduell.persistence.repository;
 
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +66,17 @@ public class QuestionRepositoryAdapter implements QuestionRepository {
         repo.save(dbEntity);
 
         return dbEntity;
+    }
+
+    @Override
+    public Question random() {
+        Random random = new Random();
+        int count = (int) repo.count();
+        int rdn = random.nextInt(count);
+
+        Question question = repo.findAll().get(rdn);
+
+        return question;
     }
 
     public void deleteAll() {

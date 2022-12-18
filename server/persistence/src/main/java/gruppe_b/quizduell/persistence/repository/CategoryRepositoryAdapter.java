@@ -1,5 +1,6 @@
 package gruppe_b.quizduell.persistence.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,6 +65,11 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
         repo.save(dbEntity);
 
         return dbEntity;
+    }
+
+    @Override
+    public List<? extends Category> findAll() {
+        return repo.findAll();
     }
 
     public void deleteAll() {

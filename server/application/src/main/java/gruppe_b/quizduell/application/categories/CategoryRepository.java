@@ -1,5 +1,6 @@
 package gruppe_b.quizduell.application.categories;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,8 @@ public interface CategoryRepository {
     Category save(Category category);
 
     Category update(Category category);
+
+    List<? extends Category> findAll();
 
     void deleteAll();
 }
