@@ -418,7 +418,9 @@ class GameSessionTest {
                 x.answerFour.length() > 0 &&
                 x.roundStatus == RoundStatus.OPEN &&
                 x.playerList.get(0).playerRoundStatus == PlayerRoundStatus.GUESS &&
-                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.GUESS;
+                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.GUESS &&
+                x.playerList.get(0).chosenAnswer == 0 &&
+                x.playerList.get(1).chosenAnswer == 0;
     }
 
     ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcherRoundOpenOnePlayerFinish(int currentRound) {
@@ -431,7 +433,9 @@ class GameSessionTest {
                 x.answerThree.length() > 0 &&
                 x.answerFour.length() > 0 &&
                 x.playerList.get(0).playerRoundStatus == PlayerRoundStatus.FINISH &&
-                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.GUESS;
+                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.GUESS &&
+                x.playerList.get(0).chosenAnswer == 0 &&
+                x.playerList.get(1).chosenAnswer == 0;
     }
 
     ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcherRoundFinish(int currentRound) {
@@ -457,6 +461,8 @@ class GameSessionTest {
                 x.answerFour.length() > 0 &&
                 x.roundStatus == RoundStatus.CLOSE &&
                 x.playerList.get(0).playerRoundStatus == PlayerRoundStatus.FINISH &&
-                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.FINISH;
+                x.playerList.get(1).playerRoundStatus == PlayerRoundStatus.FINISH &&
+                x.playerList.get(0).chosenAnswer != 0 &&
+                x.playerList.get(1).chosenAnswer != 0;
     }
 }

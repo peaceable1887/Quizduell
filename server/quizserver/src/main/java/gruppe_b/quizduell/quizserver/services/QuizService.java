@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.game.QuizSession;
+import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.interfaces.StartQuiz;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
@@ -21,6 +22,7 @@ import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.quizserver.exceptions.JwtNotIssuedByLobbyServerException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
+import gruppe_b.quizduell.quizserver.exceptions.QuizNotFoundException;
 
 /**
  * Service zum Managen von Quiz-Games.
@@ -38,6 +40,9 @@ public class QuizService implements StartQuiz {
     private final ConcurrentHashMap<UUID, Player> playerRepo;
 
     private final ConcurrentHashMap<UUID, QuizSession> sessionRepo;
+
+    @Autowired
+    private SendToPlayerService sendToPlayerService;
 
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
@@ -121,9 +126,18 @@ public class QuizService implements StartQuiz {
         return quizRepo.get(lobbyId);
     }
 
+    public QuizSession getSession(UUID lobbyId) {
+        return sessionRepo.get(lobbyId);
+    }
+
     public Quiz updatePlayerStatus(UUID lobbyId, UUID playerId, PlayerStatus status)
-            throws UnknownPlayerStatusException {
+            throws UnknownPlayerStatusException, QuizNotFoundException {
         Quiz quiz = getQuiz(lobbyId);
+
+        if (quiz == null) {
+            throw new QuizNotFoundException("Quiz not Found! LobbyId:" + lobbyId.toString());
+        }
+
         Player player = quiz.getPlayer(playerId);
 
         if (status == PlayerStatus.READY) {
@@ -151,9 +165,15 @@ public class QuizService implements StartQuiz {
                 this), 1_000, 1_000);
     }
 
+    /**
+     * Ein Quiz starten.
+     * Es wird eine QuizSession erstellt und gestartet.
+     * 
+     * @param quiz Quiz für das eine Session gestartet werden soll.
+     */
     public void startQuiz(Quiz quiz) {
-        // QuizSession session = new QuizSession(quiz);
-        // sessionRepo.put(quiz.getLobbyId(), session);
-        // session.start();
+        QuizSession session = new QuizSession(quiz, sendToPlayerService);
+        sessionRepo.put(quiz.getLobbyId(), session);
+        session.start();
     }
 }

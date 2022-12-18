@@ -29,6 +29,13 @@ public class QuizHelper {
         return createQuiz(player, lobby, token);
     }
 
+    public Quiz createFullQuiz() throws Exception {
+        Quiz quiz = createQuiz();
+        quiz.addPlayer(createPlayer().getUserId());
+
+        return quiz;
+    }
+
     public Quiz createQuiz(Player player, Lobby lobby, String token) throws Exception {
         Quiz quiz = quizService.connectToQuiz(lobby.getId(), player.getUserId(), token);
 

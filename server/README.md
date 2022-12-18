@@ -465,7 +465,7 @@ Beispiel:
 
 - Endpunkt zum Abonnieren, der über Start, Countdown und Abbruch informiert
 
-      /topic/lobby/<lobby-UUID>/status-quiz
+      /topic/quiz/<lobby-UUID>/status-quiz
 
   - Message
 
@@ -482,4 +482,59 @@ Beispiel:
         {
           "status": "abort",
           "countdown": "3",
+        }
+
+- Endpunkt zum Abonnieren für Updates einer QuizSession
+
+      /topic/quiz/session/<lobby-UUID>
+
+  - Message
+
+        {
+            "roundStatus": "OPEN",
+            "maxRounds": 6,
+            "currentRound": 1,
+            "playerList": [
+                {
+                "playerId": "771ecdf4-58ac-4e1e-a082-58c1589e081a",
+                "playerRoundStatus": "GUESS",
+                "chosenAnswer": 0
+                },
+                {
+                "playerId": "684d0be6-1888-485b-af53-89b81b6dae22",
+                "playerRoundStatus": "GUESS",
+                "chosenAnswer": 0
+                }
+            ],
+            "categoryName": null,
+            "questionText": "testText",
+            "answerOne": "antwort1",
+            "answerTwo": "antwort2",
+            "answerThree": "antwort3",
+            "answerFour": "antwort4",
+            "correctAnswer": 0
+        }
+
+- Endpunkt zum Abonnieren für den Countdown einer Runde
+
+      /topic/quiz/session/<lobby-UUID>/round-countdown
+
+  - Message
+
+        {
+          "20"
+        }
+
+        {
+          "19"
+        }
+
+- Endpunkt zum Senden einer Antwort auf eine Quizfrage
+
+      /app/quiz/session/<lobby-UUID>/answer
+
+  - Message
+
+        {
+          "1"
         }

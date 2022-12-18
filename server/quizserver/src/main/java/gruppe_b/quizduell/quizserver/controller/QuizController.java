@@ -32,12 +32,6 @@ public class QuizController {
         this.quizService = quizService;
     }
 
-    // TODO entfernen und im Websocket übernehmen?
-    @PostMapping("/answer")
-    public ResponseEntity<Void> answer() {
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
     @PostMapping("/connect")
     public ResponseEntity<Quiz> connect(@RequestBody ConnectRequest request)
             throws PlayerAlreadyConnectedException,

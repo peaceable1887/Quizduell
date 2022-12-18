@@ -7,20 +7,17 @@ import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -29,13 +26,16 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import gruppe_b.quizduell.application.models.Player;
+import gruppe_b.quizduell.application.common.GameSessionDto;
+import gruppe_b.quizduell.application.common.PlayerRoundStatus;
+import gruppe_b.quizduell.application.enums.RoundStatus;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.common.dto.PlayerStatusDto;
-import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
+import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.quizserver.common.AuthHelper;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
-import gruppe_b.quizduell.quizserver.common.QuizStartDto;
+import gruppe_b.quizduell.quizserver.common.QuizSessionHelper;
+import gruppe_b.quizduell.quizserver.services.QuizService;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,14 +47,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
-public class QuizWebSocketTest {
-
-    @Autowired
-    MockMvc mvc;
+public class QuizSessionWebSocketTest {
 
     @Autowired
     AuthHelper authHelper;
+
+    @Autowired
+    QuizHelper quizHelper;
+
+    @Autowired
+    QuizSessionHelper sessionHelper;
+
+    @Autowired
+    QuizService quizService;
 
     @Value("${local.server.port}")
     private int port;
@@ -65,12 +70,9 @@ public class QuizWebSocketTest {
 
     CompletableFuture<String> completableFuture;
 
-    @Autowired
-    QuizHelper quizHelper;
-
-    static final String SUBSCRIBE_QUIZ_UPDATE_ENDPOINT = "/topic/quiz/";
-    static final String SUBSCRIBE_QUIZ_START = "/topic/quiz/";
-    static final String SEND_ENDPOINT_PLAYER_STATUS_UPDATE = "/app/quiz/";
+    static final String SUBSCRIBE_QUIZ_SESSION = "/topic/quiz/session/";
+    static final String SUBSCRIBE_QUIZ_SESSION_ROUND_COUNTDOWN = "/topic/quiz/session/";
+    static final String SEND_QUIZ_SESSION_ANSWER = "/app/quiz/session/";
 
     @BeforeEach
     void setup() {
@@ -94,122 +96,112 @@ public class QuizWebSocketTest {
     }
 
     @Test
-    void whenConnectThenConnect() throws Exception {
-        assertNotNull(connectAndGetStompSession());
-    }
-
-    @Test
-    void whenSubscribeQuizThenReturnQuiz() throws Exception {
+    void whenAllPlayerReadyToStartSessionThenStartQuizSession() throws Exception {
         // Arrange
-        UUID lobbyId = quizHelper.createQuiz().getLobbyId();
-
-        StompSession stompSession = connectAndGetStompSession();
-
-        stompSession.subscribe(SUBSCRIBE_QUIZ_UPDATE_ENDPOINT + lobbyId.toString(),
-                new PublishQuizStompFrameHandler());
-
-        // Act
-        String quiz = completableFuture.get(5, TimeUnit.SECONDS);
-
-        // Assert
-        assertNotNull(quiz);
-        assertTrue(quiz.contains(lobbyId.toString()));
-    }
-
-    @Test
-    void whenSendStatusUpdateThenSendLobbyUpdate() throws Exception {
-        // Arrange
-        Quiz quiz = quizHelper.createQuiz();
-        UUID lobbyId = quiz.getLobbyId();
-        UUID playerId = quiz.getPlayers().get(0).getUserId();
-        jwtToken = authHelper.generateToken(playerId.toString());
-
-        PlayerStatusDto dto = new PlayerStatusDto();
-        dto.status = "ready";
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(dto);
+        GameSessionDto gameSessionDto;
+
+        Quiz quiz = quizHelper.createFullQuiz();
+        UUID lobbyId = quiz.getLobbyId();
+        quiz.getPlayers().get(0).setReady();
+        UUID player2Id = quiz.getPlayers().get(1).getUserId();
 
         StompSession stompSession = connectAndGetStompSession();
 
-        stompSession.subscribe(SUBSCRIBE_QUIZ_UPDATE_ENDPOINT + lobbyId.toString(),
+        stompSession.subscribe(SUBSCRIBE_QUIZ_SESSION + lobbyId.toString(),
                 new PublishQuizStompFrameHandler());
 
-        Thread.sleep(2_000);
-
-        completableFuture = new CompletableFuture<>();
-
         // Act
-        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
-                json.getBytes());
+        quizService.updatePlayerStatus(lobbyId, player2Id, PlayerStatus.READY);
 
         String result = completableFuture.get(5, TimeUnit.SECONDS);
 
         // Assert
         assertNotNull(result);
-        assertTrue(result.contains(lobbyId.toString()));
-        assertTrue(result.contains(playerId.toString() + "\",\"status\":\"ready"));
+
+        gameSessionDto = objectMapper.readValue(result, GameSessionDto.class);
+        assertEquals(RoundStatus.OPEN, gameSessionDto.roundStatus);
+        assertEquals(1, gameSessionDto.currentRound);
     }
 
     @Test
-    void whenAllPlayerReadyThenStartCountdown() throws Exception {
+    void whenFirstRoundStartedThenSendCountdown() throws Exception {
         // Arrange
-        Quiz quiz = quizHelper.createQuiz();
+        Quiz quiz = quizHelper.createFullQuiz();
         UUID lobbyId = quiz.getLobbyId();
         quiz.getPlayers().get(0).setReady();
-
-        UUID player2Id = UUID.randomUUID();
-        quiz.addPlayer(player2Id);
-        jwtToken = authHelper.generateToken(player2Id.toString());
-
-        PlayerStatusDto dto = new PlayerStatusDto();
-        dto.status = "ready";
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(dto);
+        UUID player2Id = quiz.getPlayers().get(1).getUserId();
 
         StompSession stompSession = connectAndGetStompSession();
 
-        stompSession.subscribe(SUBSCRIBE_QUIZ_START + lobbyId.toString() + "/start-quiz",
+        stompSession.subscribe(SUBSCRIBE_QUIZ_SESSION_ROUND_COUNTDOWN + lobbyId.toString() + "/round-countdown",
                 new PublishQuizStompFrameHandler());
 
-        completableFuture = new CompletableFuture<>();
-
         // Act
-        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
-                json.getBytes());
+        quizService.updatePlayerStatus(lobbyId, player2Id, PlayerStatus.READY);
 
-        String status;
-        QuizStartDto quizStartDto;
-
-        // Countdown 3
-        status = completableFuture.get(5, TimeUnit.SECONDS);
-        completableFuture = new CompletableFuture<>();
-        quizStartDto = objectMapper.readValue(status, QuizStartDto.class);
-        assertEquals(3, quizStartDto.countdown);
-        assertEquals("start", quizStartDto.status);
-
-        // Countdown 2
-        status = completableFuture.get(5, TimeUnit.SECONDS);
-        completableFuture = new CompletableFuture<>();
-        quizStartDto = objectMapper.readValue(status, QuizStartDto.class);
-        assertEquals(2, quizStartDto.countdown);
-        assertEquals("start", quizStartDto.status);
-
-        // Countdown 1
-        status = completableFuture.get(5, TimeUnit.SECONDS);
-        completableFuture = new CompletableFuture<>();
-        quizStartDto = objectMapper.readValue(status, QuizStartDto.class);
-        assertEquals(1, quizStartDto.countdown);
-        assertEquals("start", quizStartDto.status);
-
-        // Start
-        status = completableFuture.get(5, TimeUnit.SECONDS);
-        completableFuture = new CompletableFuture<>();
-        quizStartDto = objectMapper.readValue(status, QuizStartDto.class);
+        String result = completableFuture.get(5, TimeUnit.SECONDS);
 
         // Assert
-        assertNotNull(quizStartDto);
-        assertEquals(0, quizStartDto.countdown);
-        assertEquals("start", quizStartDto.status);
+        assertNotNull(result);
+        assertEquals("20", result);
+    }
+
+    @Test
+    void whenSendAnswerThenSendUpdate() throws Exception {
+        // Arrange
+        ObjectMapper objectMapper = new ObjectMapper();
+        GameSessionDto gameSessionDto;
+
+        Quiz quiz = sessionHelper.createAndStartQuizSession();
+        UUID lobbyId = quiz.getLobbyId();
+        UUID playerId = quiz.getPlayers().get(0).getUserId();
+        jwtToken = authHelper.generateToken(playerId.toString());
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_QUIZ_SESSION + lobbyId.toString(),
+                new PublishQuizStompFrameHandler());
+
+        // Act
+        stompSession.send(SEND_QUIZ_SESSION_ANSWER + lobbyId.toString() + "/answer", "2".getBytes());
+
+        String result = completableFuture.get(5, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(result);
+
+        gameSessionDto = objectMapper.readValue(result, GameSessionDto.class);
+        assertEquals(RoundStatus.OPEN, gameSessionDto.roundStatus);
+        assertEquals(1, gameSessionDto.currentRound);
+        assertEquals(playerId, gameSessionDto.playerList.get(0).playerId);
+        assertEquals(PlayerRoundStatus.FINISH, gameSessionDto.playerList.get(0).playerRoundStatus);
+        assertEquals(0, gameSessionDto.playerList.get(0).chosenAnswer);
+        assertEquals(2,
+                quizService.getSession(lobbyId).getCurrentRound().getPlayerAnswered().get(playerId).getAnswer());
+    }
+
+    @Test
+    void whenSendAnswerThenSendReducedCountdown() throws Exception {
+        // Arrange
+        Quiz quiz = sessionHelper.createAndStartQuizSession();
+        UUID lobbyId = quiz.getLobbyId();
+        UUID playerId = quiz.getPlayers().get(0).getUserId();
+        jwtToken = authHelper.generateToken(playerId.toString());
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_QUIZ_SESSION_ROUND_COUNTDOWN + lobbyId.toString() + "/round-countdown",
+                new PublishQuizStompFrameHandler());
+
+        // Act
+        stompSession.send(SEND_QUIZ_SESSION_ANSWER + lobbyId.toString() + "/answer", "1".getBytes());
+
+        String result = completableFuture.get(5, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(Integer.parseInt(result) <= 6);
     }
 
     private class PublishQuizStompFrameHandler implements StompFrameHandler {

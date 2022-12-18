@@ -186,6 +186,14 @@ public class QuizSession extends Thread {
             GameSessionDto dto = createGameSessionDto();
             dto.roundStatus = RoundStatus.CLOSE;
             dto.correctAnswer = getCurrentRound().getQuestion().getCorrectAnswer();
+
+            for (GameSessionPlayerDto playerDto : dto.playerList) {
+                QuizPlayer quizPlayer = getCurrentRound().getPlayerAnswered().get(playerDto.playerId);
+                if (quizPlayer != null) {
+                    playerDto.chosenAnswer = quizPlayer.getAnswer();
+                }
+            }
+
             send.sendGameSessionUpdate(quiz.getLobbyId(), dto);
         } finally {
             lock.unlock();
@@ -242,7 +250,7 @@ public class QuizSession extends Thread {
         return dto;
     }
 
-    private QuizRound getCurrentRound() {
+    public QuizRound getCurrentRound() {
         return roundList.get(roundList.size() - 1);
     }
 

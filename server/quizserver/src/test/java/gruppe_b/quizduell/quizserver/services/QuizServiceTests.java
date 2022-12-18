@@ -62,4 +62,17 @@ public class QuizServiceTests {
             quizService.connectToQuiz(secondLobby.getId(), player.getUserId(), token);
         });
     }
+
+    @Test
+    void testStartGameSession() throws Exception {
+        // Arrange
+        Quiz quiz = quizHelper.createQuiz();
+        Player player = quizHelper.createPlayer();
+        quiz.addPlayer(player.getUserId());
+
+        // Act
+        quizService.startQuiz(quiz);
+
+        // Assert
+    }
 }
