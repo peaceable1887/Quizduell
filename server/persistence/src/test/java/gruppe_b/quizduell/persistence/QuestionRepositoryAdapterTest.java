@@ -79,4 +79,15 @@ public class QuestionRepositoryAdapterTest {
         assertEquals(q1.getAnswerFour(), result.getAnswerFour());
         assertEquals(q1.getCategoryId(), result.getCategoryId());
     }
+
+    @Test
+    void whenRandomThenReturnRandomQuest() {
+        // Arrange
+
+        // Act
+        Question result = repo.random();
+
+        // Assert
+        assertNotNull(result);
+    }
 }
