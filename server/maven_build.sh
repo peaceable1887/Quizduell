@@ -6,3 +6,4 @@ mvn install -DskipTests -f common
 mvn install -DskipTests -f persistence
 mvn install -DskipTests -f authserver
 mvn install -DskipTests -f lobbyserver
+mvn install -DskipTests -f quizserver
