@@ -16,6 +16,7 @@ import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.interfaces.StartQuiz;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
+import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
 import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.JwtIsExpiredException;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
@@ -46,6 +47,9 @@ public class QuizService implements StartQuiz {
 
     @Autowired
     SimpMessagingTemplate simpMessagingTemplate;
+
+    @Autowired
+    GetQuestionRandomQueryHandler getQuestionRandomQueryHandler;
 
     @Autowired
     JwtDecoder jwtDecoder;
@@ -172,7 +176,7 @@ public class QuizService implements StartQuiz {
      * @param quiz Quiz für das eine Session gestartet werden soll.
      */
     public void startQuiz(Quiz quiz) {
-        QuizSession session = new QuizSession(quiz, sendToPlayerService);
+        QuizSession session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler);
         sessionRepo.put(quiz.getLobbyId(), session);
         session.start();
     }

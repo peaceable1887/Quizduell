@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Random;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,7 +87,7 @@ public class QuestionRepositoryAdapterTest {
         // Arrange
 
         // Act
-        Question result = repo.random();
+        Question result = repo.random(new Random());
 
         // Assert
         assertNotNull(result);

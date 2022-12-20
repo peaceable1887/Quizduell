@@ -69,8 +69,7 @@ public class QuestionRepositoryAdapter implements QuestionRepository {
     }
 
     @Override
-    public Question random() {
-        Random random = new Random();
+    public Question random(Random random) {
         int count = (int) repo.count();
         int rdn = random.nextInt(count);
 

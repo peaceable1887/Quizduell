@@ -10,7 +10,10 @@ import gruppe_b.quizduell.application.enums.RoundStatus;
 import gruppe_b.quizduell.application.game.QuizSession;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.models.Quiz;
+import gruppe_b.quizduell.application.questions.QuestionRepository;
+import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
 import gruppe_b.quizduell.application.user.UserRepository;
+import gruppe_b.quizduell.domain.entities.Question;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -23,7 +26,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import java.util.Random;
 import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -43,17 +48,34 @@ class GameSessionTest {
     @Mock
     SendToPlayerService sendToPlayerService;
 
+    @Autowired
+    GetQuestionRandomQueryHandler getQuestionRandomQueryHandler;
+
     QuizSession spySession;
 
     Quiz quiz;
     QuizSession session;
+
+    @Autowired
+    QuestionRepository questionRepository;
+
+    @Autowired
+    Random random;
 
     @BeforeEach
     void setUp() {
         quiz = new Quiz(UUID.randomUUID());
         quiz.addPlayer(UUID.randomUUID());
         quiz.addPlayer(UUID.randomUUID());
-        session = new QuizSession(quiz, sendToPlayerService);
+        session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler);
+        when(questionRepository.random(random)).thenReturn(
+                new Question(UUID.randomUUID(),
+                        "mockQuestionText",
+                        "mockAnswer1",
+                        "mockAnswer2",
+                        "mockAnswer3",
+                        "mockAnswer4",
+                        1));
     }
 
     @Test
@@ -62,7 +84,7 @@ class GameSessionTest {
         Quiz quizLocal = new Quiz(UUID.randomUUID());
 
         // Act
-        QuizSession sessionLocal = new QuizSession(quizLocal, sendToPlayerService);
+        QuizSession sessionLocal = new QuizSession(quizLocal, sendToPlayerService, getQuestionRandomQueryHandler);
 
         // Assert
         assertNotNull(sessionLocal);

@@ -1,5 +1,7 @@
 package gruppe_b.quizduell.application.questions.queries;
 
+import java.util.Random;
+
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
@@ -16,12 +18,15 @@ public class GetQuestionRandomQueryHandler implements RequestHandler<GetQuestion
 
     private QuestionRepository repo;
 
-    public GetQuestionRandomQueryHandler(QuestionRepository repo) {
+    private Random random;
+
+    public GetQuestionRandomQueryHandler(QuestionRepository repo, Random random) {
         this.repo = repo;
+        this.random = random;
     }
 
     public Question handle(GetQuestionRandomQuery query) {
-        Question question = repo.random();
-        return repo.random();
+        Question question = repo.random(random);
+        return repo.random(random);
     }
 }

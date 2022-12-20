@@ -10,6 +10,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.GameSessionPlayerDto;
@@ -46,13 +47,15 @@ public class QuizSession extends Thread {
 
     private boolean sendUpdate = true;
 
-    @Autowired
     GetQuestionRandomQueryHandler questionRandomHandler;
 
-    public QuizSession(Quiz quiz, SendToPlayerService sendToPlayerService) {
+    public QuizSession(Quiz quiz,
+            SendToPlayerService sendToPlayerService,
+            GetQuestionRandomQueryHandler getQuestionRandomQueryHandler) {
         this.send = sendToPlayerService;
         this.threadName = quiz.getId().toString();
         this.quiz = quiz;
+        this.questionRandomHandler = getQuestionRandomQueryHandler;
         this.playerCount = quiz.getPlayers().size();
         lock = new ReentrantLock(true);
         roundList = new ArrayList<>();
@@ -208,15 +211,15 @@ public class QuizSession extends Thread {
     }
 
     private Question getNewQuestion() {
-        return new Question(
-                UUID.randomUUID(),
-                "testText",
-                "antwort1",
-                "antwort2",
-                "antwort3",
-                "antwort4",
-                2);
-        // return questionRandomHandler.handle(new GetQuestionRandomQuery());
+        // return new Question(
+        // UUID.randomUUID(),
+        // "testText",
+        // "antwort1",
+        // "antwort2",
+        // "antwort3",
+        // "antwort4",
+        // 2);
+        return questionRandomHandler.handle(new GetQuestionRandomQuery());
     }
 
     private GameSessionDto createGameSessionDto() {

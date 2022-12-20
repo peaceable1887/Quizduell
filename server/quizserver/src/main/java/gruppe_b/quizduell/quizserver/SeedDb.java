@@ -18,8 +18,9 @@ public class SeedDb {
     QuestionRepository questionRepo;
 
     public void Seed() {
-        if (categoryRepo.findAll().size() == 0) {
-            Category category = categoryRepo.save(new Category("Java", "Fragen zur Programmiersprache Java"));
+        if (categoryRepo.findAll().isEmpty()) {
+            Category category = categoryRepo
+                    .save(new Category("Java", "Fragen zur Programmiersprache Java"));
 
             questionRepo.save(new Question(category.getId(),
                     "Was ist Java?",
@@ -36,6 +37,46 @@ public class SeedDb {
                     "Latte",
                     "Chai",
                     1));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Wie heißt der korrekte Datentyp für eine Zeichenkette?",
+                    "string",
+                    "String",
+                    "str",
+                    "charchain",
+                    2));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Schlüsselwort wird zur Vererbung genutzt?",
+                    "implements",
+                    "extends",
+                    "inherit",
+                    "join",
+                    2));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Schlüsselwort wird zum Implementieren eines Interfaces genutzt?",
+                    "interface",
+                    "join",
+                    "extends",
+                    "implements",
+                    4));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Schlüsselwort ist für eine Methode ohne Rückgabewert korrekt?",
+                    "void",
+                    "nothing",
+                    "null",
+                    "empty",
+                    1));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Was ist Spring?",
+                    "Baukasten",
+                    "Framework",
+                    "Anleitung",
+                    "Frühling",
+                    2));
         }
     }
 }
