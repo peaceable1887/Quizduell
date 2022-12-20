@@ -3,6 +3,7 @@ package gruppe_b.quizduell.lobbyserver.websocket;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,16 +32,19 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
 
+import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.common.dto.PlayerStatusDto;
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.lobbyserver.enums.LobbyStatus;
+import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -174,7 +178,7 @@ class LobbyWebSocketTest {
         jwtToken = authHelper.generateToken(playerId);
 
         PlayerStatusDto dto = new PlayerStatusDto();
-        dto.status = "ready";
+        dto.status = "wait";
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(dto);
 
@@ -196,7 +200,7 @@ class LobbyWebSocketTest {
         // Assert
         assertNotNull(lobby);
         assertTrue(lobby.contains(lobbyId.toString()));
-        assertTrue(lobby.contains(playerId + "\",\"status\":\"ready"));
+        assertTrue(lobby.contains(playerId + "\",\"status\":\"wait"));
     }
 
     @Test
@@ -229,6 +233,36 @@ class LobbyWebSocketTest {
         // Assert
         assertNotNull(result);
         assertEquals("\"" + lobbyId.toString() + "\"", result);
+    }
+
+    @Test
+    void whenOnePlayerInLobbyAndUpdateToReadyWhenNoUpdate() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createLobby();
+        String playerId = lobbyHelper.getLobby(
+                lobbyId).getPlayers().get(0).getUserId().toString();
+        jwtToken = authHelper.generateToken(playerId);
+
+        PlayerStatusDto dto = new PlayerStatusDto();
+        dto.status = "ready";
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(dto);
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_LOBBY_START + lobbyId.toString() + "/start-lobby",
+                new PublishLobbyStompFrameHandler());
+
+        completableFuture = new CompletableFuture<>();
+
+        // Act
+        stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
+                json.getBytes());
+
+        // Assert
+        assertThrows(TimeoutException.class, () -> {
+            completableFuture.get(5, TimeUnit.SECONDS);
+        });
     }
 
     @Test

@@ -130,7 +130,7 @@ public class LobbyService {
         Lobby lobby = getLobby(lobbyId);
         Player player = lobby.getPlayer(playerId);
 
-        if (status == PlayerStatus.READY) {
+        if (status == PlayerStatus.READY && lobby.getPlayers().size() > 1) {
             player.setReady();
         } else if (status == PlayerStatus.WAIT) {
             player.setWait();
