@@ -38,9 +38,9 @@ public class QuizStartCountDown extends TimerTask {
             quiz.setQuizStarted();
             sendMessage(createDto("start", counter));
             startQuizCallBack.startQuiz(quiz);
+        } else {
+            sendMessage(createDto("start", counter));
         }
-
-        sendMessage(createDto("start", counter));
 
         counter--;
     }
