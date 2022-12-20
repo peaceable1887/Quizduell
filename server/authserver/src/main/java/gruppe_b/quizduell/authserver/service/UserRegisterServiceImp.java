@@ -24,6 +24,9 @@ public class UserRegisterServiceImp implements UserRegisterService {
 
     @Override
     public void saveUser(UserCredentialsDto userCredentialsDto) {
+        if (userCredentialsDto.mail.equals("")) {
+            userCredentialsDto.mail = null;
+        }
         CreateUserCommand command = new CreateUserCommand(
                 userCredentialsDto.name,
                 userCredentialsDto.mail,

@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.authserver.controller.common;
+package gruppe_b.quizduell.authserver.common;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
