@@ -12,10 +12,13 @@ import java.util.concurrent.Executors;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 
 @SpringBootTest()
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class LobbyServiceTests {
 
     @Autowired

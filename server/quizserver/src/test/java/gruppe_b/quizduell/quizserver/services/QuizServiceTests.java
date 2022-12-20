@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
@@ -17,6 +19,7 @@ import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
 
 @SpringBootTest
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class QuizServiceTests {
 
     @Autowired
