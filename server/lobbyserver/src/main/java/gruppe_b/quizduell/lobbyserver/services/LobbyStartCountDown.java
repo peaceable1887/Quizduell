@@ -12,7 +12,7 @@ public class LobbyStartCountDown extends TimerTask {
     private final Lobby lobby;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final LobbyService lobbyService;
-    private int counter = 3;
+    private int counter = 5;
 
     public LobbyStartCountDown(Lobby lobby,
             SimpMessagingTemplate simpMessagingTemplate,

@@ -126,7 +126,7 @@ public class QuizSessionWebSocketTest {
         // Act
         quizService.updatePlayerStatus(lobbyId, player2Id, PlayerStatus.READY);
 
-        String result = completableFuture.get(5, TimeUnit.SECONDS);
+        String result = completableFuture.get(10, TimeUnit.SECONDS);
 
         // Assert
         assertNotNull(result);
@@ -152,7 +152,7 @@ public class QuizSessionWebSocketTest {
         // Act
         quizService.updatePlayerStatus(lobbyId, player2Id, PlayerStatus.READY);
 
-        String result = completableFuture.get(5, TimeUnit.SECONDS);
+        String result = completableFuture.get(10, TimeUnit.SECONDS);
 
         // Assert
         assertNotNull(result);

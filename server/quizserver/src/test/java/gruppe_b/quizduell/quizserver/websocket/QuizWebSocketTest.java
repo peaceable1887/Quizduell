@@ -190,6 +190,20 @@ public class QuizWebSocketTest {
         String status;
         QuizStartDto quizStartDto;
 
+        // Countdown 5
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        quizStartDto = objectMapper.readValue(status, QuizStartDto.class);
+        assertEquals(5, quizStartDto.countdown);
+        assertEquals("start", quizStartDto.status);
+
+        // Countdown 4
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        quizStartDto = objectMapper.readValue(status, QuizStartDto.class);
+        assertEquals(4, quizStartDto.countdown);
+        assertEquals("start", quizStartDto.status);
+
         // Countdown 3
         status = completableFuture.get(5, TimeUnit.SECONDS);
         completableFuture = new CompletableFuture<>();

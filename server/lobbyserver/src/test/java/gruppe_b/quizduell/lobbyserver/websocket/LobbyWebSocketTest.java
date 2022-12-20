@@ -293,6 +293,22 @@ class LobbyWebSocketTest {
         String status;
         LobbyStartDto lobbyStartDto;
 
+        // Countdown 5
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+        assertEquals(5, lobbyStartDto.countdown);
+        assertEquals("start", lobbyStartDto.status);
+        assertNull(lobbyStartDto.gameToken);
+
+        // Countdown 4
+        status = completableFuture.get(5, TimeUnit.SECONDS);
+        completableFuture = new CompletableFuture<>();
+        lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
+        assertEquals(4, lobbyStartDto.countdown);
+        assertEquals("start", lobbyStartDto.status);
+        assertNull(lobbyStartDto.gameToken);
+
         // Countdown 3
         status = completableFuture.get(5, TimeUnit.SECONDS);
         completableFuture = new CompletableFuture<>();
@@ -361,7 +377,7 @@ class LobbyWebSocketTest {
         status = completableFuture.get(500, TimeUnit.SECONDS);
         completableFuture = new CompletableFuture<>();
         lobbyStartDto = objectMapper.readValue(status, LobbyStartDto.class);
-        assertEquals(3, lobbyStartDto.countdown);
+        assertEquals(5, lobbyStartDto.countdown);
         assertEquals("start", lobbyStartDto.status);
         assertNull(lobbyStartDto.gameToken);
 
