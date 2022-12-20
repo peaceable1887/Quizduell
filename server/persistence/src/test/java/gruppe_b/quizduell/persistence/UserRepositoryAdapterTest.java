@@ -71,4 +71,19 @@ class UserRepositoryAdapterTest {
         assertEquals(john.getId(), result.getId());
         assertEquals(john.getName(), result.getName());
     }
+
+    @Test
+    void whenUpdateUserThenUpdateUserInDb() {
+        // Arrange
+        dave.setName("Donald");
+
+        // Act
+        User result = repo.update(dave);
+        User result2 = repo.findByName("Donald");
+
+        // Assert
+        assertNotNull(result);
+        assertNotNull(result2);
+        assertEquals("Donald", result.getName());
+    }
 }
