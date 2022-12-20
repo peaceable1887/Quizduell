@@ -5,12 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.GameSessionPlayerDto;
@@ -24,9 +20,14 @@ import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQuery;
 import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
 import gruppe_b.quizduell.domain.entities.Question;
 
+/**
+ * Enthält die Spiellogik für ein Quiz über mehrere Runden.
+ * 
+ * @author Christopher Burmeister
+ */
 public class QuizSession extends Thread {
 
-    private String threadName;
+    private String threadName; // Für debugging Zwecke
     private final SendToPlayerService send;
 
     private final Quiz quiz;
@@ -49,6 +50,16 @@ public class QuizSession extends Thread {
 
     GetQuestionRandomQueryHandler questionRandomHandler;
 
+    /**
+     * Erzeugt eine Quiz-Session aus einem Quiz Objekt.
+     * 
+     * @param quiz                          Quiz für das eine Quiz-Session erstellt
+     *                                      werden soll.
+     * @param sendToPlayerService           Service über den mit den Spielern
+     *                                      Kommuniziert wird (Websocket)
+     * @param getQuestionRandomQueryHandler Handler über den zufällige Quizfragen
+     *                                      aus der Datenbank geholt werden.
+     */
     public QuizSession(Quiz quiz,
             SendToPlayerService sendToPlayerService,
             GetQuestionRandomQueryHandler getQuestionRandomQueryHandler) {
@@ -61,6 +72,9 @@ public class QuizSession extends Thread {
         roundList = new ArrayList<>();
     }
 
+    /**
+     * Hauptschleife die über die Anzahl der Runden iteriert.
+     */
     @Override
     public void run() {
         System.out.println("Running " + threadName);
@@ -72,12 +86,14 @@ public class QuizSession extends Thread {
             // neue Runde starten
             nextRound();
 
+            // Update-Schleife innerhalb einer Runde
             quizLoop(lastSendetCountdown);
 
             // Ende der aktuellen Runde
             endRound();
 
             try {
+                // Warten bis zum Start der nächsten Runde.
                 Thread.sleep(5_000);
             } catch (InterruptedException e) {
 
@@ -87,6 +103,14 @@ public class QuizSession extends Thread {
         System.out.println("Thread " + threadName + " exiting.");
     }
 
+    /**
+     * Schleife für eine Einzelne Quizrunde. Prüft alle 100ms, ob es eine Änderung
+     * gab, reagiert auf diese und sendet Updates an die Spieler.
+     * 
+     * @param lastSendetCountdown Variable für den letzten Countdown-Wert, der an
+     *                            die Spiele gesendet wurde. Die Klassenvariable
+     *                            wird von weiteren Methoden genutzt.
+     */
     private void quizLoop(int lastSendetCountdown) {
         int countdown = 1;
 
@@ -134,16 +158,29 @@ public class QuizSession extends Thread {
         }
     }
 
+    /**
+     * Quiz starten
+     */
     @Override
     public void start() {
         System.out.println("Starting " + threadName);
         super.start();
     }
 
+    /**
+     * Quiz abbrechen
+     */
     public void cancel() {
         cancel = true;
     }
 
+    /**
+     * Antwort eines Spielers an die QuizSession übergeben.
+     * Antwort wird in der quizLoop verarbeitet.
+     * 
+     * @param playerId Id des Spielers
+     * @param answer   Nummer der Antwort, die der Spieler gewählt hat.
+     */
     public void playerAnswer(UUID playerId, int answer) {
         Player playerObj = quiz.getPlayer(playerId);
 
@@ -156,16 +193,21 @@ public class QuizSession extends Thread {
         lock.lock();
 
         try {
+            // Wurde das Quiz abgebrochen? Läuft die aktuelle Runde noch?
             if (cancel || currentRoundClose) {
                 return;
             }
 
+            // Antwort des Spielers setzen
             player.setAnswer(answer);
 
+            // hat der Spieler bereits geantwortet?
             if (getCurrentRound().getPlayerAnswered().containsKey(player.getUserId())) {
                 return;
             }
 
+            // Spieler in das Array (der aktuellen Runde) der Spieler einfügen die
+            // geantwortet haben.
             getCurrentRound().getPlayerAnswered().put(player.getUserId(), player);
 
             if (calcRemainingSeconds() > 0) {
@@ -176,6 +218,9 @@ public class QuizSession extends Thread {
         }
     }
 
+    /**
+     * Neue Runde starten
+     */
     private void nextRound() {
         lock.lock();
         try {
@@ -189,6 +234,9 @@ public class QuizSession extends Thread {
         }
     }
 
+    /**
+     * Aktuelle runde abschließen
+     */
     private void endRound() {
         lock.lock();
         try {
@@ -197,6 +245,7 @@ public class QuizSession extends Thread {
             dto.roundStatus = RoundStatus.CLOSE;
             dto.correctAnswer = getCurrentRound().getQuestion().getCorrectAnswer();
 
+            // Antworten der Spieler in das dto übernehmen
             for (GameSessionPlayerDto playerDto : dto.playerList) {
                 QuizPlayer quizPlayer = getCurrentRound().getPlayerAnswered().get(playerDto.playerId);
                 if (quizPlayer != null) {
@@ -210,18 +259,21 @@ public class QuizSession extends Thread {
         }
     }
 
+    /**
+     * Zufällige Frage aus der Datenbank holen
+     * 
+     * @return Quizfrage
+     */
     private Question getNewQuestion() {
-        // return new Question(
-        // UUID.randomUUID(),
-        // "testText",
-        // "antwort1",
-        // "antwort2",
-        // "antwort3",
-        // "antwort4",
-        // 2);
         return questionRandomHandler.handle(new GetQuestionRandomQuery());
     }
 
+    /**
+     * Datenobjekt mit den aktuellen Daten einer Runde erstellen.
+     * Objekt wird genutzt um es an die Spieler zu schicken.
+     * 
+     * @return Datenobjekt mit den aktuellen Spieldaten
+     */
     private GameSessionDto createGameSessionDto() {
         GameSessionDto dto = new GameSessionDto();
         QuizRound round = getCurrentRound();
@@ -261,10 +313,20 @@ public class QuizSession extends Thread {
         return dto;
     }
 
+    /**
+     * Gibt die aktuelle Runde zurück, in dem sich das Quiz befindet.
+     * 
+     * @return Aktuelle Runde
+     */
     public QuizRound getCurrentRound() {
         return roundList.get(roundList.size() - 1);
     }
 
+    /**
+     * Berechnet die verbleibenden Sekunden, bis die aktuelle Runde zuende ist.
+     * 
+     * @return Sekunden bis zum Ende der Runde
+     */
     public int calcRemainingSeconds() {
         int passSeconds = (int) roundStartTime.until(Instant.now(), ChronoUnit.SECONDS);
         return currentMaxRoundLength - passSeconds;
