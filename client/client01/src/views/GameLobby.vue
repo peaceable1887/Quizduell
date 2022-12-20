@@ -3,6 +3,7 @@
     <div class="containerGame">
         <Headline class="headline" :text="`${lobby.name}`"></Headline>
         <div class="gameInfos">
+            <span class="countdown">Start in: <b>{{countdown}}</b> Sekunden</span>
             <span>Anzahl der Runden: 4</span>
             <span>erstellt von: {{lobby.players[0].userId}}</span>
         </div>
@@ -50,6 +51,7 @@ export default
             playerStatus: false,
             status: "",
             token: "",
+            countdown: "3",
         }
     },
     created()
@@ -80,12 +82,14 @@ export default
 
                     }
                 );
-                stompClient.subscribe("/app/lobby/" + this.urlId + "/status-player", 
+                stompClient.subscribe("/topic/lobby/" + this.urlId + "/start-lobby", 
                     (message) =>
                     {
-                        console.log("change status");
+                        console.log("Start, Countdown und Abbruch");
                         let json = JSON.parse(message.body);
-                        console.log(JSON.stringify(json))
+                        this.countdown = JSON.stringify(json.countdown)
+                        console.log("Countdown: " + this.countdown)
+                        localStorage.setItem("gameToken", JSON.stringify(json.gameToken))
                     }
                 );
             }
@@ -125,7 +129,7 @@ export default
         async toggle(playerId) 
         {
 
-            console.log("hallo welt" + playerId); 
+            console.log("Spieler ID: " + playerId); 
             
             if(!this.playerStatus)
             {
@@ -146,7 +150,6 @@ export default
             stompClient.connect({ Authorization: token }, 
                 (frame) =>
                 {
-                    console.log("hallo welt2");   
                     stompClient.send("/app/lobby/" + this.urlId + "/status-player", {}, JSON.stringify({status: this.status}));
                 }
             );
@@ -158,13 +161,6 @@ export default
 </script>
 
 <style scoped>
-.red {
-  color: red;
-}
-
-.btn {
-  margin: 10px;
-}
 .containerGame
 {
     margin: 0 15% 0 15%;
