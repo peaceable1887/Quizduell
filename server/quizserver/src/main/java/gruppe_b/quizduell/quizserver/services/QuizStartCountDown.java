@@ -12,7 +12,7 @@ public class QuizStartCountDown extends TimerTask {
 
     private final Quiz quiz;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private int counter = 3;
+    private int counter = 5;
     private StartQuiz startQuizCallBack;
 
     public QuizStartCountDown(Quiz quiz,
