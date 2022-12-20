@@ -31,6 +31,7 @@ export default
     {
         return{
             token: null,
+            userId: "",
             name: "",
             eMail: "",
         }
@@ -60,6 +61,7 @@ export default
             console.log("Nicht erfolgreich")
             console.log(err)
         })
+        
         await axios.get("http://localhost:8080/api/auth/v1/details",
         {
             headers:
@@ -70,7 +72,7 @@ export default
     
             let removeChars = JSON.stringify(resp.data.name);
             removeChars = removeChars.split('"').join('');      
-            this.name = removeChars;
+            this.name = removeChars;          
             localStorage.setItem("userName", this.name);
 
         }).catch((err) => {

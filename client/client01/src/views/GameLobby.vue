@@ -9,9 +9,9 @@
         <div class="playerContainer" v-for="player in players" :key="player">
             <PlayerInLobby 
                 :playerName="`${player.userId}`" 
-                @toggleBtn="toggle()"
-                :btnText="`${playerStatus ? 'Bereit' : 'Nicht bereit'}`">
-            </PlayerInLobby>
+                @toggleBtn="toggle(player.userId)"
+                :btnText="`${playerStatus ? 'Bereit' : 'Nicht bereit'}`"> 
+            </PlayerInLobby>       
         </div>
         <div class="btnWrapper">
             <router-link to="/lobby">
@@ -48,6 +48,7 @@ export default
             urlId: "",
             players:[],
             playerStatus: false,
+            status: "",
             token: "",
         }
     },
@@ -79,7 +80,7 @@ export default
 
                     }
                 );
-                stompClient.subscribe("/topic/lobby/" + this.urlId + "/status", 
+                stompClient.subscribe("/app/lobby/" + this.urlId + "/status-player", 
                     (message) =>
                     {
                         console.log("change status");
@@ -90,8 +91,6 @@ export default
             }
         );
         
-        
-
     },
     methods:
     {
@@ -123,9 +122,34 @@ export default
             .catch(error => console.log("ERROR"))       
         },
 
-        toggle() 
+        async toggle(playerId) 
         {
-            this.playerStatus = this.playerStatus ? false : true;
+
+            console.log("hallo welt" + playerId); 
+            
+            if(!this.playerStatus)
+            {
+                this.status = "ready"
+            }
+            if(this.playerStatus)
+            {
+                this.status = "wait"
+            }
+
+            this.playerStatus = this.playerStatus ? false : true; 
+        
+            const token = "Bearer " + localStorage.getItem("token");
+    
+            this.connection = new SockJS("http://localhost:8080/lobby-websocket");
+            const stompClient = Stomp.over(this.connection);
+
+            stompClient.connect({ Authorization: token }, 
+                (frame) =>
+                {
+                    console.log("hallo welt2");   
+                    stompClient.send("/app/lobby/" + this.urlId + "/status-player", {}, JSON.stringify({status: this.status}));
+                }
+            );
         },
 
     }
@@ -134,6 +158,13 @@ export default
 </script>
 
 <style scoped>
+.red {
+  color: red;
+}
+
+.btn {
+  margin: 10px;
+}
 .containerGame
 {
     margin: 0 15% 0 15%;
