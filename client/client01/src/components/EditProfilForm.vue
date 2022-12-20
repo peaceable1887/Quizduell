@@ -35,7 +35,6 @@
 </template>
 
 <script>
-    import axios from "axios";
     import Headline from "./Headline.vue"
     import Button from "./Button.vue"
 
@@ -61,7 +60,6 @@
         },
         async created()
         {
-            
             await fetch("http://localhost:8080/api/auth/v1/details", {
                 method: "GET",
                 headers: 

@@ -3,15 +3,16 @@
     <div class="containerGame">
         <Headline class="headline" :text="`${lobby.name}`"></Headline>
         <div class="gameInfos">
+            <span class="countdown">Start in: <b>{{countdown}}</b> Sekunden</span>
             <span>Anzahl der Runden: 4</span>
             <span>erstellt von: {{lobby.players[0].userId}}</span>
         </div>
         <div class="playerContainer" v-for="player in players" :key="player">
             <PlayerInLobby 
                 :playerName="`${player.userId}`" 
-                @toggleBtn="toggle()"
-                :btnText="`${playerStatus ? 'Bereit' : 'Nicht bereit'}`">
-            </PlayerInLobby>
+                @toggleBtn="toggle(player.userId)"
+                :btnText="`${playerStatus ? 'Bereit' : 'Nicht bereit'}`"> 
+            </PlayerInLobby>       
         </div>
         <div class="btnWrapper">
             <router-link to="/lobby">
@@ -48,7 +49,9 @@ export default
             urlId: "",
             players:[],
             playerStatus: false,
+            status: "",
             token: "",
+            countdown: "3",
         }
     },
     created()
@@ -79,19 +82,19 @@ export default
 
                     }
                 );
-                stompClient.subscribe("/topic/lobby/" + this.urlId + "/status", 
+                stompClient.subscribe("/topic/lobby/" + this.urlId + "/start-lobby", 
                     (message) =>
                     {
-                        console.log("change status");
+                        console.log("Start, Countdown und Abbruch");
                         let json = JSON.parse(message.body);
-                        console.log(JSON.stringify(json))
+                        this.countdown = JSON.stringify(json.countdown)
+                        console.log("Countdown: " + this.countdown)
+                        localStorage.setItem("gameToken", JSON.stringify(json.gameToken))
                     }
                 );
             }
         );
         
-        
-
     },
     methods:
     {
@@ -123,9 +126,33 @@ export default
             .catch(error => console.log("ERROR"))       
         },
 
-        toggle() 
+        async toggle(playerId) 
         {
-            this.playerStatus = this.playerStatus ? false : true;
+
+            console.log("Spieler ID: " + playerId); 
+            
+            if(!this.playerStatus)
+            {
+                this.status = "ready"
+            }
+            if(this.playerStatus)
+            {
+                this.status = "wait"
+            }
+
+            this.playerStatus = this.playerStatus ? false : true; 
+        
+            const token = "Bearer " + localStorage.getItem("token");
+    
+            this.connection = new SockJS("http://localhost:8080/lobby-websocket");
+            const stompClient = Stomp.over(this.connection);
+
+            stompClient.connect({ Authorization: token }, 
+                (frame) =>
+                {
+                    stompClient.send("/app/lobby/" + this.urlId + "/status-player", {}, JSON.stringify({status: this.status}));
+                }
+            );
         },
 
     }
