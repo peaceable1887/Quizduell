@@ -36,9 +36,9 @@ public class LobbyStartCountDown extends TimerTask {
             this.cancel();
             String token = lobbyService.startGame(lobby);
             sendMessage(createDto("start", counter, token));
+        } else {
+            sendMessage(createDto("start", counter));
         }
-
-        sendMessage(createDto("start", counter));
 
         counter--;
     }
