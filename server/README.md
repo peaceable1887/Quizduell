@@ -314,7 +314,7 @@ Beispiel:
 
 - Endpunkt zum Abonnieren, der über Start, Countdown und Abbruch informiert
 
-      /topic/lobby/<lobby-UUID>/status-lobby
+      /topic/lobby/<lobby-UUID>/start-lobby
 
   - Message
 
@@ -469,7 +469,7 @@ Beispiel:
 
 - Endpunkt zum Abonnieren, der über Start, Countdown und Abbruch informiert
 
-      /topic/quiz/<lobby-UUID>/status-quiz
+      /topic/quiz/<lobby-UUID>/start-quiz
 
   - Message
 
