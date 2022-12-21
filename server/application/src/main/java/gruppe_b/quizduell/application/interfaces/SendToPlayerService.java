@@ -9,4 +9,6 @@ public interface SendToPlayerService {
     void sendRoundCountdown(UUID lobbyId, int countdown);
 
     void sendGameSessionUpdate(UUID lobbyId, GameSessionDto gameSessionDto);
+
+    void sendQuizAbort(UUID lobbyId, GameSessionDto gameSessionDto);
 }

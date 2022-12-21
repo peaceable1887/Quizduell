@@ -388,6 +388,30 @@ Beispiel:
 
         200 OK
 
+- Mit Quiz abbrechen
+
+  - Endpunkt
+
+        <host>:/api/quiz/v1/cancel
+
+  - request method
+    - POST
+  - request header
+    - bearer token (JWT)
+  - request body
+
+        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
+
+  - response body
+
+        {
+          "true"
+        }
+
+  - response status
+
+        200 OK
+
 - Einzelnes Quiz holen
 
   - Endpunkt

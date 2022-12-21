@@ -26,4 +26,8 @@ public class SendToPlayerServiceImp implements SendToPlayerService {
         simpMessagingTemplate.convertAndSend("/topic/quiz/session/" + lobbyId.toString(), gameSessionDto);
     }
 
+    @Override
+    public void sendQuizAbort(UUID lobbyId, GameSessionDto gameSessionDto) {
+        simpMessagingTemplate.convertAndSend("/topic/quiz/session/" + lobbyId.toString(), gameSessionDto);
+    }
 }

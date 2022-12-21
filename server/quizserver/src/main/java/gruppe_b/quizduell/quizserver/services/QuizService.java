@@ -126,6 +126,37 @@ public class QuizService implements StartQuiz {
         return quiz;
     }
 
+    /**
+     * Eine Quiz oder eine laufende QuizSession abbrechen.
+     * 
+     * @param lobbyId LobbyId zu der QuizSession
+     * @return true wenn das Quiz gefunden und abgebrochen wurde.
+     */
+    public boolean cancelQuiz(UUID lobbyId) {
+        boolean found = false;
+
+        Quiz quiz = quizRepo.get(lobbyId);
+        QuizSession session = sessionRepo.get(lobbyId);
+
+        if (quiz != null) {
+            quiz.cancel();
+            found = true;
+
+            for (Player player : quiz.getPlayers()) {
+                playerRepo.remove(player.getUserId());
+            }
+
+            simpMessagingTemplate.convertAndSend("/topic/quiz/" + quiz.getLobbyId(), quiz);
+        }
+
+        if (session != null) {
+            session.cancel();
+            return true;
+        }
+
+        return found;
+    }
+
     public Quiz getQuiz(UUID lobbyId) {
         return quizRepo.get(lobbyId);
     }

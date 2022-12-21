@@ -314,6 +314,59 @@ class GameSessionTest {
     }
 
     @Test
+    void whenCancelThenCancelSession() throws Exception {
+        // Arrange
+
+        // Act
+        session.start();
+
+        Thread.sleep(2_000);
+
+        session.cancel();
+
+        Thread.sleep(2_000);
+
+        // Assert
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                any(GameSessionDto.class));
+
+        verify(sendToPlayerService, times(1)).sendQuizAbort(eq(quiz.getLobbyId()),
+                any(GameSessionDto.class));
+
+        verify(sendToPlayerService, times(1)).sendQuizAbort(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundAbort(1)));
+    }
+
+    @Test
+    void whenCancelThenAcceptNoAnswer() throws Exception {
+        // Arrange
+        UUID playerId1 = quiz.getPlayers().get(0).getUserId();
+
+        // Act
+        session.start();
+
+        Thread.sleep(2_000);
+
+        session.cancel();
+
+        Thread.sleep(2_000);
+
+        session.playerAnswer(playerId1, 1);
+
+        Thread.sleep(1_000);
+
+        // Assert
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                any(GameSessionDto.class));
+
+        verify(sendToPlayerService, times(1)).sendQuizAbort(eq(quiz.getLobbyId()),
+                any(GameSessionDto.class));
+
+        verify(sendToPlayerService, times(1)).sendQuizAbort(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcherRoundAbort(1)));
+    }
+
+    @Test
     void fullQuizSessionTest() throws Exception {
         // Arrange
         UUID playerId1 = quiz.getPlayers().get(0).getUserId();
@@ -470,6 +523,17 @@ class GameSessionTest {
                 x.answerThree.length() > 0 &&
                 x.answerFour.length() > 0 &&
                 x.roundStatus == RoundStatus.CLOSE;
+    }
+
+    ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcherRoundAbort(int currentRound) {
+        return x -> x.maxRounds == 6 &&
+                x.currentRound == currentRound &&
+                x.questionText.length() > 0 &&
+                x.answerOne.length() > 0 &&
+                x.answerTwo.length() > 0 &&
+                x.answerThree.length() > 0 &&
+                x.answerFour.length() > 0 &&
+                x.roundStatus == RoundStatus.ABORT;
     }
 
     ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcherRoundAndPlayerFinish(int currentRound) {

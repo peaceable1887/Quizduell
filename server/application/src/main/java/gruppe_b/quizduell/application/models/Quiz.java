@@ -78,6 +78,14 @@ public class Quiz {
         return true;
     }
 
+    public void cancel() {
+        if (this.quizStatus == QuizStatus.FINISH) {
+            return;
+        }
+
+        this.quizStatus = QuizStatus.ABORT;
+    }
+
     public QuizStatus getQuizStatus() {
         return this.quizStatus;
     }

@@ -32,6 +32,18 @@ public class QuizController {
         this.quizService = quizService;
     }
 
+    /**
+     * Mit einem Quiz verbinden.
+     * Gibt es das Quiz noch nicht, wird es erstellt und der User mit diesem
+     * Verbunden.
+     * 
+     * @param request
+     * @return
+     * @throws PlayerAlreadyConnectedException
+     * @throws PlayerAlreadyInOtherGameException
+     * @throws JwtNotIssuedByLobbyServerException
+     * @throws JwtIsExpiredException
+     */
     @PostMapping("/connect")
     public ResponseEntity<Quiz> connect(@RequestBody ConnectRequest request)
             throws PlayerAlreadyConnectedException,
@@ -62,5 +74,16 @@ public class QuizController {
     @GetMapping("/get")
     public ResponseEntity<Quiz> get(@RequestBody QuizRequest request) {
         return ResponseEntity.ok().body(quizService.getQuiz(request.lobbyId));
+    }
+
+    /**
+     * Bricht ein Quiz ab.
+     * 
+     * @param request
+     * @return
+     */
+    @PostMapping("/cancel")
+    public ResponseEntity<Boolean> cancel(@RequestBody QuizRequest request) {
+        return ResponseEntity.ok().body(quizService.cancelQuiz(request.lobbyId));
     }
 }

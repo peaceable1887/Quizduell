@@ -25,6 +25,7 @@ import gruppe_b.quizduell.quizserver.common.QuizHelper;
 import gruppe_b.quizduell.quizserver.common.QuizRequest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -107,6 +108,118 @@ public class QuizControllerTest {
         assertTrue(content.contains(player.getUserId().toString()));
         assertTrue(content.contains(player2.getUserId().toString()));
         assertTrue(content.contains(lobby.getId().toString()));
+    }
+
+    @Test
+    @WithMockUser
+    void whenPlayerConnectToSecondQuizThenBadRequest() throws Exception {
+        // Arrange
+        Player player = quizHelper.createPlayer();
+        Lobby lobby = quizHelper.createLobby(player.getUserId());
+        String token = quizHelper.createToken(lobby);
+
+        Lobby secondLobby = quizHelper.createLobby(player.getUserId());
+        String secondToken = quizHelper.createToken(secondLobby);
+
+        ConnectRequest connectRequest = new ConnectRequest();
+        connectRequest.playerId = player.getUserId();
+        connectRequest.lobbyId = lobby.getId();
+        connectRequest.gameToken = token;
+
+        ConnectRequest connectRequest2 = new ConnectRequest();
+        connectRequest2.playerId = player.getUserId();
+        connectRequest2.lobbyId = secondLobby.getId();
+        connectRequest2.gameToken = secondToken;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(connectRequest);
+        String secondJson = objectMapper.writeValueAsString(connectRequest2);
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/connect")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk()).andReturn();
+
+        MvcResult secondResult = this.mvc.perform(post("/v1/connect")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(secondJson))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // Assert
+        assertNotNull(secondResult);
+    }
+
+    @Test
+    @WithMockUser
+    void whenCancelQuizThenCancelQuiz() throws Exception {
+        // Arrange
+        Player player = quizHelper.createPlayer();
+        Player player2 = quizHelper.createPlayer();
+        Lobby lobby = quizHelper.createLobby(player.getUserId());
+        String token = quizHelper.createToken(lobby);
+        quizHelper.createQuiz(player, lobby, token);
+
+        ConnectRequest connectRequest = new ConnectRequest();
+        connectRequest.playerId = player2.getUserId();
+        connectRequest.lobbyId = lobby.getId();
+        connectRequest.gameToken = token;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(connectRequest);
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert
+        assertEquals("true", result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @WithMockUser
+    void whenQuizCancelAndPlayerConnectToSecondQuizThenOk() throws Exception {
+        // Arrange
+        Player player = quizHelper.createPlayer();
+        Lobby lobby = quizHelper.createLobby(player.getUserId());
+        String token = quizHelper.createToken(lobby);
+
+        Lobby secondLobby = quizHelper.createLobby(player.getUserId());
+        String second = quizHelper.createToken(secondLobby);
+
+        ConnectRequest connectRequest = new ConnectRequest();
+        connectRequest.playerId = player.getUserId();
+        connectRequest.lobbyId = lobby.getId();
+        connectRequest.gameToken = token;
+
+        ConnectRequest connectRequest2 = new ConnectRequest();
+        connectRequest2.playerId = player.getUserId();
+        connectRequest2.lobbyId = secondLobby.getId();
+        connectRequest2.gameToken = second;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(connectRequest);
+        String secondJson = objectMapper.writeValueAsString(connectRequest2);
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/connect")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk()).andReturn();
+
+        MvcResult cancelResult = this.mvc.perform(post("/v1/cancel")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk()).andReturn();
+
+        MvcResult secondResult = this.mvc.perform(post("/v1/connect")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(secondJson))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert
     }
 
     @Test

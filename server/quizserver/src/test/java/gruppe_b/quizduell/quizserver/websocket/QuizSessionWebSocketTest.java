@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import javax.validation.Valid;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Repeat;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.web.socket.WebSocketHttpHeaders;
@@ -50,7 +52,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 @DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
 public class QuizSessionWebSocketTest {
 
@@ -160,6 +161,7 @@ public class QuizSessionWebSocketTest {
     }
 
     @Test
+    @RepeatedTest(20)
     void whenSendAnswerThenSendUpdate() throws Exception {
         // Arrange
         ObjectMapper objectMapper = new ObjectMapper();
@@ -173,7 +175,7 @@ public class QuizSessionWebSocketTest {
         StompSession stompSession = connectAndGetStompSession();
 
         stompSession.subscribe(SUBSCRIBE_QUIZ_SESSION + lobbyId.toString(),
-                new PublishQuizStompFrameHandler());
+                new PublishQuizStompFrameHandler(PlayerRoundStatus.FINISH.toString()));
 
         // Act
         stompSession.send(SEND_QUIZ_SESSION_ANSWER + lobbyId.toString() + "/answer", "2".getBytes());
@@ -216,7 +218,48 @@ public class QuizSessionWebSocketTest {
         assertTrue(Integer.parseInt(result) <= 6);
     }
 
+    @Test
+    @RepeatedTest(5)
+    void whenCancelThenCancelQuizSession() throws Exception {
+        // Arrange
+        ObjectMapper objectMapper = new ObjectMapper();
+        GameSessionDto gameSessionDto;
+
+        Quiz quiz = sessionHelper.createAndStartQuizSession();
+        UUID lobbyId = quiz.getLobbyId();
+        UUID playerId = quiz.getPlayers().get(0).getUserId();
+        jwtToken = authHelper.generateToken(playerId.toString());
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_QUIZ_SESSION + lobbyId.toString(),
+                new PublishQuizStompFrameHandler(RoundStatus.ABORT.toString()));
+
+        // Act
+        Thread.sleep(1_000);
+
+        quizService.cancelQuiz(lobbyId);
+
+        String result = completableFuture.get(5, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(result);
+
+        gameSessionDto = objectMapper.readValue(result, GameSessionDto.class);
+        assertEquals(RoundStatus.ABORT, gameSessionDto.roundStatus);
+    }
+
     private class PublishQuizStompFrameHandler implements StompFrameHandler {
+
+        private final String STRING_CONTAINS;
+
+        public PublishQuizStompFrameHandler() {
+            STRING_CONTAINS = null;
+        }
+
+        public PublishQuizStompFrameHandler(String stringContains) {
+            STRING_CONTAINS = stringContains;
+        }
 
         @Override
         public Type getPayloadType(StompHeaders headers) {
@@ -227,7 +270,14 @@ public class QuizSessionWebSocketTest {
         public void handleFrame(StompHeaders headers, @Nullable Object payload) {
             // TODO Auto-generated method stub
             String msg = new String((byte[]) payload);
-            completableFuture.complete(msg);
+
+            if (STRING_CONTAINS != null) {
+                if (msg.contains(STRING_CONTAINS)) {
+                    completableFuture.complete(msg);
+                }
+            } else {
+                completableFuture.complete(msg);
+            }
         }
     }
 }

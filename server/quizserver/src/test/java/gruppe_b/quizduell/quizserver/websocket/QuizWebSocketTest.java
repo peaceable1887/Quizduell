@@ -38,6 +38,7 @@ import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.quizserver.common.AuthHelper;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
 import gruppe_b.quizduell.quizserver.common.QuizStartDto;
+import gruppe_b.quizduell.quizserver.services.QuizService;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,6 +59,9 @@ public class QuizWebSocketTest {
 
     @Autowired
     AuthHelper authHelper;
+
+    @Autowired
+    QuizService quizService;
 
     static {
         System.setProperty("DB_PORT", "3306");
@@ -234,6 +238,34 @@ public class QuizWebSocketTest {
         assertNotNull(quizStartDto);
         assertEquals(0, quizStartDto.countdown);
         assertEquals("start", quizStartDto.status);
+    }
+
+    @Test
+    void whenCancelThenCancelQuiz() throws Exception {
+        // Arrange
+        Quiz quiz = quizHelper.createQuiz();
+        UUID lobbyId = quiz.getLobbyId();
+        UUID playerId = quiz.getPlayers().get(0).getUserId();
+        jwtToken = authHelper.generateToken(playerId.toString());
+
+        StompSession stompSession = connectAndGetStompSession();
+
+        stompSession.subscribe(SUBSCRIBE_QUIZ_UPDATE_ENDPOINT + lobbyId.toString(),
+                new PublishQuizStompFrameHandler());
+
+        Thread.sleep(2_000);
+
+        completableFuture = new CompletableFuture<>();
+
+        // Act
+        quizService.cancelQuiz(lobbyId);
+
+        String result = completableFuture.get(5, TimeUnit.SECONDS);
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.contains(lobbyId.toString()));
+        assertTrue(result.contains("\",\"quizStatus\":\"ABORT"));
     }
 
     private class PublishQuizStompFrameHandler implements StompFrameHandler {

@@ -116,13 +116,13 @@ public class QuizSession extends Thread {
 
         // Schleife für eine Runde
         while (countdown > 0) {
-            if (cancel) {
-                return;
-            }
-
             lock.lock();
 
             try {
+                if (cancel) {
+                    return;
+                }
+
                 countdown = calcRemainingSeconds();
 
                 // Gab es eine Antwort von einem Spieler und die Zeit muss noch verkürzt werden?
@@ -171,7 +171,22 @@ public class QuizSession extends Thread {
      * Quiz abbrechen
      */
     public void cancel() {
-        cancel = true;
+        lock.lock();
+
+        try {
+            if (cancel) {
+                return;
+            }
+
+            cancel = true;
+
+            GameSessionDto dto = createGameSessionDto();
+            dto.roundStatus = RoundStatus.ABORT;
+
+            send.sendQuizAbort(quiz.getLobbyId(), dto);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -240,6 +255,10 @@ public class QuizSession extends Thread {
     private void endRound() {
         lock.lock();
         try {
+            if (cancel) {
+                return;
+            }
+
             currentRoundClose = true;
             GameSessionDto dto = createGameSessionDto();
             dto.roundStatus = RoundStatus.CLOSE;
