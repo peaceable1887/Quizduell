@@ -360,7 +360,11 @@ Beispiel:
     - bearer token (JWT)
   - request body
 
-        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
+        {
+          "gameToken":"<JWT>",
+          "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682",
+          "playerId":"7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+        }
 
   - response body
 
@@ -393,11 +397,7 @@ Beispiel:
     - bearer token (JWT)
   - request body
 
-        {
-          "gameToken":"<JWT>",
-          "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682",
-          "playerId":"7cb353a2-c35d-4560-958a-a6ec6ceae50b"
-        }
+        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
 
   - response body
 
