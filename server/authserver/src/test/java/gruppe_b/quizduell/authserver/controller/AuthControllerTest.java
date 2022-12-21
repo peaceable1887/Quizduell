@@ -11,11 +11,13 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
 import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommand;
 import gruppe_b.quizduell.authserver.common.AuthHelper;
+import gruppe_b.quizduell.authserver.common.UserJwtDto;
 import gruppe_b.quizduell.domain.entities.User;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,130 +33,138 @@ import static org.hamcrest.Matchers.containsString;
 @AutoConfigureMockMvc
 class AuthControllerTest {
 
-        static {
-                System.setProperty("DB_PORT", "3306");
-                System.setProperty("DB_HOSTNAME", "localhost");
-                System.setProperty("DB_USERNAME", "root");
-                System.setProperty("DB_PASSWORD", "root");
-        }
+    static {
+        System.setProperty("DB_PORT", "3306");
+        System.setProperty("DB_HOSTNAME", "localhost");
+        System.setProperty("DB_USERNAME", "root");
+        System.setProperty("DB_PASSWORD", "root");
+    }
 
-        @Autowired
-        MockMvc mvc;
+    @Autowired
+    MockMvc mvc;
 
-        @Autowired
-        PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
-        @Autowired
-        RequestHandler<CreateUserCommand, User> createUserHandler;
+    @Autowired
+    RequestHandler<CreateUserCommand, User> createUserHandler;
 
-        @Autowired
-        AuthHelper authHelper;
+    @Autowired
+    AuthHelper authHelper;
 
-        @Test
-        void whenAuthenticatedThenSaysHelloUser() throws Exception {
-                // Arrange
-                String endcodePswd = passwordEncoder.encode("password");
+    @Test
+    void whenAuthenticatedThenSaysHelloUser() throws Exception {
+        // Arrange
+        String endcodePswd = passwordEncoder.encode("password");
 
-                CreateUserCommand command = new CreateUserCommand(
-                                "john",
-                                "test@test.de",
-                                endcodePswd,
-                                "salt");
-                createUserHandler.handle(command);
+        CreateUserCommand command = new CreateUserCommand(
+                "john",
+                "test@test.de",
+                endcodePswd,
+                "salt");
+        createUserHandler.handle(command);
 
-                MvcResult result = this.mvc.perform(get("/v1/token")
-                                .with(httpBasic("john", "password")))
-                                .andExpect(status().isOk())
-                                .andReturn();
+        MvcResult result = this.mvc.perform(get("/v1/token")
+                .with(httpBasic("john", "password")))
+                .andExpect(status().isOk())
+                .andReturn();
 
-                String token = result.getResponse().getContentAsString();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-                // Act & Assert
-                this.mvc.perform(get("/v1/")
-                                .header("Authorization", "Bearer " + token))
-                                .andExpect(status().isOk())
-                                .andExpect(content().string(containsString("Hello, ")))
-                                .andReturn();
-        }
+        String jwtJson = result.getResponse().getContentAsString();
+        UserJwtDto jwtDto = objectMapper.readValue(jwtJson, UserJwtDto.class);
 
-        @Test
-        void whenRegisterThenRegistered() throws Exception {
-                // Arrange
-                JSONObject jObject = new JSONObject();
-                jObject.put("name", "RegisterTestName");
-                jObject.put("password", "password");
+        // Act & Assert
+        this.mvc.perform(get("/v1/")
+                .header("Authorization", "Bearer " + jwtDto.token))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Hello, ")))
+                .andReturn();
+    }
 
-                // Act & Assert
-                this.mvc.perform(post("/v1/register")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jObject.toJSONString()))
-                                .andExpect(status().isCreated());
-        }
+    @Test
+    void whenRegisterThenRegistered() throws Exception {
+        // Arrange
+        JSONObject jObject = new JSONObject();
+        jObject.put("name", "RegisterTestName");
+        jObject.put("password", "password");
 
-        @Test
-        void whenRegisteredThenUserGetToken() throws Exception {
-                // Arrange
-                JSONObject jObject = new JSONObject();
-                jObject.put("name", "RegisterTestName2");
-                jObject.put("password", "password");
+        // Act & Assert
+        this.mvc.perform(post("/v1/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jObject.toJSONString()))
+                .andExpect(status().isCreated());
+    }
 
-                // Act
-                this.mvc.perform(post("/v1/register")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jObject.toJSONString()));
+    @Test
+    void whenRegisteredThenUserGetToken() throws Exception {
+        // Arrange
+        JSONObject jObject = new JSONObject();
+        jObject.put("name", "RegisterTestName2");
+        jObject.put("password", "password");
 
-                MvcResult result = this.mvc.perform(get("/v1/token")
-                                .with(httpBasic("RegisterTestName2", "password")))
-                                .andExpect(status().isOk())
-                                .andReturn();
+        // Act
+        this.mvc.perform(post("/v1/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jObject.toJSONString()));
 
-                String token = result.getResponse().getContentAsString();
+        MvcResult result = this.mvc.perform(get("/v1/token")
+                .with(httpBasic("RegisterTestName2", "password")))
+                .andExpect(status().isOk())
+                .andReturn();
 
-                // Assert
-                assertNotNull(token);
-                assertEquals(524, token.length());
-        }
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        @Test
-        void whenUnregisteredThen401() throws Exception {
-                // Arrange
+        String jwtJson = result.getResponse().getContentAsString();
+        UserJwtDto jwtDto = objectMapper.readValue(jwtJson, UserJwtDto.class);
 
-                // Act
+        // Assert
+        assertNotNull(jwtDto);
+        assertNotNull(jwtDto.token);
+        assertNotNull(jwtDto.userId);
+        assertEquals(524, jwtDto.token.length());
+    }
 
-                // Assert
-                this.mvc.perform(get("/v1/token")
-                                .with(httpBasic("unregisteredTest", "password")))
-                                .andExpect(status().isUnauthorized());
-        }
+    @Test
+    void whenUnregisteredThen401() throws Exception {
+        // Arrange
 
-        @Test
-        void whenRegisterWithEmptyNameWhenFail() throws Exception {
-                // Arrange
-                JSONObject jObject = new JSONObject();
-                jObject.put("name", "");
-                jObject.put("password", "password");
+        // Act
 
-                // Act & Assert
-                this.mvc.perform(post("/v1/register")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(jObject.toJSONString()))
-                                .andExpect(status().isBadRequest());
-                // .andExpect(jsonPath("$.name", Is.is("Name is mandatory")));
-        }
+        // Assert
+        this.mvc.perform(get("/v1/token")
+                .with(httpBasic("unregisteredTest", "password")))
+                .andExpect(status().isUnauthorized());
+    }
 
-        @Test
-        @WithMockUser
-        void whenGetUserDetailsThenReturnUserDetails() throws Exception {
-                // Arrange
-                String userId = authHelper.generateUser().toString();
-                String jwtToken = authHelper.generateToken(userId);
+    @Test
+    void whenRegisterWithEmptyNameWhenFail() throws Exception {
+        // Arrange
+        JSONObject jObject = new JSONObject();
+        jObject.put("name", "");
+        jObject.put("password", "password");
 
-                // Act
-                MvcResult result = this.mvc.perform(get("/v1/details")
-                                .header("Authorization", "Bearer " + jwtToken))
-                                .andExpect(status().isOk()).andReturn();
+        // Act & Assert
+        this.mvc.perform(post("/v1/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jObject.toJSONString()))
+                .andExpect(status().isBadRequest());
+        // .andExpect(jsonPath("$.name", Is.is("Name is mandatory")));
+    }
 
-                // Assert
-                assertTrue(result.getResponse().getContentAsString().contains("authHelper"));
-        }
+    @Test
+    @WithMockUser
+    void whenGetUserDetailsThenReturnUserDetails() throws Exception {
+        // Arrange
+        String userId = authHelper.generateUser().toString();
+        String jwtToken = authHelper.generateToken(userId);
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/details")
+                .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert
+        assertTrue(result.getResponse().getContentAsString().contains("authHelper"));
+    }
 }

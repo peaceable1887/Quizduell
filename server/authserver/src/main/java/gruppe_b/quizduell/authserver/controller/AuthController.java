@@ -20,6 +20,7 @@ import org.springframework.web.client.HttpServerErrorException.NotImplemented;
 
 import gruppe_b.quizduell.authserver.common.UserCredentialsDto;
 import gruppe_b.quizduell.authserver.common.UserDetailsDto;
+import gruppe_b.quizduell.authserver.common.UserJwtDto;
 import gruppe_b.quizduell.authserver.service.TokenService;
 import gruppe_b.quizduell.authserver.service.UserRegisterService;
 import gruppe_b.quizduell.authserver.service.UserService;
@@ -56,11 +57,11 @@ public class AuthController {
      * @return JWT
      */
     @GetMapping("/token")
-    public ResponseEntity<String> token(Authentication authentication) {
+    public ResponseEntity<UserJwtDto> token(Authentication authentication) {
         LOG.debug("Token requested for user: '{}'", authentication.getName());
         String token = tokenService.generateToken(authentication);
         LOG.debug("Token granted {}", token);
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+        return ResponseEntity.status(HttpStatus.OK).body(new UserJwtDto(token, authentication.getName()));
     }
 
     /**

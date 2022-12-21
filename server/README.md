@@ -50,7 +50,10 @@
 
   - response body (JWT Beispiel)
 
-          eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJxdWl6ZHVlbGxfYXV0aHNlcnZlciIsInN1YiI6IjFkYjczOWZlLTYwNTQtNDU2Ny1iNDQzLTJlOGUzODgyMjA2OCIsImV4cCI6MTY2NzQxNTMxOSwiaWF0IjoxNjY3NDExNzE5LCJzY29wZSI6IiJ9.lT1O1QhQ0_kTIYbypLIrG94-Jw4Wo2hgIoYg0NrVCedHhfvsn0yihlU3v7JUnwD8Nk0i6_01f360h-ug61jlsxubJQLTCQ6Sq7U0k57sjYJA1oiyewdqhzPk5IIAbuwnU-sudRJenHxKTuZE_3MmWJf1YjByYwXs_Aydmts4Rp81XeMtUj0hbTtk7PtQPA6xlOZBuCmIfvX1FaNMSOh3qHacoAvdgIEv6ERiaYe1pgHDJusY-1DUHSTE2RZ4rNDHhrIKhijwsroYxUTeczzJ4-2O0EQjC5tik5mwIcufO2dvSUBtG-lyVgr2dI1AgY_O7A-JBFrZ-PxrsIlvZxsvGg
+          {
+            "token": "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJxdWl6ZHVlbGxfYXV0aHNlcnZlciIsInN1YiI6IjFkYjczOWZlLTYwNTQtNDU2Ny1iNDQzLTJlOGUzODgyMjA2OCIsImV4cCI6MTY2NzQxNTMxOSwiaWF0IjoxNjY3NDExNzE5LCJzY29wZSI6IiJ9.lT1O1QhQ0_kTIYbypLIrG94-Jw4Wo2hgIoYg0NrVCedHhfvsn0yihlU3v7JUnwD8Nk0i6_01f360h-ug61jlsxubJQLTCQ6Sq7U0k57sjYJA1oiyewdqhzPk5IIAbuwnU-sudRJenHxKTuZE_3MmWJf1YjByYwXs_Aydmts4Rp81XeMtUj0hbTtk7PtQPA6xlOZBuCmIfvX1FaNMSOh3qHacoAvdgIEv6ERiaYe1pgHDJusY-1DUHSTE2RZ4rNDHhrIKhijwsroYxUTeczzJ4-2O0EQjC5tik5mwIcufO2dvSUBtG-lyVgr2dI1AgY_O7A-JBFrZ-PxrsIlvZxsvGg",
+            "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+          }
 
   - response status
 
