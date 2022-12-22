@@ -160,8 +160,10 @@ public class QuizWebSocketTest {
 
         // Assert
         assertNotNull(result);
-        assertTrue(result.contains(lobbyId.toString()));
-        assertTrue(result.contains(playerId.toString() + "\",\"status\":\"ready"));
+
+        Quiz quizDto = objectMapper.readValue(result, Quiz.class);
+        assertEquals(lobbyId, quizDto.getLobbyId());
+        assertEquals("ready", quizDto.getPlayer(playerId).getStatus());
     }
 
     @Test
@@ -172,7 +174,7 @@ public class QuizWebSocketTest {
         quiz.getPlayers().get(0).setReady();
 
         UUID player2Id = UUID.randomUUID();
-        quiz.addPlayer(player2Id);
+        quiz.addPlayer(player2Id, "jane");
         jwtToken = authHelper.generateToken(player2Id.toString());
 
         PlayerStatusDto dto = new PlayerStatusDto();

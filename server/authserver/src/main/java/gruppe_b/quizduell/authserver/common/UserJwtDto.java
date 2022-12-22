@@ -9,17 +9,21 @@ public class UserJwtDto implements Serializable {
 
     }
 
-    public UserJwtDto(String token, String userId) {
+    public UserJwtDto(String token, String userId, String username) {
         this.token = token;
         this.userId = userId;
+        this.username = username;
     }
 
-    public UserJwtDto(String token, UUID userId) {
+    public UserJwtDto(String token, UUID userId, String username) {
         this.token = token;
         this.userId = userId.toString();
+        this.username = username;
     }
 
     public String token;
 
     public String userId;
+
+    public String username;
 }

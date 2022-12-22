@@ -25,7 +25,7 @@ public class LobbyHelper {
 
     public UUID createFullLobby() throws Exception {
         Lobby lobby = lobbyService.createLobby(UUID.randomUUID(), "test");
-        lobby.addPlayer(new Player(UUID.randomUUID()));
+        lobby.addPlayer(new Player(UUID.randomUUID(), "john"));
         return lobby.getId();
     }
 

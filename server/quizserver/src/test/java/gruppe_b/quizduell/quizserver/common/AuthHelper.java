@@ -33,6 +33,7 @@ public class AuthHelper {
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(id)
                 .claim("scope", "")
+                .claim("name", "john")
                 .build();
         return "Bearer " + this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
@@ -49,6 +50,7 @@ public class AuthHelper {
                 .expiresAt(now.minus(1, ChronoUnit.HOURS))
                 .subject(id)
                 .claim("scope", "")
+                .claim("name", "john")
                 .build();
 
         return "Bearer " + this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

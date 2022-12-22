@@ -107,7 +107,7 @@ class LobbyControllerTests {
         LobbyBuilder builder = lobbyHelper.getNewLobbyBuilder();
         UUID playerId = UUID.fromString("00000000-0000-0000-0000-000000000000");
         Lobby lobby = builder.buildLobby()
-                .addPlayer(playerId)
+                .addPlayer(playerId, "john")
                 .getLobby();
 
         assertEquals(2, lobby.getPlayers().size());

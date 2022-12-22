@@ -1,7 +1,11 @@
 package gruppe_b.quizduell.quizserver.controller;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +49,7 @@ public class QuizController {
      * @throws JwtIsExpiredException
      */
     @PostMapping("/connect")
-    public ResponseEntity<Quiz> connect(@RequestBody ConnectRequest request)
+    public ResponseEntity<Quiz> connect(@AuthenticationPrincipal Jwt principal, @RequestBody ConnectRequest request)
             throws PlayerAlreadyConnectedException,
             PlayerAlreadyInOtherGameException,
             JwtNotIssuedByLobbyServerException,
@@ -55,7 +59,8 @@ public class QuizController {
         try {
             quiz = quizService.connectToQuiz(
                     request.lobbyId,
-                    request.playerId,
+                    UUID.fromString(principal.getSubject()),
+                    principal.getClaimAsString("name"),
                     request.gameToken);
         } catch (PlayerAlreadyConnectedException | PlayerAlreadyInOtherGameException
                 | JwtNotIssuedByLobbyServerException | JwtIsExpiredException e) {

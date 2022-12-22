@@ -62,10 +62,9 @@ public class AuthController {
     @GetMapping("/token")
     public ResponseEntity<UserJwtDto> token(Authentication authentication) {
         LOG.debug("Token requested for user: '{}'", authentication.getName());
-        String token = tokenService.generateToken(authentication);
-        LOG.debug("Token granted {}", token);
-        String userId = jwtDecoder.decode(token).getSubject();
-        return ResponseEntity.status(HttpStatus.OK).body(new UserJwtDto(token, userId));
+        UserJwtDto dto = tokenService.generateToken(authentication);
+        LOG.debug("Token granted {}", dto.token);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     /**

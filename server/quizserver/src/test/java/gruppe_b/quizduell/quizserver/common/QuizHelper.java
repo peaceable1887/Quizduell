@@ -31,19 +31,19 @@ public class QuizHelper {
 
     public Quiz createFullQuiz() throws Exception {
         Quiz quiz = createQuiz();
-        quiz.addPlayer(createPlayer().getUserId());
+        quiz.addPlayer(createPlayer().getUserId(), "john");
 
         return quiz;
     }
 
     public Quiz createQuiz(Player player, Lobby lobby, String token) throws Exception {
-        Quiz quiz = quizService.connectToQuiz(lobby.getId(), player.getUserId(), token);
+        Quiz quiz = quizService.connectToQuiz(lobby.getId(), player.getUserId(), player.getName(), token);
 
         return quiz;
     }
 
     public Player createPlayer() {
-        return new Player(UUID.randomUUID());
+        return new Player(UUID.randomUUID(), "john");
     }
 
     public Lobby createLobby(UUID playerId) {

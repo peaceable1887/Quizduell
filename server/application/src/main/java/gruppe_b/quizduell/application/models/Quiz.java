@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import gruppe_b.quizduell.application.enums.QuizStatus;
 
 public class Quiz {
@@ -21,6 +24,16 @@ public class Quiz {
         this.quizStatus = QuizStatus.WAIT;
     }
 
+    @JsonCreator
+    private Quiz(@JsonProperty("id") UUID id,
+            @JsonProperty("quizStatus") QuizStatus quizStatus,
+            @JsonProperty("lobbyId") UUID lobbyId) {
+        this.id = id;
+        this.lobbyId = lobbyId;
+        this.quizStatus = quizStatus;
+        this.playerList = new ArrayList<>();
+    }
+
     public UUID getId() {
         return id;
     }
@@ -29,6 +42,7 @@ public class Quiz {
         return lobbyId;
     }
 
+    @JsonProperty
     public List<Player> getPlayers() {
         return playerList;
     }
@@ -39,8 +53,8 @@ public class Quiz {
      * @param id Id des Spielers, der hinzugefügt werden soll.
      * @return Objekt des Spielers, der hinzugefügt wurde.
      */
-    public Player addPlayer(UUID id) {
-        Player player = new Player(id);
+    public Player addPlayer(UUID id, String name) {
+        Player player = new Player(id, name);
         playerList.add(player);
         return player;
     }

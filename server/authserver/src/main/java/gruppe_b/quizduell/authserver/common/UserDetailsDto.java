@@ -9,9 +9,12 @@ public class UserDetailsDto implements Serializable {
     public UserDetailsDto(User user) {
         this.name = user.getName();
         this.mail = user.getMail();
+        this.userId = user.getId().toString();
     }
 
     public String name;
+
+    public String userId;
 
     public String mail;
 }

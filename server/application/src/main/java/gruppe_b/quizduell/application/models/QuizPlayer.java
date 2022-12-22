@@ -6,12 +6,12 @@ public class QuizPlayer extends Player {
 
     private int answer;
 
-    public QuizPlayer(UUID userId) {
-        super(userId);
+    public QuizPlayer(UUID userId, String name) {
+        super(userId, name);
     }
 
     public QuizPlayer(Player player) {
-        super(player.getUserId());
+        super(player.getUserId(), player.getName());
         setReady();
     }
 

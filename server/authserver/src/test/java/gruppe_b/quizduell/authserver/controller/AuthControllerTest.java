@@ -1,11 +1,11 @@
 package gruppe_b.quizduell.authserver.controller;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,12 +16,12 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
 import gruppe_b.quizduell.application.user.commands.create_user.CreateUserCommand;
+import gruppe_b.quizduell.application.user.queries.get_details.GetUserDetailQuery;
 import gruppe_b.quizduell.authserver.common.AuthHelper;
 import gruppe_b.quizduell.authserver.common.UserJwtDto;
 import gruppe_b.quizduell.domain.entities.User;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -51,6 +51,9 @@ class AuthControllerTest {
 
     @Autowired
     AuthHelper authHelper;
+
+    @Autowired
+    RequestHandler<GetUserDetailQuery, User> getUserHandler;
 
     @Test
     void whenAuthenticatedThenSaysHelloUser() throws Exception {
@@ -97,10 +100,31 @@ class AuthControllerTest {
     }
 
     @Test
-    void whenRegisteredThenUserGetToken() throws Exception {
+    void whenRegisterWithMailThenRegisteredWithMail() throws Exception {
         // Arrange
         JSONObject jObject = new JSONObject();
         jObject.put("name", "RegisterTestName2");
+        jObject.put("password", "password");
+        jObject.put("mail", "test@test.com");
+
+        // Act & Assert
+        this.mvc.perform(post("/v1/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jObject.toJSONString()))
+                .andExpect(status().isCreated());
+
+        // Assert
+        User user = getUserHandler.handle(new GetUserDetailQuery("RegisterTestName2"));
+        assertNotNull(user);
+        assertEquals("RegisterTestName2", user.getName());
+        assertEquals("test@test.com", user.getMail());
+    }
+
+    @Test
+    void whenRegisteredThenUserGetToken() throws Exception {
+        // Arrange
+        JSONObject jObject = new JSONObject();
+        jObject.put("name", "RegisterTestName3");
         jObject.put("password", "password");
 
         // Act
@@ -109,7 +133,7 @@ class AuthControllerTest {
                 .content(jObject.toJSONString()));
 
         MvcResult result = this.mvc.perform(get("/v1/token")
-                .with(httpBasic("RegisterTestName2", "password")))
+                .with(httpBasic("RegisterTestName3", "password")))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -122,7 +146,8 @@ class AuthControllerTest {
         assertNotNull(jwtDto);
         assertNotNull(jwtDto.token);
         assertNotNull(jwtDto.userId);
-        assertEquals(524, jwtDto.token.length());
+        assertNotNull(jwtDto.username);
+        assertEquals(560, jwtDto.token.length());
     }
 
     @Test

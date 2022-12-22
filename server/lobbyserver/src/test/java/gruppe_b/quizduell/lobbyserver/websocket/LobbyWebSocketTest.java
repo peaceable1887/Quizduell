@@ -38,12 +38,14 @@ import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.lobbyserver.enums.LobbyStatus;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -195,12 +197,14 @@ class LobbyWebSocketTest {
         stompSession.send(SEND_ENDPOINT_PLAYER_STATUS_UPDATE + lobbyId.toString() + "/status-player",
                 json.getBytes());
 
-        String lobby = completableFuture.get(5, TimeUnit.SECONDS);
+        String result = completableFuture.get(5, TimeUnit.SECONDS);
 
         // Assert
-        assertNotNull(lobby);
-        assertTrue(lobby.contains(lobbyId.toString()));
-        assertTrue(lobby.contains(playerId + "\",\"status\":\"wait"));
+        assertNotNull(result);
+
+        Lobby lobby = objectMapper.readValue(result, Lobby.class);
+        assertEquals(lobbyId, lobby.getId());
+        assertEquals("wait", lobby.getPlayer(UUID.fromString(playerId)).getStatus());
     }
 
     @Test

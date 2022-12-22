@@ -11,6 +11,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.authserver.common.UserJwtDto;
+
 /**
  * Service zum Erstellen eines JWT.
  * 
@@ -25,7 +27,7 @@ public class TokenService {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String generateToken(Authentication authentication) {
+    public UserJwtDto generateToken(Authentication authentication) {
 
         UserDetailsImp user = (UserDetailsImp) authentication.getPrincipal();
 
@@ -38,8 +40,11 @@ public class TokenService {
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(user.getId().toString()) // UserId zum Identifizieren setzen
+                .claim("name", user.getUsername())
                 .claim("scope", scope)
                 .build();
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        String token = this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+
+        return new UserJwtDto(token, user.getId(), user.getUsername());
     }
 }

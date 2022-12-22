@@ -65,8 +65,8 @@ class GameSessionTest {
     @BeforeEach
     void setUp() {
         quiz = new Quiz(UUID.randomUUID());
-        quiz.addPlayer(UUID.randomUUID());
-        quiz.addPlayer(UUID.randomUUID());
+        quiz.addPlayer(UUID.randomUUID(), "john");
+        quiz.addPlayer(UUID.randomUUID(), "jane");
         session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler);
         when(questionRepository.random(random)).thenReturn(
                 new Question(UUID.randomUUID(),

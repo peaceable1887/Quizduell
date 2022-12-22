@@ -56,7 +56,7 @@ public class LobbyService {
      * @return erstellte Lobby
      */
     public Lobby createLobby(UUID playerId, String name) {
-        Lobby newLobby = new Lobby(name, new Player(playerId));
+        Lobby newLobby = new Lobby(name, new Player(playerId, name));
         this.lobbyRepo.put(newLobby.getId(), newLobby);
 
         // Publish new lobby on websocket /topic/new-lobby
@@ -71,7 +71,7 @@ public class LobbyService {
      * @param lobbyId  id der Lobby, die der Spieler beitreten möchte.
      * @return Lobby der beigetreten wurde.
      */
-    public Lobby connectToLobby(UUID playerId, UUID lobbyId)
+    public Lobby connectToLobby(UUID playerId, String playerName, UUID lobbyId)
             throws LobbyFullException, LobbyStatusException {
         Lobby lobby = this.lobbyRepo.get(lobbyId);
 
@@ -79,7 +79,7 @@ public class LobbyService {
             throw new LobbyFullException("Lobby full. Max player count: " + MAX_PLAYER_COUNT);
         }
 
-        lobby.addPlayer(new Player(playerId));
+        lobby.addPlayer(new Player(playerId, playerName));
         simpMessagingTemplate.convertAndSend("/topic/lobby/" + lobby.getId().toString(), lobby);
         return lobby;
     }

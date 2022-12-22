@@ -52,7 +52,7 @@ public class QuizServiceTests {
 
         // Assert
         assertThrowsExactly(PlayerAlreadyConnectedException.class, () -> {
-            quizService.connectToQuiz(lobby.getId(), player.getUserId(), token);
+            quizService.connectToQuiz(lobby.getId(), player.getUserId(), player.getName(), token);
         });
     }
 
@@ -69,7 +69,7 @@ public class QuizServiceTests {
 
         // Assert
         assertThrowsExactly(PlayerAlreadyInOtherGameException.class, () -> {
-            quizService.connectToQuiz(secondLobby.getId(), player.getUserId(), token);
+            quizService.connectToQuiz(secondLobby.getId(), player.getUserId(), player.getName(), token);
         });
     }
 
@@ -78,7 +78,7 @@ public class QuizServiceTests {
         // Arrange
         Quiz quiz = quizHelper.createQuiz();
         Player player = quizHelper.createPlayer();
-        quiz.addPlayer(player.getUserId());
+        quiz.addPlayer(player.getUserId(), "john");
 
         // Act
         quizService.startQuiz(quiz);

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.lobbyserver.enums.LobbyStatus;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
@@ -23,10 +26,21 @@ public class Lobby {
         this.lobbyStatus = LobbyStatus.WAIT;
     }
 
+    @JsonCreator
+    private Lobby(@JsonProperty("name") String name,
+            @JsonProperty("id") UUID id,
+            @JsonProperty("lobbyStatus") LobbyStatus lobbyStatus) {
+        this.id = id;
+        this.name = name;
+        this.playerList = new ArrayList<>();
+        this.lobbyStatus = lobbyStatus;
+    }
+
     public UUID getId() {
         return id;
     }
 
+    @JsonProperty
     public List<Player> getPlayers() {
         return playerList;
     }

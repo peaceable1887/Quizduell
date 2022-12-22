@@ -72,7 +72,7 @@ public class QuizService implements StartQuiz {
      * @throws PlayerAlreadyConnectedException
      * @throws PlayerAlreadyInOtherGameException
      */
-    public Quiz connectToQuiz(UUID lobbyId, UUID playerId, String token)
+    public Quiz connectToQuiz(UUID lobbyId, UUID playerId, String playerName, String token)
             throws PlayerAlreadyConnectedException,
             PlayerAlreadyInOtherGameException,
             JwtNotIssuedByLobbyServerException,
@@ -119,7 +119,7 @@ public class QuizService implements StartQuiz {
             throw new PlayerAlreadyInOtherGameException("Player already connected to other game!");
         } else {
             // Nein. Spieler dem Spiel hinzufügen.
-            Player newPlayer = quiz.addPlayer(playerId);
+            Player newPlayer = quiz.addPlayer(playerId, playerName);
             playerRepo.put(playerId, newPlayer);
         }
 

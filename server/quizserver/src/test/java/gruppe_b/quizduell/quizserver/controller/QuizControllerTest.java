@@ -2,10 +2,12 @@ package gruppe_b.quizduell.quizserver.controller;
 
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -20,6 +22,7 @@ import com.nimbusds.jose.shaded.json.JSONObject;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
+import gruppe_b.quizduell.quizserver.common.AuthHelper;
 import gruppe_b.quizduell.quizserver.common.ConnectRequest;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
 import gruppe_b.quizduell.quizserver.common.QuizRequest;
@@ -44,11 +47,21 @@ public class QuizControllerTest {
     @Autowired
     QuizHelper quizHelper;
 
+    @Autowired
+    AuthHelper authHelper;
+
+    String jwtToken;
+
     static {
         System.setProperty("DB_PORT", "3306");
         System.setProperty("DB_HOSTNAME", "localhost");
         System.setProperty("DB_USERNAME", "root");
         System.setProperty("DB_PASSWORD", "root");
+    }
+
+    @BeforeEach
+    void setup() {
+        jwtToken = authHelper.generateToken();
     }
 
     @Test
@@ -58,6 +71,8 @@ public class QuizControllerTest {
         Player player = quizHelper.createPlayer();
         Lobby lobby = quizHelper.createLobby(player.getUserId());
         String token = quizHelper.createToken(lobby);
+
+        jwtToken = authHelper.generateToken(player.getUserId().toString());
 
         ConnectRequest connectRequest = new ConnectRequest();
         connectRequest.playerId = player.getUserId();
@@ -69,6 +84,7 @@ public class QuizControllerTest {
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk()).andReturn();
@@ -94,11 +110,14 @@ public class QuizControllerTest {
         connectRequest.lobbyId = lobby.getId();
         connectRequest.gameToken = token;
 
+        jwtToken = authHelper.generateToken(player2.getUserId().toString());
+
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(connectRequest);
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk()).andReturn();
@@ -117,6 +136,8 @@ public class QuizControllerTest {
         Player player = quizHelper.createPlayer();
         Lobby lobby = quizHelper.createLobby(player.getUserId());
         String token = quizHelper.createToken(lobby);
+
+        jwtToken = authHelper.generateToken(player.getUserId().toString());
 
         Lobby secondLobby = quizHelper.createLobby(player.getUserId());
         String secondToken = quizHelper.createToken(secondLobby);
@@ -137,11 +158,13 @@ public class QuizControllerTest {
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk()).andReturn();
 
         MvcResult secondResult = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(secondJson))
                 .andExpect(status().isBadRequest()).andReturn();
@@ -170,6 +193,7 @@ public class QuizControllerTest {
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/cancel")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk()).andReturn();
@@ -205,16 +229,19 @@ public class QuizControllerTest {
 
         // Act
         MvcResult result = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk()).andReturn();
 
         MvcResult cancelResult = this.mvc.perform(post("/v1/cancel")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk()).andReturn();
 
         MvcResult secondResult = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(secondJson))
                 .andExpect(status().isOk()).andReturn();
@@ -235,6 +262,7 @@ public class QuizControllerTest {
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get")
+                .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk()).andReturn();

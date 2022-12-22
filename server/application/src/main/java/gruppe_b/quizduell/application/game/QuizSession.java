@@ -317,6 +317,7 @@ public class QuizSession extends Thread {
         for (Player player : quiz.getPlayers()) {
             GameSessionPlayerDto playerDto = new GameSessionPlayerDto();
             playerDto.playerId = player.getUserId();
+            playerDto.name = player.getName();
 
             if (getCurrentRound().getPlayerAnswered().containsKey(player.getUserId())) {
                 playerDto.playerRoundStatus = PlayerRoundStatus.FINISH;
