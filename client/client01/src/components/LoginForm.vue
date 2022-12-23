@@ -59,7 +59,8 @@ export default
 
                     console.log("Erfolgreich eingeloggt!")
                     console.log(resp);
-                    localStorage.setItem("token", resp.data)
+                    localStorage.setItem("token", resp.data.token)
+                    localStorage.setItem("userId", resp.data.userId)
                     this.$router.push("/main")
                     
                 }).catch((err) => {
