@@ -30,7 +30,7 @@ import QuestionCategory from "./QuestionCategory.vue";
 
 export default 
 {
-    name: "Question",
+    name: "QuestionItem",
     components:
     {
         QuestionCategory,

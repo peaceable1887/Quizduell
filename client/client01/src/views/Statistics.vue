@@ -29,7 +29,7 @@ import Button from "../components/Button.vue";
 
     export default 
     {
-        name: "Statistics",
+        name: "StatisticsItem",
 
         components:
         {

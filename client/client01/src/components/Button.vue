@@ -5,7 +5,7 @@
 <script>
     export default 
     {
-        name: "Button",
+        name: "ButtonItem",
         props:
         {
             text: String,

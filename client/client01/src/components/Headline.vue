@@ -7,7 +7,7 @@
 <script>
     export default 
     {
-        name: "Headline",
+        name: "HeadlineItem",
         props:
         {
             text: String,

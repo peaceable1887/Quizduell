@@ -7,7 +7,7 @@ import LoginForm from "../components/LoginForm";
 
 export default 
 {
-    name: "Login",
+    name: "LoginItem",
     components:
     {
         LoginForm,

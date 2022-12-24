@@ -14,7 +14,7 @@ import Question from "../components/Question.vue";
 
     export default 
     {
-        name: "Game",   
+        name: "GameItem",   
         components:
         {
             Header,
