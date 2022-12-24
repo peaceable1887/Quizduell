@@ -37,7 +37,9 @@ public class PlayerStatsRepositoryAdapter implements PlayerStatsRepository {
         return repo.save(new DbPlayerStats(
                 playerStats.getPlayerId(),
                 playerStats.getGameCount(),
-                playerStats.getGameWonCount()));
+                playerStats.getGameWonCount(),
+                playerStats.getGameLossCount(),
+                playerStats.getGameDrawCount()));
     }
 
     @Override

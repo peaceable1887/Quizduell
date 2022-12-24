@@ -26,8 +26,8 @@ public class DbPlayerStats extends PlayerStats {
 
     }
 
-    public DbPlayerStats(UUID playerId, int gameCount, int gameWonCount) {
-        super(playerId, gameCount, gameWonCount);
+    public DbPlayerStats(UUID playerId, int gameCount, int gameWonCount, int gameLossCount, int gameDrawCount) {
+        super(playerId, gameCount, gameWonCount, gameLossCount, gameDrawCount);
     }
 
     @Id
@@ -57,6 +57,18 @@ public class DbPlayerStats extends PlayerStats {
     @Override
     public int getGameWonCount() {
         return super.getGameWonCount();
+    }
+
+    @Column(name = "game_loss_count", nullable = false)
+    @Override
+    public int getGameLossCount() {
+        return super.getGameLossCount();
+    }
+
+    @Column(name = "game_draw_count", nullable = false)
+    @Override
+    public int getGameDrawCount() {
+        return super.getGameDrawCount();
     }
 
     public PlayerStats createEntity() {

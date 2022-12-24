@@ -13,15 +13,15 @@ public class PlayerStats {
     UUID playerId;
     int gameCount;
     int gameWonCount;
+    int gameLossCount;
+    int gameDrawCount;
 
-    public PlayerStats() {
-
-    }
-
-    public PlayerStats(UUID playerId, int gameCount, int gameWonCount) {
+    public PlayerStats(UUID playerId, int gameCount, int gameWonCount, int gameLossCount, int gameDrawCount) {
         this.playerId = playerId;
         this.gameCount = gameCount;
         this.gameWonCount = gameWonCount;
+        this.gameLossCount = gameLossCount;
+        this.gameDrawCount = gameDrawCount;
     }
 
     public UUID getId() {
@@ -54,5 +54,25 @@ public class PlayerStats {
 
     public void setGameWonCount(int gameWonCount) {
         this.gameWonCount = gameWonCount;
+    }
+
+    public int getGameLossCount() {
+        return gameLossCount;
+    }
+
+    public void setGameLossCount(int gameLossCount) {
+        this.gameLossCount = gameLossCount;
+    }
+
+    public int getGameDrawCount() {
+        return gameDrawCount;
+    }
+
+    public void setGameDrawCount(int gameDrawCount) {
+        this.gameDrawCount = gameDrawCount;
+    }
+
+    public PlayerStats() {
+
     }
 }
