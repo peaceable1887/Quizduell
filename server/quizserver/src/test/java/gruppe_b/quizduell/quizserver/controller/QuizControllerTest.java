@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -16,9 +15,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.json.JSONArray;
-import com.nimbusds.jose.shaded.json.JSONObject;
 
+import gruppe_b.quizduell.application.enums.QuizStatus;
+import gruppe_b.quizduell.application.enums.RoundStatus;
+import gruppe_b.quizduell.application.game.QuizSession;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
@@ -26,13 +26,13 @@ import gruppe_b.quizduell.quizserver.common.AuthHelper;
 import gruppe_b.quizduell.quizserver.common.ConnectRequest;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
 import gruppe_b.quizduell.quizserver.common.QuizRequest;
+import gruppe_b.quizduell.quizserver.common.QuizSessionDto;
+import gruppe_b.quizduell.quizserver.common.QuizSessionHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -49,6 +49,9 @@ public class QuizControllerTest {
 
     @Autowired
     AuthHelper authHelper;
+
+    @Autowired
+    QuizSessionHelper quizSessionHelper;
 
     String jwtToken;
 
@@ -270,5 +273,40 @@ public class QuizControllerTest {
         // Assert
         String content = result.getResponse().getContentAsString();
         assertTrue(content.contains(quiz.getId().toString()));
+    }
+
+    @Test
+    @WithMockUser
+    void whenGetSessionThenReturnQuizSession() throws Exception {
+        // Arrange
+        Quiz quiz = quizSessionHelper.createAndStartQuizSession();
+        QuizRequest quizRequest = new QuizRequest();
+        quizRequest.lobbyId = quiz.getLobbyId();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(quizRequest);
+
+        Thread.sleep(1_000);
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/get-session")
+                .header("Authorization", jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert
+        assertNotNull(result);
+        String content = result.getResponse().getContentAsString();
+
+        QuizSessionDto quizSession = objectMapper.readValue(content, QuizSessionDto.class);
+        assertEquals(quizSession.getLobbyId(), quiz.getLobbyId());
+        assertNotNull(quizSession.getQuizId());
+        assertNotNull(quizSession.getPlayerList());
+        assertNotNull(quizSession.getRoundList());
+        assertNotNull(quizSession.getQuizStatus());
+        assertEquals(QuizStatus.STARTED, quizSession.getQuizStatus());
+        assertEquals(2, quizSession.getPlayerList().size());
+        assertEquals(1, quizSession.getRoundList().size());
     }
 }

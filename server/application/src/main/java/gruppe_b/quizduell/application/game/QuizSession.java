@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.GameSessionPlayerDto;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
+import gruppe_b.quizduell.application.enums.QuizStatus;
 import gruppe_b.quizduell.application.enums.RoundStatus;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.models.Player;
@@ -72,6 +73,10 @@ public class QuizSession extends Thread {
         roundList = new ArrayList<>();
     }
 
+    public Quiz getQuiz() {
+        return this.quiz;
+    }
+
     /**
      * Hauptschleife die über die Anzahl der Runden iteriert.
      */
@@ -99,6 +104,8 @@ public class QuizSession extends Thread {
 
             }
         }
+
+        quiz.setQuizFinish();
 
         System.out.println("Thread " + threadName + " exiting.");
     }
@@ -174,7 +181,7 @@ public class QuizSession extends Thread {
         lock.lock();
 
         try {
-            if (cancel) {
+            if (cancel || quiz.getQuizStatus() == QuizStatus.FINISH) {
                 return;
             }
 
@@ -182,6 +189,8 @@ public class QuizSession extends Thread {
 
             GameSessionDto dto = createGameSessionDto();
             dto.roundStatus = RoundStatus.ABORT;
+
+            quiz.setQuizAbort();
 
             send.sendQuizAbort(quiz.getLobbyId(), dto);
         } finally {
@@ -294,8 +303,27 @@ public class QuizSession extends Thread {
      * @return Datenobjekt mit den aktuellen Spieldaten
      */
     private GameSessionDto createGameSessionDto() {
-        GameSessionDto dto = new GameSessionDto();
         QuizRound round = getCurrentRound();
+        return createGameSessionDto(round);
+    }
+
+    public List<GameSessionDto> createGameSessionDtoList() {
+        List<GameSessionDto> list = new ArrayList<>();
+
+        for (QuizRound round : roundList) {
+            list.add(createGameSessionDto(round));
+        }
+
+        return list;
+    }
+
+    /**
+     * Datenobjekt mit den Daten einer Runde erstellen.
+     * 
+     * @return Datenobjekt mit den Spieldaten
+     */
+    private GameSessionDto createGameSessionDto(QuizRound round) {
+        GameSessionDto dto = new GameSessionDto();
 
         if (currentRoundClose) {
             dto.roundStatus = RoundStatus.CLOSE;

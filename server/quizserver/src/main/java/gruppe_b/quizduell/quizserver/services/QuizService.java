@@ -1,6 +1,7 @@
 package gruppe_b.quizduell.quizserver.services;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +12,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.game.QuizSession;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.interfaces.StartQuiz;
@@ -20,6 +22,7 @@ import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHa
 import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.JwtIsExpiredException;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
+import gruppe_b.quizduell.quizserver.common.QuizSessionDto;
 import gruppe_b.quizduell.quizserver.exceptions.JwtNotIssuedByLobbyServerException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
@@ -163,6 +166,19 @@ public class QuizService implements StartQuiz {
 
     public QuizSession getSession(UUID lobbyId) {
         return sessionRepo.get(lobbyId);
+    }
+
+    public QuizSessionDto getSessionDtoList(UUID lobbyId) {
+        Quiz quiz = quizRepo.get(lobbyId);
+        QuizSessionDto dto = new QuizSessionDto();
+
+        dto.setQuizId(quiz.getId());
+        dto.setLobbyId(quiz.getLobbyId());
+        dto.setRoundList(sessionRepo.get(lobbyId).createGameSessionDtoList());
+        dto.setPlayerList(quiz.getPlayers());
+        dto.setQuizStatus(quiz.getQuizStatus());
+
+        return dto;
     }
 
     public Quiz updatePlayerStatus(UUID lobbyId, UUID playerId, PlayerStatus status)

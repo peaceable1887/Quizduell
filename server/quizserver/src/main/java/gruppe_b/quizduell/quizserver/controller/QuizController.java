@@ -1,5 +1,6 @@
 package gruppe_b.quizduell.quizserver.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.common.exceptions.JwtIsExpiredException;
 import gruppe_b.quizduell.quizserver.common.ConnectRequest;
 import gruppe_b.quizduell.quizserver.common.QuizRequest;
+import gruppe_b.quizduell.quizserver.common.QuizSessionDto;
 import gruppe_b.quizduell.quizserver.exceptions.JwtNotIssuedByLobbyServerException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
@@ -71,7 +73,7 @@ public class QuizController {
     }
 
     /**
-     * Gib eine angefragte Quiz-Session anhand der LobbyId zurück.
+     * Gib eine angefragtes Quiz anhand der LobbyId zurück.
      * 
      * @param request enthält die LobbyId
      * @return Quiz
@@ -79,6 +81,17 @@ public class QuizController {
     @GetMapping("/get")
     public ResponseEntity<Quiz> get(@RequestBody QuizRequest request) {
         return ResponseEntity.ok().body(quizService.getQuiz(request.lobbyId));
+    }
+
+    /**
+     * Gibt die Runden einer angefragten Quiz Session anhand der LobbyId zurück.
+     * 
+     * @param request enthält die LobbyId
+     * @return Quiz Session
+     */
+    @GetMapping("get-session")
+    public ResponseEntity<QuizSessionDto> getSession(@RequestBody QuizRequest request) {
+        return ResponseEntity.ok().body(quizService.getSessionDtoList(request.lobbyId));
     }
 
     /**

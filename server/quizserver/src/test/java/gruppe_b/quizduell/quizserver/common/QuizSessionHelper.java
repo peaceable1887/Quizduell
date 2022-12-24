@@ -22,6 +22,7 @@ public class QuizSessionHelper {
         Quiz quiz = quizHelper.createFullQuiz();
         quiz.getPlayers().get(0).setReady();
         quiz.getPlayers().get(1).setReady();
+        quiz.setQuizStarted();
         quizService.startQuiz(quiz);
 
         return quiz;

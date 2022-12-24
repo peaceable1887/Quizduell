@@ -93,7 +93,7 @@ public class Quiz {
     }
 
     public void cancel() {
-        if (this.quizStatus == QuizStatus.FINISH) {
+        if (this.quizStatus == QuizStatus.FINISH || this.quizStatus == QuizStatus.STARTED) {
             return;
         }
 
@@ -106,5 +106,13 @@ public class Quiz {
 
     public void setQuizStarted() {
         this.quizStatus = QuizStatus.STARTED;
+    }
+
+    public void setQuizAbort() {
+        this.quizStatus = QuizStatus.ABORT;
+    }
+
+    public void setQuizFinish() {
+        this.quizStatus = QuizStatus.FINISH;
     }
 }

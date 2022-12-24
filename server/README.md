@@ -415,7 +415,7 @@ Beispiel:
 
         200 OK
 
-- Mit Quiz abbrechen
+- Quiz abbrechen
 
   - Endpunkt
 
@@ -473,6 +473,68 @@ Beispiel:
   - response status
 
         200 OK
+
+- Quiz Session holen
+
+  - Enpunkt
+
+          <host>:/api/quiz/v1/get-session
+
+  - request method
+    -get
+  - request header
+    -bearer token (JWT)
+  - request body
+
+        { }
+
+  - response body
+
+        {
+            "quizId": "1789d84d-14e4-4c5e-a4b9-4666ebf1c9db",
+            "lobbyId": "19133db7-d7e1-415f-b689-449ca609175a",
+            "quizStatus": "STARTED",
+            "playerList": [
+                  {
+                    "userId": "764ef3e2-5ef6-4976-afa0-b5309fe2f66c",
+                    "name": "john",
+                    "status": "ready"
+                  },
+                  {
+                    "userId": "e2b7e3e6-d635-477b-980d-88cfb60ef14d",
+                    "name": "john",
+                    "status": "ready"
+                  }
+              ],
+              "roundList": [
+                {
+                  "roundStatus": "OPEN",
+                  "maxRounds": 6,
+                  "currentRound": 1,
+                  "playerList": [
+                      {
+                        "playerId": "764ef3e2-5ef6-4976-afa0-b5309fe2f66c",
+                        "name": "john",
+                        "playerRoundStatus": "GUESS",
+                        "chosenAnswer": 0
+                      },
+                      {
+                        "playerId": "e2b7e3e6-d635-477b-980d-88cfb60ef14d",
+                        "name": "john",
+                        "playerRoundStatus": "GUESS",
+                        "chosenAnswer": 0
+                      }
+                  ],
+                  "categoryName": null,
+                  "questionText": "Wie heiÃt der korrekte Datentyp fÃ¼r eine Zeichenkette?",
+                  "answerOne": "string",
+                  "answerTwo": "String",
+                  "answerThree": "str",
+                  "answerFour": "charchain",
+                  "correctAnswer": 0
+                }
+            ]
+        }
 
 ### Quiz STOMP Websockets
 
