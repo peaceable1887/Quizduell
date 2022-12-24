@@ -33,6 +33,11 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=root
 
+  client:
+    build: ../client/client01
+    volumes:
+      - /app/dist
+
   nginx:
     restart: always
     build: ./nginx/
@@ -41,10 +46,13 @@ services:
     volumes:
       - web-static:/www/static
       - web-logs:/var/log/nginx
+    volumes_from:
+      - client
     links:
       - authserver:authserver
       - lobbyserver:lobbyserver
       - quizserver:quizserver
+      - client:client
 
   maria:
     restart: always
