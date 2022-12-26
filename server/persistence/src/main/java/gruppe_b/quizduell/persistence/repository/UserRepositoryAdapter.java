@@ -28,7 +28,7 @@ public class UserRepositoryAdapter implements UserRepository {
         if (user == null) {
             return null;
         }
-        return user.createEntity();
+        return user.getUserModel();
     }
 
     public User findByUUID(UUID id) {
@@ -36,16 +36,12 @@ public class UserRepositoryAdapter implements UserRepository {
         if (!user.isPresent()) {
             return null;
         }
-        return user.get().createEntity();
+        return user.get().getUserModel();
     }
 
     @Override
     public User save(User user) {
-        return repo.save(new DbUser(
-                user.getName(),
-                user.getMail(),
-                user.getPasswordHash(),
-                user.getSalt()));
+        return repo.save(new DbUser(user));
     }
 
     @Override

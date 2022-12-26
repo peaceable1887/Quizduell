@@ -1,6 +1,6 @@
-package gruppe_b.quizduell.authserver.service;
+package gruppe_b.quizduell.application.services;
 
-import gruppe_b.quizduell.authserver.common.UserCredentialsDto;
+import gruppe_b.quizduell.application.common.UserCredentialsDto;
 
 /**
  * Interface für einen Service zum Erstellen eines neuen User's.

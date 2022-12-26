@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import gruppe_b.quizduell.authserver.common.UserCredentialsDto;
-import gruppe_b.quizduell.authserver.common.UserDetailsDto;
+import gruppe_b.quizduell.application.common.UserCredentialsDto;
+import gruppe_b.quizduell.application.common.UserDetailsDto;
+import gruppe_b.quizduell.application.services.UserRegisterService;
+import gruppe_b.quizduell.application.services.UserService;
 import gruppe_b.quizduell.authserver.common.UserJwtDto;
 import gruppe_b.quizduell.authserver.service.TokenService;
-import gruppe_b.quizduell.authserver.service.UserRegisterService;
-import gruppe_b.quizduell.authserver.service.UserService;
 
 /**
  * Rest-Controller zum Registrieren und für den Login bzw. das Erzeugen eines
@@ -88,7 +88,7 @@ public class AuthController {
      */
     @GetMapping("/details")
     public ResponseEntity<UserDetailsDto> details(Principal principal) {
-        UserDetailsDto userDetails = userService.getUserByUUID(UUID.fromString(principal.getName()));
+        UserDetailsDto userDetails = userService.getUserDetailsByUUID(UUID.fromString(principal.getName()));
         return ResponseEntity.status(HttpStatus.OK).body(userDetails);
     }
 }

@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,6 +33,8 @@ import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 @RestController
 @RequestMapping("/v1")
 public class LobbyController {
+
+    private static final Logger logger = LoggerFactory.getLogger(LobbyController.class);
 
     private final LobbyService lobbyService;
 

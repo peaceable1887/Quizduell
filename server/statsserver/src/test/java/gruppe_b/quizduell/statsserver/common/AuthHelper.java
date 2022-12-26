@@ -1,4 +1,6 @@
-package gruppe_b.quizduell.lobbyserver.common;
+package gruppe_b.quizduell.statsserver.common;
+
+import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

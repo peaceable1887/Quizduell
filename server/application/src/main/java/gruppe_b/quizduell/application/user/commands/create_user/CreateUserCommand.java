@@ -1,7 +1,7 @@
 package gruppe_b.quizduell.application.user.commands.create_user;
 
 /**
- * Command zum erstellen eines neuen Users. Wird an einen CommandHandler
+ * Command zum Erstellen eines neuen Users. Wird an einen CommandHandler
  * übergeben.
  * 
  * @author Christopher Burmeister

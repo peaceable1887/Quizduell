@@ -10,14 +10,18 @@ import java.util.UUID;
 public class PlayerStats {
 
     UUID id;
-    UUID playerId;
+    User player;
     int gameCount;
     int gameWonCount;
     int gameLossCount;
     int gameDrawCount;
 
-    public PlayerStats(UUID playerId, int gameCount, int gameWonCount, int gameLossCount, int gameDrawCount) {
-        this.playerId = playerId;
+    public PlayerStats() {
+
+    }
+
+    public PlayerStats(User player, int gameCount, int gameWonCount, int gameLossCount, int gameDrawCount) {
+        this.player = player;
         this.gameCount = gameCount;
         this.gameWonCount = gameWonCount;
         this.gameLossCount = gameLossCount;
@@ -32,12 +36,12 @@ public class PlayerStats {
         this.id = id;
     }
 
-    public UUID getPlayerId() {
-        return playerId;
+    public User getPlayer() {
+        return player;
     }
 
-    public void setPlayerId(UUID playerId) {
-        this.playerId = playerId;
+    public void setPlayer(User player) {
+        this.player = player;
     }
 
     public int getGameCount() {
@@ -70,9 +74,5 @@ public class PlayerStats {
 
     public void setGameDrawCount(int gameDrawCount) {
         this.gameDrawCount = gameDrawCount;
-    }
-
-    public PlayerStats() {
-
     }
 }

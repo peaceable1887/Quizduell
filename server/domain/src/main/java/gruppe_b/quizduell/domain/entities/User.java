@@ -24,6 +24,14 @@ public class User {
         this.salt = salt;
     }
 
+    public User(UUID id, String name, String mail, String passwordHash, String salt) {
+        this.id = id;
+        this.name = name;
+        this.mail = mail;
+        this.passwordHash = passwordHash;
+        this.salt = salt;
+    }
+
     public String getName() {
         return name;
     }

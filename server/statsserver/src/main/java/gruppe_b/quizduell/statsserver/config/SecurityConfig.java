@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.lobbyserver.config;
+package gruppe_b.quizduell.statsserver.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -52,8 +52,6 @@ public class SecurityConfig extends AbstractSecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/lobby-websocket/info").permitAll())
-                .authorizeRequests(auth -> auth
                         .antMatchers("/v1/*").authenticated())
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement(session -> session
@@ -61,4 +59,5 @@ public class SecurityConfig extends AbstractSecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .build();
     }
+
 }

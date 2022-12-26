@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import gruppe_b.quizduell.application.common.UserCredentialsDto;
+import gruppe_b.quizduell.application.services.UserRegisterService;
 import gruppe_b.quizduell.application.user.queries.get_details.GetUserDetailQuery;
 import gruppe_b.quizduell.application.user.queries.get_details.GetUserDetailQueryHandler;
-import gruppe_b.quizduell.authserver.common.UserCredentialsDto;
-import gruppe_b.quizduell.authserver.service.UserRegisterService;
 
 @SpringBootTest
 public class UserRegisterServiceTest {

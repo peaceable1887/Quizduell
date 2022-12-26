@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.authserver.service;
+package gruppe_b.quizduell.application.services;
 
 import java.util.Collection;
 import java.util.UUID;

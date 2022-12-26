@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.authserver.common;
+package gruppe_b.quizduell.application.common;
 
 import java.io.Serializable;
 

@@ -2,12 +2,10 @@ package gruppe_b.quizduell.application.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import gruppe_b.quizduell.application.categories.CategoryRepository;
-import gruppe_b.quizduell.application.game.QuizSession;
-import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
-import gruppe_b.quizduell.application.models.Quiz;
+import gruppe_b.quizduell.application.playerstats.PlayerStatsRepository;
 import gruppe_b.quizduell.application.questions.QuestionRepository;
 import gruppe_b.quizduell.application.user.UserRepository;
 
@@ -29,5 +27,15 @@ public class TestConfig {
     @Bean
     public QuestionRepository questionRepository() {
         return mock(QuestionRepository.class);
+    }
+
+    @Bean
+    public PlayerStatsRepository playerStatsRepository() {
+        return mock(PlayerStatsRepository.class);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return mock(PasswordEncoder.class);
     }
 }

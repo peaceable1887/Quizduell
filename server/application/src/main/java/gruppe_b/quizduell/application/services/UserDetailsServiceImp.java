@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.authserver.service;
+package gruppe_b.quizduell.application.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

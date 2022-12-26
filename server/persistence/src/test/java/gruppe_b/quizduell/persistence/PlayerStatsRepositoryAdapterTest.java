@@ -1,6 +1,5 @@
 package gruppe_b.quizduell.persistence;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,16 +37,16 @@ public class PlayerStatsRepositoryAdapterTest {
         dave = userRepo.save(new User("Dave", "exampleusermailname@exmaplemailhost.hamburg", "password", "salt"));
         marc = userRepo.save(new User("Marc", "u@u.de", "password", "salt"));
 
-        s1 = repo.save(new PlayerStats(john.getId(), 15, 2, 10, 3));
-        s2 = repo.save(new PlayerStats(dave.getId(), 10, 5, 5, 0));
-        s3 = repo.save(new PlayerStats(marc.getId(), 0, 0, 0, 0));
+        s1 = repo.save(new PlayerStats(john, 15, 2, 10, 3));
+        s2 = repo.save(new PlayerStats(dave, 10, 5, 5, 0));
+        s3 = repo.save(new PlayerStats(marc, 0, 0, 0, 0));
     }
 
     @Test
     void whenSaveNewPlayerStatsThenCreateAndReturnNewPlayerStats() {
         // Arrange
         User player = userRepo.save(new User("TestUser", "test@test.de", "password", "salt"));
-        PlayerStats playerStats = new PlayerStats(player.getId(), 100, 66, 4, 30);
+        PlayerStats playerStats = new PlayerStats(player, 100, 66, 4, 30);
 
         // Act
         PlayerStats result = repo.save(playerStats);
@@ -55,7 +54,7 @@ public class PlayerStatsRepositoryAdapterTest {
         // Assert
         assertNotNull(result);
         assertNotNull(result.getId());
-        assertEquals(playerStats.getPlayerId(), result.getPlayerId());
+        assertEquals(playerStats.getPlayer().getId(), result.getPlayer().getId());
         assertEquals(playerStats.getGameCount(), result.getGameCount());
         assertEquals(playerStats.getGameWonCount(), result.getGameWonCount());
     }
@@ -63,7 +62,7 @@ public class PlayerStatsRepositoryAdapterTest {
     @Test
     void whenSaveNewPlayerStatsWithDuplicatedPlayerIdThenNotCreateNewPlayerStats() {
         // Arrange
-        PlayerStats playerStats = new PlayerStats(john.getId(), 100, 66, 4, 30);
+        PlayerStats playerStats = new PlayerStats(john, 100, 66, 4, 30);
 
         // Act
 
@@ -83,8 +82,10 @@ public class PlayerStatsRepositoryAdapterTest {
         // Assert
         assertNotNull(result);
         assertEquals(s1.getId(), result.getId());
-        assertEquals(s1.getPlayerId(), result.getPlayerId());
+        assertEquals(s1.getPlayer().getId(), result.getPlayer().getId());
         assertEquals(s1.getGameCount(), result.getGameCount());
         assertEquals(s1.getGameWonCount(), result.getGameWonCount());
+        assertEquals(s1.getGameLossCount(), result.getGameLossCount());
+        assertEquals(s1.getGameDrawCount(), result.getGameDrawCount());
     }
 }

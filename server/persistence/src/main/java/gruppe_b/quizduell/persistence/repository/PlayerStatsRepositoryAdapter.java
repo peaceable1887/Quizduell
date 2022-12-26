@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import gruppe_b.quizduell.application.playerstats.PlayerStatsRepository;
 import gruppe_b.quizduell.domain.entities.PlayerStats;
 import gruppe_b.quizduell.persistence.entities.DbPlayerStats;
+import gruppe_b.quizduell.persistence.entities.DbUser;
 
 /**
  * Adapter für das PlayerStats Repository.
@@ -35,7 +36,7 @@ public class PlayerStatsRepositoryAdapter implements PlayerStatsRepository {
     @Override
     public PlayerStats save(PlayerStats playerStats) {
         return repo.save(new DbPlayerStats(
-                playerStats.getPlayerId(),
+                new DbUser(playerStats.getPlayer()),
                 playerStats.getGameCount(),
                 playerStats.getGameWonCount(),
                 playerStats.getGameLossCount(),
@@ -52,7 +53,7 @@ public class PlayerStatsRepositoryAdapter implements PlayerStatsRepository {
 
         DbPlayerStats dbEntity = result.get();
 
-        dbEntity.setPlayerId(playerStats.getPlayerId());
+        dbEntity.setPlayer(playerStats.getPlayer());
         dbEntity.setGameCount(playerStats.getGameCount());
         dbEntity.setGameWonCount(playerStats.getGameWonCount());
 

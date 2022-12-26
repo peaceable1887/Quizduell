@@ -2,10 +2,13 @@ package gruppe_b.quizduell.persistence.entities;
 
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -26,8 +29,8 @@ public class DbPlayerStats extends PlayerStats {
 
     }
 
-    public DbPlayerStats(UUID playerId, int gameCount, int gameWonCount, int gameLossCount, int gameDrawCount) {
-        super(playerId, gameCount, gameWonCount, gameLossCount, gameDrawCount);
+    public DbPlayerStats(DbUser player, int gameCount, int gameWonCount, int gameLossCount, int gameDrawCount) {
+        super(player, gameCount, gameWonCount, gameLossCount, gameDrawCount);
     }
 
     @Id
@@ -40,11 +43,11 @@ public class DbPlayerStats extends PlayerStats {
         return super.getId();
     }
 
-    @Column(name = "playerId", nullable = false, unique = true, columnDefinition = "VARCHAR(36)")
-    @Type(type = "uuid-char")
+    @OneToOne(optional = false, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true, nullable = false, updatable = false)
     @Override
-    public UUID getPlayerId() {
-        return super.getPlayerId();
+    public DbUser getPlayer() {
+        return (DbUser) super.getPlayer();
     }
 
     @Column(name = "game_count", nullable = false)
@@ -74,7 +77,7 @@ public class DbPlayerStats extends PlayerStats {
     public PlayerStats createEntity() {
         PlayerStats playerStats = new PlayerStats();
         playerStats.setId(getId());
-        playerStats.setPlayerId(getPlayerId());
+        playerStats.setPlayer(getPlayer());
         playerStats.setGameCount(getGameCount());
         playerStats.setGameWonCount(getGameWonCount());
 

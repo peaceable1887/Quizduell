@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import gruppe_b.quizduell.application.services.UserDetailsImp;
 import gruppe_b.quizduell.authserver.common.UserJwtDto;
 
 /**
