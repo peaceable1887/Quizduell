@@ -33,6 +33,19 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=root
 
+  statsserver:
+    restart: always
+    build: ./statsserver
+    expose:
+      - "8080"
+    links:
+      - maria:maria
+    environment:
+      - DB_HOSTNAME=maria
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+
   client:
     build: ../client/client01
     volumes:
