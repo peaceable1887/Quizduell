@@ -129,4 +129,25 @@ public class StatsControllerTests {
         assertEquals(u1.getId(), stats.playerId);
         assertEquals(s1.getId(), stats.id);
     }
+
+    @Test
+    @WithMockUser
+    void whenRequestFromPlayerWithNoStatsRecordInDbThenThrowException() throws Exception {
+        // Arrange
+        userRegisterService.saveUser(new UserCredentialsDto("test", "test@mail.com", "password"));
+
+        User user = userService.getUserByName("test");
+
+        String jwtToken = authHelper.generateToken(user.getId().toString());
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/get")
+                .header("Authorization", jwtToken))
+                .andReturn();
+
+        // Assert
+        assertNotNull(result);
+        assertTrue(result.getResponse().getContentAsString()
+                .contains("Stats not found! PlayerId: " + user.getId().toString()));
+    }
 }
