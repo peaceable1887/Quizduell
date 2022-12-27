@@ -28,6 +28,15 @@ public class PlayerStats {
         this.gameDrawCount = gameDrawCount;
     }
 
+    public PlayerStats(UUID id, User player, int gameCount, int gameWonCount, int gameLossCount, int gameDrawCount) {
+        this.id = id;
+        this.player = player;
+        this.gameCount = gameCount;
+        this.gameWonCount = gameWonCount;
+        this.gameLossCount = gameLossCount;
+        this.gameDrawCount = gameDrawCount;
+    }
+
     public UUID getId() {
         return id;
     }

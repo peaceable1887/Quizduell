@@ -6,9 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gruppe_b.quizduell.application.common.UserCredentialsDto;
 import gruppe_b.quizduell.application.services.StatsService;
@@ -19,8 +24,10 @@ import gruppe_b.quizduell.domain.entities.User;
 import gruppe_b.quizduell.persistence.repository.PlayerStatsRepositoryAdapter;
 import gruppe_b.quizduell.persistence.repository.UserRepositoryAdapter;
 import gruppe_b.quizduell.statsserver.common.AuthHelper;
+import gruppe_b.quizduell.statsserver.common.PlayerStatsDto;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -85,6 +92,8 @@ public class StatsControllerTests {
         u3 = userService.getUserByName("user3");
 
         s1 = statsService.createStats(u1);
+        s2 = statsService.createStats(u2);
+        s3 = statsService.createStats(u3);
     }
 
     @Test
@@ -99,16 +108,25 @@ public class StatsControllerTests {
     }
 
     @Test
-    void whenRequestPlayerStatsThenResponsePlayerStats() {
+    @WithMockUser
+    void whenRequestPlayerStatsThenResponsePlayerStats() throws Exception {
         // Arrange
+        String jwtToken = authHelper.generateToken(u1.getId().toString());
 
         // Act
+        MvcResult result = this.mvc.perform(get("/v1/get")
+                .header("Authorization", jwtToken))
+                .andReturn();
 
         // Assert
-    }
+        assertNotNull(result);
+        String response = result.getResponse().getContentAsString();
+        assertTrue(!response.isEmpty());
 
-    @Test
-    void whenRequestPlayerStatsFromOtherPlayerThenBadRequest() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        PlayerStatsDto stats = objectMapper.readValue(response, PlayerStatsDto.class);
 
+        assertEquals(u1.getId(), stats.playerId);
+        assertEquals(s1.getId(), stats.id);
     }
 }

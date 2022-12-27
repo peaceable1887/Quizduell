@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import gruppe_b.quizduell.application.exceptions.PlayerStatsNotFoundException;
 import gruppe_b.quizduell.application.services.StatsService;
 import gruppe_b.quizduell.domain.entities.PlayerStats;
-import gruppe_b.quizduell.statsserver.common.StatsRequest;
+import gruppe_b.quizduell.statsserver.common.PlayerStatsDto;
 
 /**
  * Rest-Controller zum Abrufen der Statistiken.
@@ -39,14 +39,14 @@ public class StatsController {
     }
 
     @GetMapping("/get")
-    public ResponseEntity<PlayerStats> get(@RequestBody StatsRequest request) throws PlayerStatsNotFoundException {
+    public ResponseEntity<PlayerStatsDto> get(Principal principal) throws PlayerStatsNotFoundException {
         PlayerStats stats;
         try {
-            stats = statsService.getStatsByUserId(request.playerId);
+            stats = statsService.getStatsByUserId(UUID.fromString(principal.getName()));
         } catch (PlayerStatsNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return ResponseEntity.ok(stats);
+        return ResponseEntity.ok(new PlayerStatsDto(stats));
     }
 }
