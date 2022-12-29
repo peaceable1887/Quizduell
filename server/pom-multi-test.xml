@@ -8,6 +8,9 @@
         <module>persistence</module>
         <module>application</module>
         <module>authserver</module>
+        <module>lobbyserver</module>
+        <module>quizserver</module>
+        <module>statsserver</module>
     </modules>
 
     <groupId>gruppe_b.quizduell</groupId>
