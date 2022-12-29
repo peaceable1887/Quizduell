@@ -19,7 +19,7 @@ import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.AttributeNullException;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
-import gruppe_b.quizduell.lobbyserver.models.Lobby;
+import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
 /**

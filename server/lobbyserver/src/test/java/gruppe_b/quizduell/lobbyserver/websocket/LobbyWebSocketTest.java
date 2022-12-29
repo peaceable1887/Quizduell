@@ -38,7 +38,7 @@ import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.lobbyserver.enums.LobbyStatus;
-import gruppe_b.quizduell.lobbyserver.models.Lobby;
+import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 

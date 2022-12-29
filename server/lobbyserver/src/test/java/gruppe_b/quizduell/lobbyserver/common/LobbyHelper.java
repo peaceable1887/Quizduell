@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.models.Player;
-import gruppe_b.quizduell.lobbyserver.models.Lobby;
+import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
 @Service
