@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+./create_keyfiles.sh
 mvn install -DskipTests -f domain
 mvn install -DskipTests -f application
 mvn install -DskipTests -f common
