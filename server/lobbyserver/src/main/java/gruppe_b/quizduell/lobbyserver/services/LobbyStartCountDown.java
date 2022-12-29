@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
-import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 public class LobbyStartCountDown extends TimerTask {
 

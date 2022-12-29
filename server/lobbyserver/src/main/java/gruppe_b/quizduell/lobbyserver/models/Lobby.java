@@ -1,4 +1,4 @@
-package gruppe_b.quizduell.lobbyserver.modelss;
+package gruppe_b.quizduell.lobbyserver.models;
 
 import java.util.ArrayList;
 import java.util.List;

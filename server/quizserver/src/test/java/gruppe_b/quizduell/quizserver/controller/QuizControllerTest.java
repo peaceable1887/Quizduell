@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gruppe_b.quizduell.application.enums.QuizStatus;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
-import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.quizserver.common.AuthHelper;
 import gruppe_b.quizduell.quizserver.common.ConnectRequest;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;

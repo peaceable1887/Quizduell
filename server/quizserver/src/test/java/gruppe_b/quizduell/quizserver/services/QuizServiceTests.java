@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
-import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;

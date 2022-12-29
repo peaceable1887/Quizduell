@@ -22,7 +22,7 @@ import gruppe_b.quizduell.lobbyserver.common.CreateRequest;
 import gruppe_b.quizduell.lobbyserver.common.LobbyBuilder;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyWrongPasswordException;
-import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;

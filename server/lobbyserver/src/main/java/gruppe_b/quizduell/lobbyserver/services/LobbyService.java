@@ -21,7 +21,7 @@ import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyWrongPasswordException;
-import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 /**
  * Service zum Managen von Lobbies.

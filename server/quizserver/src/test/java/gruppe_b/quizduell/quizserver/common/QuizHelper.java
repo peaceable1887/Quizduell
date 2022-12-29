@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
-import gruppe_b.quizduell.lobbyserver.modelss.Lobby;
+import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 import gruppe_b.quizduell.quizserver.services.QuizService;
 
