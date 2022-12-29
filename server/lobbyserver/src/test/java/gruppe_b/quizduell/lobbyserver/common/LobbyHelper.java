@@ -20,11 +20,19 @@ public class LobbyHelper {
     }
 
     public UUID createLobby() {
-        return lobbyService.createLobby(UUID.randomUUID(), "test").getId();
+        return createLobby("");
+    }
+
+    public UUID createLobby(String password) {
+        return lobbyService.createLobby(UUID.randomUUID(), "test", password).getId();
     }
 
     public UUID createFullLobby() throws Exception {
-        Lobby lobby = lobbyService.createLobby(UUID.randomUUID(), "test");
+        return createFullLobby("");
+    }
+
+    public UUID createFullLobby(String password) throws Exception {
+        Lobby lobby = lobbyService.createLobby(UUID.randomUUID(), "test", password);
         lobby.addPlayer(new Player(UUID.randomUUID(), "john"));
         return lobby.getId();
     }

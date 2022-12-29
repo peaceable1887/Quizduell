@@ -12,11 +12,15 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.shaded.json.JSONObject;
 
 import gruppe_b.quizduell.lobbyserver.common.AuthHelper;
+import gruppe_b.quizduell.lobbyserver.common.ConnectRequest;
+import gruppe_b.quizduell.lobbyserver.common.CreateRequest;
 import gruppe_b.quizduell.lobbyserver.common.LobbyBuilder;
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
+import gruppe_b.quizduell.lobbyserver.exceptions.LobbyWrongPasswordException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -63,18 +67,56 @@ class LobbyControllerTests {
     @WithMockUser
     void whenCreateThenCreateNewLobby() throws Exception {
         // Arrange
+        ObjectMapper objectMapper = new ObjectMapper();
+
         JSONObject jcreateRequest = new JSONObject();
         jcreateRequest.put("name", "testLobby");
         String jwtToken = authHelper.generateToken();
 
         // Act
-
-        // Assert
-        this.mvc.perform(post("/v1/create")
+        MvcResult result = this.mvc.perform(post("/v1/create")
                 .header("Authorization", jwtToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jcreateRequest.toJSONString()))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated()).andReturn();
+
+        // Assert
+        String response = result.getResponse().getContentAsString();
+        Lobby responseLobby = objectMapper.readValue(response, Lobby.class);
+
+        assertEquals("", responseLobby.getPassword());
+        assertEquals(1, responseLobby.playerCount());
+    }
+
+    @Test
+    @WithMockUser
+    void whenCreateLobbyWithPasswordThenLobbyHasPassword() throws Exception {
+        // Arrange
+        CreateRequest request = new CreateRequest();
+        request.name = "test";
+        request.password = "password";
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(request);
+
+        String jwtToken = authHelper.generateToken();
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/create")
+                .header("Authorization", jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isCreated()).andReturn();
+
+        // Assert
+        String response = result.getResponse().getContentAsString();
+        Lobby responseLobby = objectMapper.readValue(response, Lobby.class);
+
+        assertEquals("", responseLobby.getPassword());
+        assertEquals(1, responseLobby.playerCount());
+
+        Lobby lobby = lobbyHelper.getLobby(responseLobby.getId());
+        assertEquals("password", lobby.getPassword());
     }
 
     @Test
@@ -98,6 +140,61 @@ class LobbyControllerTests {
         assertEquals(200, result.getResponse().getStatus());
         assertEquals("00000000-0000-0000-0000-000000000000",
                 lobbyHelper.getLobby(lobbyId).getPlayers().get(1).getUserId().toString());
+    }
+
+    @Test
+    @WithMockUser
+    void whenConnectToLobbyWithPasswordWithoutPasswordThenBadRequest() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createLobby("password");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ConnectRequest request = new ConnectRequest();
+        request.lobbyId = lobbyId;
+        request.password = "pwd";
+        String json = objectMapper.writeValueAsString(request);
+
+        String jwtToken = authHelper.generateToken();
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        // Assert
+        assertEquals("Password für die Lobby falsch: pwd", result.getResponse().getContentAsString());
+    }
+
+    @Test
+    @WithMockUser
+    void whenConnectToLobbyWithPasswordWithPasswordThenAddPlayerToLobby() throws Exception {
+        // Arrange
+        UUID lobbyId = lobbyHelper.createLobby("password");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        ConnectRequest request = new ConnectRequest();
+        request.lobbyId = lobbyId;
+        request.password = "password";
+        String json = objectMapper.writeValueAsString(request);
+
+        String jwtToken = authHelper.generateToken();
+
+        // Act
+        MvcResult result = this.mvc.perform(post("/v1/connect")
+                .header("Authorization", jwtToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andReturn();
+
+        // Assert
+        String response = result.getResponse().getContentAsString();
+        Lobby lobby = objectMapper.readValue(response, Lobby.class);
+        assertEquals(lobbyId, lobby.getId());
+        assertEquals(2, lobby.playerCount());
+        assertEquals("00000000-0000-0000-0000-000000000000", lobby.getPlayers().get(1).getUserId().toString());
     }
 
     @Test

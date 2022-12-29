@@ -20,6 +20,7 @@ import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
+import gruppe_b.quizduell.lobbyserver.exceptions.LobbyWrongPasswordException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
 /**
@@ -53,10 +54,12 @@ public class LobbyService {
      * 
      * @param playerId erster Spieler der die Lobby erstellt.
      * @param name     name der Lobby
+     * @param password password für die Lobby. Wenn keins gesetzt werden soll ""
+     *                 oder null setzen.
      * @return erstellte Lobby
      */
-    public Lobby createLobby(UUID playerId, String name) {
-        Lobby newLobby = new Lobby(name, new Player(playerId, name));
+    public Lobby createLobby(UUID playerId, String name, String password) {
+        Lobby newLobby = new Lobby(name, new Player(playerId, name), password);
         this.lobbyRepo.put(newLobby.getId(), newLobby);
 
         // Publish new lobby on websocket /topic/new-lobby
@@ -69,11 +72,20 @@ public class LobbyService {
      * 
      * @param playerId id des neuen Spielers
      * @param lobbyId  id der Lobby, die der Spieler beitreten möchte.
+     * @param password password für die Lobby. Wenn die Lobby kein password hat ""
+     *                 oder null setzen
      * @return Lobby der beigetreten wurde.
+     * @throws LobbyWrongPasswordException
      */
-    public Lobby connectToLobby(UUID playerId, String playerName, UUID lobbyId)
-            throws LobbyFullException, LobbyStatusException {
+    public Lobby connectToLobby(UUID playerId, String playerName, UUID lobbyId, String password)
+            throws LobbyFullException, LobbyStatusException, LobbyWrongPasswordException {
         Lobby lobby = this.lobbyRepo.get(lobbyId);
+
+        if (lobby.hasPassword()) {
+            if (!lobby.getPassword().equals(password)) {
+                throw new LobbyWrongPasswordException("Password für die Lobby falsch: " + password);
+            }
+        }
 
         if (MAX_PLAYER_COUNT <= lobby.playerCount()) {
             throw new LobbyFullException("Lobby full. Max player count: " + MAX_PLAYER_COUNT);

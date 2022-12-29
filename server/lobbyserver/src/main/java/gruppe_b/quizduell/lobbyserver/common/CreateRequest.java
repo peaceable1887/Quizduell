@@ -5,4 +5,5 @@ import java.io.Serializable;
 public class CreateRequest implements Serializable {
 
     public String name;
+    public String password;
 }

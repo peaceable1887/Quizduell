@@ -22,6 +22,7 @@ import gruppe_b.quizduell.lobbyserver.common.DisconnectRequest;
 import gruppe_b.quizduell.lobbyserver.common.LobbyRequest;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyFullException;
 import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
+import gruppe_b.quizduell.lobbyserver.exceptions.LobbyWrongPasswordException;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 
@@ -53,7 +54,7 @@ public class LobbyController {
     @PostMapping("/create")
     public ResponseEntity<Lobby> create(Principal principal, @RequestBody CreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(lobbyService.createLobby(
-                UUID.fromString(principal.getName()), request.name));
+                UUID.fromString(principal.getName()), request.name, request.password));
     }
 
     /**
@@ -63,19 +64,23 @@ public class LobbyController {
      *                  authentication Prozess erzeugt.
      * @param request   enthält die LobbyId, mit der sich der User verbinden möchte.
      * @return Lobby die der User beigetreten ist.
+     * @throws LobbyWrongPasswordException
      */
     @PostMapping("/connect")
     public ResponseEntity<Lobby> connect(@AuthenticationPrincipal Jwt principal, @RequestBody ConnectRequest request)
-            throws LobbyFullException, LobbyStatusException {
+            throws LobbyFullException, LobbyStatusException, LobbyWrongPasswordException {
         Lobby lobby = null;
         try {
             lobby = lobbyService.connectToLobby(
                     UUID.fromString(principal.getSubject()),
                     principal.getClaim("name"),
-                    request.lobbyId);
+                    request.lobbyId,
+                    request.password);
         } catch (LobbyFullException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (LobbyStatusException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (LobbyWrongPasswordException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 

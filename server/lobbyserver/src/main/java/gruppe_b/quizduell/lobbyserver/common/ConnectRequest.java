@@ -6,4 +6,5 @@ import java.util.UUID;
 public class ConnectRequest implements Serializable {
 
     public UUID lobbyId;
+    public String password;
 }

@@ -5,7 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.lobbyserver.enums.LobbyStatus;
@@ -14,8 +17,9 @@ import gruppe_b.quizduell.lobbyserver.exceptions.LobbyStatusException;
 public class Lobby {
 
     private final UUID id;
-    private final List<Player> playerList;
+    private List<Player> playerList;
     private final String name;
+    private final String password;
     private LobbyStatus lobbyStatus;
 
     public Lobby(String name, Player firstPlayer) {
@@ -24,25 +28,53 @@ public class Lobby {
         this.playerList = new ArrayList<>();
         this.playerList.add(firstPlayer);
         this.lobbyStatus = LobbyStatus.WAIT;
+        this.password = "";
+    }
+
+    public Lobby(String name, Player firstPlayer, String password) {
+        this.id = UUID.randomUUID();
+        this.name = name;
+        this.playerList = new ArrayList<>();
+        this.playerList.add(firstPlayer);
+        this.lobbyStatus = LobbyStatus.WAIT;
+
+        if (password == null) {
+            this.password = "";
+        } else {
+            this.password = password;
+        }
     }
 
     @JsonCreator
     private Lobby(@JsonProperty("name") String name,
             @JsonProperty("id") UUID id,
-            @JsonProperty("lobbyStatus") LobbyStatus lobbyStatus) {
+            @JsonProperty("lobbyStatus") LobbyStatus lobbyStatus,
+            @JsonProperty("password") String password,
+            @JsonProperty("hasPassword") boolean hasPassword) {
+        this.playerList = new ArrayList<>();
         this.id = id;
         this.name = name;
-        this.playerList = new ArrayList<>();
         this.lobbyStatus = lobbyStatus;
+
+        if (password == null) {
+            this.password = "";
+        } else {
+            this.password = password;
+        }
     }
 
     public UUID getId() {
         return id;
     }
 
-    @JsonProperty
+    @JsonGetter
     public List<Player> getPlayers() {
         return playerList;
+    }
+
+    @JsonSetter
+    private void setPlayers(List<Player> players) {
+        this.playerList = players;
     }
 
     public String getName() {
@@ -102,5 +134,15 @@ public class Lobby {
 
     public void setLobbyStarted() {
         this.lobbyStatus = LobbyStatus.STARTED;
+    }
+
+    @JsonIgnore
+    public String getPassword() {
+        return this.password;
+    }
+
+    @JsonGetter
+    public boolean hasPassword() {
+        return (!password.equals(""));
     }
 }

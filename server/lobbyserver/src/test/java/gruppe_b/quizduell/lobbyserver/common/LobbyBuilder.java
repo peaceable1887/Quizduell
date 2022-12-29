@@ -16,12 +16,22 @@ public class LobbyBuilder {
     }
 
     public LobbyBuilder buildLobby(UUID userId) {
-        lobby = lobbyService.createLobby(userId, "buildTestLobby");
+        lobby = lobbyService.createLobby(userId, "buildTestLobby", "");
+        return this;
+    }
+
+    public LobbyBuilder buildLobby(UUID userId, String password) {
+        lobby = lobbyService.createLobby(userId, "buildTestLobby", password);
         return this;
     }
 
     public LobbyBuilder buildLobby() {
-        lobby = lobbyService.createLobby(UUID.randomUUID(), "buildTestLobby");
+        lobby = lobbyService.createLobby(UUID.randomUUID(), "buildTestLobby", "");
+        return this;
+    }
+
+    public LobbyBuilder buildLobby(String password) {
+        lobby = lobbyService.createLobby(UUID.randomUUID(), "buildTestLobby", password);
         return this;
     }
 

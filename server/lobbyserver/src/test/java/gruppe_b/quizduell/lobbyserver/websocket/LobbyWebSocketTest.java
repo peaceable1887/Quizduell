@@ -204,6 +204,7 @@ class LobbyWebSocketTest {
 
         Lobby lobby = objectMapper.readValue(result, Lobby.class);
         assertEquals(lobbyId, lobby.getId());
+        assertEquals(1, lobby.playerCount());
         assertEquals("wait", lobby.getPlayer(UUID.fromString(playerId)).getStatus());
     }
 
