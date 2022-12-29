@@ -95,7 +95,7 @@ public class GameSessionResult {
      */
     private int playersContainsPlayer(UUID id) {
         for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getId() == id) {
+            if (players.get(i).getId().equals(id)) {
                 return i;
             }
         }
