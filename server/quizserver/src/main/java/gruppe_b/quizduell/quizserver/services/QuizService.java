@@ -1,7 +1,6 @@
 package gruppe_b.quizduell.quizserver.services;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,13 +11,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
-import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.game.QuizSession;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.interfaces.StartQuiz;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
+import gruppe_b.quizduell.application.services.StatsService;
 import gruppe_b.quizduell.common.enums.PlayerStatus;
 import gruppe_b.quizduell.common.exceptions.JwtIsExpiredException;
 import gruppe_b.quizduell.common.exceptions.UnknownPlayerStatusException;
@@ -53,6 +52,9 @@ public class QuizService implements StartQuiz {
 
     @Autowired
     GetQuestionRandomQueryHandler getQuestionRandomQueryHandler;
+
+    @Autowired
+    StatsService statsService;
 
     @Autowired
     JwtDecoder jwtDecoder;
@@ -223,7 +225,7 @@ public class QuizService implements StartQuiz {
      * @param quiz Quiz für das eine Session gestartet werden soll.
      */
     public void startQuiz(Quiz quiz) {
-        QuizSession session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler);
+        QuizSession session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler, statsService);
         sessionRepo.put(quiz.getLobbyId(), session);
         session.start();
     }

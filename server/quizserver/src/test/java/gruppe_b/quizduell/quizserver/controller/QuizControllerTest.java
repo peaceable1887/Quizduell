@@ -11,14 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import gruppe_b.quizduell.application.enums.QuizStatus;
-import gruppe_b.quizduell.application.enums.RoundStatus;
-import gruppe_b.quizduell.application.game.QuizSession;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
@@ -38,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest()
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
 public class QuizControllerTest {
 
     @Autowired

@@ -1,8 +1,6 @@
 package gruppe_b.quizduell.application.game;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 import gruppe_b.quizduell.application.models.QuizPlayer;

@@ -8,8 +8,12 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.GameSessionPlayerDto;
+import gruppe_b.quizduell.application.common.GameSessionResult;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
 import gruppe_b.quizduell.application.enums.QuizStatus;
 import gruppe_b.quizduell.application.enums.RoundStatus;
@@ -19,6 +23,7 @@ import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.application.models.QuizPlayer;
 import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQuery;
 import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
+import gruppe_b.quizduell.application.services.StatsService;
 import gruppe_b.quizduell.domain.entities.Question;
 
 /**
@@ -28,8 +33,11 @@ import gruppe_b.quizduell.domain.entities.Question;
  */
 public class QuizSession extends Thread {
 
+    private static final Logger logger = LoggerFactory.getLogger(QuizSession.class);
+
     private String threadName; // Für debugging Zwecke
     private final SendToPlayerService send;
+    private final StatsService statsService;
 
     private final Quiz quiz;
     private boolean cancel = false;
@@ -49,6 +57,8 @@ public class QuizSession extends Thread {
 
     private boolean sendUpdate = true;
 
+    private GameSessionResult gameSessionResult;
+
     GetQuestionRandomQueryHandler questionRandomHandler;
 
     /**
@@ -60,10 +70,13 @@ public class QuizSession extends Thread {
      *                                      Kommuniziert wird (Websocket)
      * @param getQuestionRandomQueryHandler Handler über den zufällige Quizfragen
      *                                      aus der Datenbank geholt werden.
+     * 
+     * @author Christopher Burmeister
      */
     public QuizSession(Quiz quiz,
             SendToPlayerService sendToPlayerService,
-            GetQuestionRandomQueryHandler getQuestionRandomQueryHandler) {
+            GetQuestionRandomQueryHandler getQuestionRandomQueryHandler,
+            StatsService statsService) {
         this.send = sendToPlayerService;
         this.threadName = quiz.getId().toString();
         this.quiz = quiz;
@@ -71,6 +84,8 @@ public class QuizSession extends Thread {
         this.playerCount = quiz.getPlayers().size();
         lock = new ReentrantLock(true);
         roundList = new ArrayList<>();
+        gameSessionResult = new GameSessionResult();
+        this.statsService = statsService;
     }
 
     public Quiz getQuiz() {
@@ -106,6 +121,8 @@ public class QuizSession extends Thread {
         }
 
         quiz.setQuizFinish();
+
+        updateStatsInDb();
 
         System.out.println("Thread " + threadName + " exiting.");
     }
@@ -228,6 +245,11 @@ public class QuizSession extends Thread {
             // hat der Spieler bereits geantwortet?
             if (getCurrentRound().getPlayerAnswered().containsKey(player.getUserId())) {
                 return;
+            }
+
+            // Ist die Antwort correct? Dann bekommt der Spieler einen Punkt...
+            if (getCurrentRound().getQuestion().getCorrectAnswer() == answer) {
+                gameSessionResult.addOnePoint(playerId);
             }
 
             // Spieler in das Array (der aktuellen Runde) der Spieler einfügen die
@@ -378,5 +400,15 @@ public class QuizSession extends Thread {
     public int calcRemainingSeconds() {
         int passSeconds = (int) roundStartTime.until(Instant.now(), ChronoUnit.SECONDS);
         return currentMaxRoundLength - passSeconds;
+    }
+
+    public void updateStatsInDb() {
+        try {
+            gameSessionResult.endQuiz();
+
+            statsService.createOrUpdatePlayerStats(gameSessionResult);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

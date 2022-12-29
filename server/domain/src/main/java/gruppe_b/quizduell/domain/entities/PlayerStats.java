@@ -57,6 +57,10 @@ public class PlayerStats {
         return gameCount;
     }
 
+    public void addGameCount(int x) {
+        this.gameCount = this.gameCount + x;
+    }
+
     public void setGameCount(int gameCount) {
         this.gameCount = gameCount;
     }
@@ -69,6 +73,10 @@ public class PlayerStats {
         this.gameWonCount = gameWonCount;
     }
 
+    public void addGameWonCount(int x) {
+        this.gameWonCount = this.gameWonCount + x;
+    }
+
     public int getGameLossCount() {
         return gameLossCount;
     }
@@ -77,11 +85,19 @@ public class PlayerStats {
         this.gameLossCount = gameLossCount;
     }
 
+    public void addGameLossCount(int x) {
+        this.gameLossCount = this.gameLossCount + x;
+    }
+
     public int getGameDrawCount() {
         return gameDrawCount;
     }
 
     public void setGameDrawCount(int gameDrawCount) {
         this.gameDrawCount = gameDrawCount;
+    }
+
+    public void addGameDrawCount(int x) {
+        this.gameDrawCount = this.gameDrawCount + x;
     }
 }

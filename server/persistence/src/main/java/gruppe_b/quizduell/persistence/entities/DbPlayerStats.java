@@ -43,7 +43,7 @@ public class DbPlayerStats extends PlayerStats {
         return super.getId();
     }
 
-    @OneToOne(optional = false, cascade = CascadeType.MERGE)
+    @OneToOne(optional = false, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true, nullable = false, updatable = false)
     @Override
     public DbUser getPlayer() {

@@ -88,4 +88,19 @@ public class PlayerStatsRepositoryAdapterTest {
         assertEquals(s1.getGameLossCount(), result.getGameLossCount());
         assertEquals(s1.getGameDrawCount(), result.getGameDrawCount());
     }
+
+    @Test
+    void whenUpdatePlayerStatThenUpdateEntity() throws Exception {
+        // Arrange
+        PlayerStats playerStats = repo.findByPlayerId(john.getId());
+        int oldCount = playerStats.getGameCount();
+
+        // Act
+        playerStats.addGameCount(1);
+        PlayerStats updatedPlayerStats = repo.update(playerStats);
+
+        // Assert
+        assertEquals(oldCount + 1, updatedPlayerStats.getGameCount());
+        assertEquals(john.getId(), updatedPlayerStats.getPlayer().getId());
+    }
 }

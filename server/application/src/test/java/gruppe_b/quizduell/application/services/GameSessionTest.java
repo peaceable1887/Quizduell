@@ -1,8 +1,7 @@
-package gruppe_b.quizduell.application;
+package gruppe_b.quizduell.application.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Repeat;
 
 import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
@@ -12,7 +11,7 @@ import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.application.questions.QuestionRepository;
 import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
-import gruppe_b.quizduell.application.user.UserRepository;
+import gruppe_b.quizduell.application.services.StatsService;
 import gruppe_b.quizduell.domain.entities.Question;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -51,6 +50,9 @@ class GameSessionTest {
     @Autowired
     GetQuestionRandomQueryHandler getQuestionRandomQueryHandler;
 
+    @Autowired
+    StatsService statsService;
+
     QuizSession spySession;
 
     Quiz quiz;
@@ -67,7 +69,7 @@ class GameSessionTest {
         quiz = new Quiz(UUID.randomUUID());
         quiz.addPlayer(UUID.randomUUID(), "john");
         quiz.addPlayer(UUID.randomUUID(), "jane");
-        session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler);
+        session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler, statsService);
         when(questionRepository.random(random)).thenReturn(
                 new Question(UUID.randomUUID(),
                         "mockQuestionText",
@@ -84,7 +86,9 @@ class GameSessionTest {
         Quiz quizLocal = new Quiz(UUID.randomUUID());
 
         // Act
-        QuizSession sessionLocal = new QuizSession(quizLocal, sendToPlayerService, getQuestionRandomQueryHandler);
+        QuizSession sessionLocal = new QuizSession(quizLocal, sendToPlayerService,
+                getQuestionRandomQueryHandler,
+                statsService);
 
         // Assert
         assertNotNull(sessionLocal);
@@ -146,7 +150,8 @@ class GameSessionTest {
         // Arrange
         UUID playerId = quiz.getPlayers().get(0).getUserId();
 
-        ArgumentMatcher<GameSessionDto> matcherUpdate = getGameSessionArgumentMatcherRoundOpenOnePlayerFinish(1);
+        ArgumentMatcher<GameSessionDto> matcherUpdate = getGameSessionArgumentMatcherRoundOpenOnePlayerFinish(
+                1);
 
         // Act
         session.start();
@@ -220,7 +225,7 @@ class GameSessionTest {
 
         session.playerAnswer(playerId2, 1);
 
-        Thread.sleep(2000);
+        Thread.sleep(1700);
 
         // Assert
         verify(sendToPlayerService, times(2)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
