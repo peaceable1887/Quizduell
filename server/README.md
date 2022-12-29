@@ -108,7 +108,10 @@
     - bearer token (JWT)
   - request body
 
-            { "name":"lobbyname" }
+            {
+              "name":"lobbyname",
+              "password": "" (optional wenn kein Passwort dann leer "")
+            }
 
   - response body
 
@@ -116,6 +119,7 @@
             "id": "3d182c84-15e3-4eb9-8590-841e272388aa",
             "name": "lobbyname",
             "status": "WAIT",
+            "hasPassword": "false",
             "players": [
                 {
                     "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b",
@@ -149,6 +153,7 @@
             "id": "cc884343-578b-4c95-9ef3-541d311c8682",
             "name": "lobbyname",
             "status": "WAIT",
+            "hasPassword": "false",
             "players": [
                 {
                     "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b",
@@ -183,6 +188,7 @@
                 "id": "3d182c84-15e3-4eb9-8590-841e272388aa",
                 "name": "lobbyname",
                 "status": "WAIT",
+                "hasPassword": "false",
                 "players": [
                     {
                         "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b",
@@ -195,6 +201,7 @@
                 "id": "cc884343-578b-4c95-9ef3-541d311c8682",
                 "name": "lobbyname",
                 "status": "WAIT",
+                "hasPassword": "true",
                 "players": [
                     {
                         "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b",
@@ -221,7 +228,10 @@
     - bearer token (JWT)
   - request body
 
-        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
+        {
+          "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682",
+          "password": "<password>" (wenn kein Passwort dann leer "")
+        }
 
   - response body
 
@@ -229,6 +239,7 @@
             "id": "cc884343-578b-4c95-9ef3-541d311c8682",
             "name": "TestLobby",
             "status": "WAIT",
+            "hasPassword": "false",
             "players": [
                 {
                     "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b",
