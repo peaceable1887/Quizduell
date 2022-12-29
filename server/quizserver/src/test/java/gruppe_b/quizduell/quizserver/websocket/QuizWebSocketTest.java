@@ -52,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class QuizWebSocketTest {
 
     @Autowired

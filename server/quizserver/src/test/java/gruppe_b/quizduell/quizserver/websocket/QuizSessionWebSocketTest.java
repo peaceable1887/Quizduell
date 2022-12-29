@@ -177,10 +177,12 @@ public class QuizSessionWebSocketTest {
         stompSession.subscribe(SUBSCRIBE_QUIZ_SESSION + lobbyId.toString(),
                 new PublishQuizStompFrameHandler(PlayerRoundStatus.FINISH.toString()));
 
+        completableFuture = new CompletableFuture<>();
+
         // Act
         stompSession.send(SEND_QUIZ_SESSION_ANSWER + lobbyId.toString() + "/answer", "2".getBytes());
 
-        String result = completableFuture.get(5, TimeUnit.SECONDS);
+        String result = completableFuture.get(1, TimeUnit.SECONDS);
 
         // Assert
         assertNotNull(result);

@@ -28,19 +28,19 @@ public class GameSessionResult {
      * hat.
      * 
      * @param playerId UUID des Spielers
+     * @param name     Name des Spielers
      */
     public void addOnePoint(UUID playerId) {
 
         // Ist der Spieler bereits eingefügt? Wenn -1 dann nein
         // Größer -1 ist der Index im Array
         int containsPlayer = playersContainsPlayer(playerId);
-        if (containsPlayer >= 0) {
-            players.get(containsPlayer).addOnePoint();
-        } else {
-            GameSessionPlayerResult player = new GameSessionPlayerResult(playerId);
-            player.addOnePoint();
-            players.add(player);
-        }
+        players.get(containsPlayer).addOnePoint();
+    }
+
+    public void addPlayer(UUID playerId, String name) {
+        GameSessionPlayerResult player = new GameSessionPlayerResult(playerId, name);
+        players.add(player);
     }
 
     /**

@@ -12,7 +12,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import gruppe_b.quizduell.application.categories.CategoryRepository;
 
 @SpringBootTest
-@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 class QuizserverApplicationTests {
 
 	@Autowired

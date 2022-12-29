@@ -20,7 +20,7 @@ import gruppe_b.quizduell.persistence.repository.UserRepositoryAdapter;
 import gruppe_b.quizduell.persistence.repository.PlayerStatsRepositoryAdapter;
 
 @SpringBootTest
-@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class SaveQuizResultInDbTest {
 
     @Autowired
@@ -62,8 +62,8 @@ public class SaveQuizResultInDbTest {
         s3 = statsRepo.save(new PlayerStats(marc, 0, 0, 0, 0));
 
         gameSessionResult = new GameSessionResult();
-        p1 = new GameSessionPlayerResult(john.getId());
-        p2 = new GameSessionPlayerResult(newUser.getId());
+        p1 = new GameSessionPlayerResult(john.getId(), "john");
+        p2 = new GameSessionPlayerResult(newUser.getId(), "jane");
         gameSessionResult.getPlayers().add(p1);
         gameSessionResult.getPlayers().add(p2);
     }

@@ -655,16 +655,16 @@ Beispiel:
             "currentRound": 1,
             "playerList": [
                 {
-                "playerId": "771ecdf4-58ac-4e1e-a082-58c1589e081a",
-                "name": "john",
-                "playerRoundStatus": "GUESS",
-                "chosenAnswer": 0
+                  "playerId": "771ecdf4-58ac-4e1e-a082-58c1589e081a",
+                  "name": "john",
+                  "playerRoundStatus": "GUESS",
+                  "chosenAnswer": 0
                 },
                 {
-                "playerId": "684d0be6-1888-485b-af53-89b81b6dae22",
-                "name": "jane",
-                "playerRoundStatus": "GUESS",
-                "chosenAnswer": 0
+                  "playerId": "684d0be6-1888-485b-af53-89b81b6dae22",
+                  "name": "jane",
+                  "playerRoundStatus": "GUESS",
+                  "chosenAnswer": 0
                 }
             ],
             "categoryName": null,
@@ -674,6 +674,29 @@ Beispiel:
             "answerThree": "antwort3",
             "answerFour": "antwort4",
             "correctAnswer": 0
+        }
+
+- Endpunkt zum Abonnieren für das Spielergebnis am Ende einer QuizSession
+
+      /topic/quiz/session/<lobby-UUID>/result
+
+  - Message
+
+        {
+          "players": [
+            {
+              "id": "771ecdf4-58ac-4e1e-a082-58c1589e081a",
+              "name": "john",
+              "playerResult": "WIN",
+              "points": 6
+            },
+            {
+              "id": "684d0be6-1888-485b-af53-89b81b6dae22",
+              "name": "jane",
+              "playerResult": "LOSS",
+              "points": 3
+            }
+          ]
         }
 
 - Endpunkt zum Abonnieren für den Countdown einer Runde

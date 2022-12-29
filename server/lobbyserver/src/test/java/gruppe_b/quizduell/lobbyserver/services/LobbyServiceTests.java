@@ -14,11 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 import gruppe_b.quizduell.lobbyserver.common.LobbyHelper;
 
 @SpringBootTest()
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
 public class LobbyServiceTests {
 
     @Autowired

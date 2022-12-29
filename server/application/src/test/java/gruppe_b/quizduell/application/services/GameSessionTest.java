@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import gruppe_b.quizduell.application.common.GameSessionDto;
+import gruppe_b.quizduell.application.common.GameSessionResult;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
 import gruppe_b.quizduell.application.enums.RoundStatus;
 import gruppe_b.quizduell.application.game.QuizSession;
@@ -385,7 +386,7 @@ class GameSessionTest {
 
         // Round 1
         session.playerAnswer(playerId1, 1);
-        session.playerAnswer(playerId2, 2);
+        session.playerAnswer(playerId2, 1);
 
         Thread.sleep(8_000);
 
@@ -459,6 +460,12 @@ class GameSessionTest {
 
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 argThat(getGameSessionArgumentMatcherRoundFinish(6)));
+
+        verify(sendToPlayerService, times(1)).sendQuizResult(eq(quiz.getLobbyId()),
+                any(GameSessionResult.class));
+
+        verify(sendToPlayerService, times(1)).sendQuizResult(eq(quiz.getLobbyId()),
+                argThat(getGameSessionResultMatcher()));
     }
 
     @Test
@@ -474,6 +481,10 @@ class GameSessionTest {
 
         // Assert
         assertTrue(passSeconds > 15 && passSeconds < 20);
+    }
+
+    ArgumentMatcher<GameSessionResult> getGameSessionResultMatcher() {
+        return x -> x.getPlayers().size() == 2;
     }
 
     ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcher(int currentRound) {

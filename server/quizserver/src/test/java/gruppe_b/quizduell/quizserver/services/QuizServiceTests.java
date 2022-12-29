@@ -18,7 +18,7 @@ import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyConnectedException;
 import gruppe_b.quizduell.quizserver.exceptions.PlayerAlreadyInOtherGameException;
 
 @SpringBootTest
-@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
+@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 public class QuizServiceTests {
 
     @Autowired

@@ -84,8 +84,15 @@ public class QuizSession extends Thread {
         this.playerCount = quiz.getPlayers().size();
         lock = new ReentrantLock(true);
         roundList = new ArrayList<>();
-        gameSessionResult = new GameSessionResult();
         this.statsService = statsService;
+        initQuizSessionResult();
+    }
+
+    private void initQuizSessionResult() {
+        gameSessionResult = new GameSessionResult();
+        for (Player player : quiz.getPlayers()) {
+            gameSessionResult.addPlayer(player.getUserId(), player.getName());
+        }
     }
 
     public Quiz getQuiz() {
@@ -405,6 +412,8 @@ public class QuizSession extends Thread {
     public void updateStatsInDb() {
         try {
             gameSessionResult.endQuiz();
+
+            send.sendQuizResult(quiz.getLobbyId(), gameSessionResult);
 
             statsService.createOrUpdatePlayerStats(gameSessionResult);
         } catch (Exception e) {

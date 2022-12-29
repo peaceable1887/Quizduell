@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -39,7 +40,7 @@ import java.util.concurrent.Executors;
 
 @SpringBootTest()
 @ComponentScan(basePackageClasses = AuthHelper.class)
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
 @AutoConfigureMockMvc
 class LobbyControllerTests {
 

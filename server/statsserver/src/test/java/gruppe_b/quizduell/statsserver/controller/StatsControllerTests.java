@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,7 +43,7 @@ import java.util.concurrent.Executors;
 
 @SpringBootTest()
 @ComponentScan(basePackageClasses = AuthHelper.class)
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@DirtiesContext(methodMode = MethodMode.BEFORE_METHOD)
 @AutoConfigureMockMvc
 public class StatsControllerTests {
 

@@ -9,10 +9,12 @@ public class GameSessionPlayerResult {
     private final UUID id;
     private PlayerResult playerResult;
     private int points = 0;
+    private String name;
 
-    public GameSessionPlayerResult(UUID id) {
+    public GameSessionPlayerResult(UUID id, String name) {
         this.id = id;
         this.playerResult = PlayerResult.NULL;
+        this.name = name;
     }
 
     public UUID getId() {

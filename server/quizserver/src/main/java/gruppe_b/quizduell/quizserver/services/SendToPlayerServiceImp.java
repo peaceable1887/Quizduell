@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.common.GameSessionDto;
+import gruppe_b.quizduell.application.common.GameSessionResult;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 
 @Service
@@ -29,5 +30,11 @@ public class SendToPlayerServiceImp implements SendToPlayerService {
     @Override
     public void sendQuizAbort(UUID lobbyId, GameSessionDto gameSessionDto) {
         simpMessagingTemplate.convertAndSend("/topic/quiz/session/" + lobbyId.toString(), gameSessionDto);
+    }
+
+    @Override
+    public void sendQuizResult(UUID lobbyId, GameSessionResult gameSessionResult) {
+        simpMessagingTemplate.convertAndSend("/topic/quiz/session/" + lobbyId.toString() + "/result",
+                gameSessionResult);
     }
 }
