@@ -67,7 +67,7 @@ public class ProfilePictureControllerTest {
         MockMultipartFile mockFile = new MockMultipartFile("file", "test.jpg", "image/jpeg", picture);
 
         // Act
-        this.mvc.perform(MockMvcRequestBuilders.multipart("/images")
+        this.mvc.perform(MockMvcRequestBuilders.multipart("/v1/image")
                 .file(mockFile)
                 .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk());
