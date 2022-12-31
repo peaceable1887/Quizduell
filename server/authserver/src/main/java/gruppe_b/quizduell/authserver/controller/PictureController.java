@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import gruppe_b.quizduell.infrastructure.services.ProfilePictureService;
 
 @RestController
+@RequestMapping("/v1")
 public class PictureController {
 
     private static final Logger logger = LoggerFactory.getLogger(PictureController.class);
@@ -24,7 +26,7 @@ public class PictureController {
     @Autowired
     ProfilePictureService profilePictureService;
 
-    @PostMapping("/images")
+    @PostMapping("/image")
     public ResponseEntity<Void> uploadImage(Principal principal, @RequestParam("file") MultipartFile file) {
         String[] fileNameParts = file.getOriginalFilename().split("\\.");
 

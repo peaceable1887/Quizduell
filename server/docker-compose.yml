@@ -6,6 +6,8 @@ services:
     build: ./authserver
     expose:
       - "8080"
+    volumes:
+      - web-static:/www/static
     links:
       - maria:maria
     environment:

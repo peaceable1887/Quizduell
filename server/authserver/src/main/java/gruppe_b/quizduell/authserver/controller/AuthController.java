@@ -35,7 +35,7 @@ import gruppe_b.quizduell.authserver.service.TokenService;
 @RequestMapping("/v1")
 public class AuthController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AuthController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final TokenService tokenService;
     private final UserRegisterService userRegisterService;
@@ -61,9 +61,9 @@ public class AuthController {
      */
     @GetMapping("/token")
     public ResponseEntity<UserJwtDto> token(Authentication authentication) {
-        LOG.debug("Token requested for user: '{}'", authentication.getName());
+        logger.debug("Token requested for user: '{}'", authentication.getName());
         UserJwtDto dto = tokenService.generateToken(authentication);
-        LOG.debug("Token granted {}", dto.token);
+        logger.debug("Token granted {}", dto.token);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 

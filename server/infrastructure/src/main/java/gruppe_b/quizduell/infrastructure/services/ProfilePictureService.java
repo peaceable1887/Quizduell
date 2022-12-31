@@ -20,7 +20,7 @@ public class ProfilePictureService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfilePictureService.class);
 
-    private String picturePath = "data/profile_picture/";
+    private String picturePath = "/www/static/";
 
     public String getPicturePath() {
         return picturePath;
