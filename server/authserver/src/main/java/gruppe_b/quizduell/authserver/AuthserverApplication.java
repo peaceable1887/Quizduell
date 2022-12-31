@@ -12,6 +12,7 @@ import gruppe_b.quizduell.common.config.RsaKeyProperties;
 @EnableConfigurationProperties(RsaKeyProperties.class)
 @ComponentScan(basePackages = "gruppe_b.quizduell.application.*")
 @ComponentScan(basePackages = "gruppe_b.quizduell.persistence.*")
+@ComponentScan(basePackages = "gruppe_b.quizduell.infrastructure.*")
 public class AuthserverApplication implements InitializingBean {
 
 	public static void main(String[] args) {

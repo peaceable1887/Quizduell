@@ -51,6 +51,12 @@
 
 		<dependency>
 			<groupId>gruppe_b.quizduell</groupId>
+			<artifactId>infrstructure</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>gruppe_b.quizduell</groupId>
 			<artifactId>common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>

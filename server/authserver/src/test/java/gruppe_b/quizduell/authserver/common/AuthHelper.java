@@ -17,6 +17,8 @@ import gruppe_b.quizduell.domain.entities.User;
 @Service
 public class AuthHelper {
 
+    private final String DEFAULT_UUID = "00000000-0000-0000-0000-000000000000";
+
     @Autowired
     private final JwtEncoder jwtEncoder;
 
@@ -25,6 +27,16 @@ public class AuthHelper {
 
     public AuthHelper(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
+    }
+
+    /**
+     * Gibt die UUID zurück, die verwendet wird, um einen Token ohne vorgegebene
+     * UUID zu erstellen.
+     * 
+     * @return default UUID
+     */
+    public String getDefaultUUID() {
+        return DEFAULT_UUID;
     }
 
     public String generateToken(String id) {
@@ -40,7 +52,7 @@ public class AuthHelper {
     }
 
     public String generateToken() {
-        return generateToken("00000000-0000-0000-0000-000000000000");
+        return generateToken(DEFAULT_UUID);
     }
 
     public UUID generateUser() {
