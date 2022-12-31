@@ -7,4 +7,6 @@ public class UserDetailsUpdateDto implements Serializable {
     public String name;
 
     public String mail;
+
+    public String password;
 }

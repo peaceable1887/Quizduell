@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
@@ -30,6 +31,9 @@ public class UserService {
 
     @Autowired
     RequestHandler<UpdateUserCommand, User> updateUserHandler;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public UserDetailsDto getUserDetailsByUUID(UUID id) {
         return new UserDetailsDto(getUserByUUID(id));
@@ -69,6 +73,10 @@ public class UserService {
 
         if (dto.mail != null && !dto.mail.equals("")) {
             user.setMail(dto.mail);
+        }
+
+        if (dto.password != null && !dto.password.equals("")) {
+            user.setPasswordHash(passwordEncoder.encode(dto.password));
         }
 
         return updateUserHandler.handle(new UpdateUserCommand(user));

@@ -105,8 +105,9 @@
   - request body
 
         {
-          "name": "<name-to-update>"
-          "mail": "<mail-to-update>"
+          "name": "<new-name>"
+          "mail": "<new-mail>"
+          "password": "<new-password>"
         }
 
   - response body
