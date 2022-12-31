@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -175,21 +173,5 @@ class AuthControllerTest {
                 .content(jObject.toJSONString()))
                 .andExpect(status().isBadRequest());
         // .andExpect(jsonPath("$.name", Is.is("Name is mandatory")));
-    }
-
-    @Test
-    @WithMockUser
-    void whenGetUserDetailsThenReturnUserDetails() throws Exception {
-        // Arrange
-        String userId = authHelper.generateUser().toString();
-        String jwtToken = authHelper.generateToken(userId);
-
-        // Act
-        MvcResult result = this.mvc.perform(get("/v1/details")
-                .header("Authorization", "Bearer " + jwtToken))
-                .andExpect(status().isOk()).andReturn();
-
-        // Assert
-        assertTrue(result.getResponse().getContentAsString().contains("authHelper"));
     }
 }

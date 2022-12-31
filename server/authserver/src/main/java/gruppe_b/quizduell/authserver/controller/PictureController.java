@@ -17,6 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import gruppe_b.quizduell.infrastructure.services.ProfilePictureService;
 
+/**
+ * Rest-Controller zum Speichern von Profilbildern.
+ * 
+ * @author Christopher Burmeister
+ */
 @RestController
 @RequestMapping("/v1")
 public class PictureController {

@@ -7,9 +7,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.interfaces.RequestHandler;
+import gruppe_b.quizduell.application.user.commands.update_user.UpdateUserCommand;
 import gruppe_b.quizduell.application.user.queries.get_details.GetUserDetailByUUIDQuery;
 import gruppe_b.quizduell.application.user.queries.get_details.GetUserDetailQuery;
 import gruppe_b.quizduell.application.common.UserDetailsDto;
+import gruppe_b.quizduell.application.common.UserDetailsUpdateDto;
 import gruppe_b.quizduell.domain.entities.User;
 
 /**
@@ -26,12 +28,19 @@ public class UserService {
     @Autowired
     RequestHandler<GetUserDetailQuery, User> getUserHandler;
 
+    @Autowired
+    RequestHandler<UpdateUserCommand, User> updateUserHandler;
+
     public UserDetailsDto getUserDetailsByUUID(UUID id) {
         return new UserDetailsDto(getUserByUUID(id));
     }
 
     public UserDetailsDto getUserDetailsByName(String name) {
         return new UserDetailsDto(getUserByName(name));
+    }
+
+    public UserDetailsDto updateUserDetailsByUUID(UUID id, UserDetailsUpdateDto dto) {
+        return new UserDetailsDto(updateUserByUUID(id, dto));
     }
 
     public User getUserByUUID(UUID id) {
@@ -49,5 +58,19 @@ public class UserService {
         }
 
         return user;
+    }
+
+    public User updateUserByUUID(UUID id, UserDetailsUpdateDto dto) {
+        User user = getUserByUUID(id);
+
+        if (dto.name != null && !dto.name.equals("")) {
+            user.setName(dto.name);
+        }
+
+        if (dto.mail != null && !dto.mail.equals("")) {
+            user.setMail(dto.mail);
+        }
+
+        return updateUserHandler.handle(new UpdateUserCommand(user));
     }
 }

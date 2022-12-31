@@ -92,6 +92,53 @@
   - response status
     - 200 OK
 
+- User-Details updaten
+
+  - Endpunkt
+
+        <host>:/api/auth/v1/update
+
+  - request method
+    - POST
+  - request header
+    - bearer token (JWT)
+  - request body
+
+        {
+          "name": "<name-to-update>"
+          "mail": "<mail-to-update>"
+        }
+
+  - response body
+
+        {
+          "name": "john",
+          "mail": "john@test.de",
+          "userId": "7cb353a2-c35d-4560-958a-a6ec6ceae50b"
+        }
+
+  - respones status
+    - 200 OK
+
+- Profilbild posten
+
+  - Endpunkt
+
+        <host>:/api/auth/v1/image
+
+  - request method
+    - POST
+  - request header
+    - bearer token (JWT)
+  - requst boden
+
+        {
+          "file": "<picture>"
+        }
+
+  - respones status
+    - 200 OK
+
 ### Lobby
 
 - Lobby erstellen

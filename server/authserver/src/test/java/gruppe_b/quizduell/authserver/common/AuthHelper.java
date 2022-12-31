@@ -17,7 +17,11 @@ import gruppe_b.quizduell.domain.entities.User;
 @Service
 public class AuthHelper {
 
-    private final String DEFAULT_UUID = "00000000-0000-0000-0000-000000000000";
+    private final String DEFAULT_USER_UUID = "00000000-0000-0000-0000-000000000000";
+    private final String DEFAULT_USER_NAME = "authHelper";
+    private final String DEFAULT_USER_MAIL = "john@john.de";
+    private final String DEFAULT_USER_PASSWORD = "password";
+    private final String DEFAULT_USER_SALT = "salt";
 
     @Autowired
     private final JwtEncoder jwtEncoder;
@@ -35,8 +39,24 @@ public class AuthHelper {
      * 
      * @return default UUID
      */
-    public String getDefaultUUID() {
-        return DEFAULT_UUID;
+    public String getDEFAULT_USER_UUID() {
+        return DEFAULT_USER_UUID;
+    }
+
+    public String getDEFAULT_USER_NAME() {
+        return DEFAULT_USER_NAME;
+    }
+
+    public String getDEFAULT_USER_MAIL() {
+        return DEFAULT_USER_MAIL;
+    }
+
+    public String getDEFAULT_USER_PASSWORD() {
+        return DEFAULT_USER_PASSWORD;
+    }
+
+    public String getDEFAULT_USER_SALT() {
+        return DEFAULT_USER_SALT;
     }
 
     public String generateToken(String id) {
@@ -52,11 +72,12 @@ public class AuthHelper {
     }
 
     public String generateToken() {
-        return generateToken(DEFAULT_UUID);
+        return generateToken(DEFAULT_USER_UUID);
     }
 
     public UUID generateUser() {
-        User user = createUserHandler.handle(new CreateUserCommand("authHelper", "john@john.de", "password", "salt"));
+        User user = createUserHandler.handle(new CreateUserCommand(getDEFAULT_USER_NAME(), getDEFAULT_USER_MAIL(),
+                getDEFAULT_USER_PASSWORD(), getDEFAULT_USER_SALT()));
         return user.getId();
     }
 }

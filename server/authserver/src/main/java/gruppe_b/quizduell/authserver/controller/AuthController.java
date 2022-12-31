@@ -39,18 +39,15 @@ public class AuthController {
 
     private final TokenService tokenService;
     private final UserRegisterService userRegisterService;
-    private final UserService userService;
 
     @Autowired
     JwtDecoder jwtDecoder;
 
     public AuthController(
             TokenService tokenService,
-            UserRegisterService userRegisterService,
-            UserService userService) {
+            UserRegisterService userRegisterService) {
         this.tokenService = tokenService;
         this.userRegisterService = userRegisterService;
-        this.userService = userService;
     }
 
     /**
@@ -77,18 +74,5 @@ public class AuthController {
     public ResponseEntity<Void> register(@Valid @RequestBody UserCredentialsDto userCredentialsDto) {
         userRegisterService.saveUser(userCredentialsDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    /**
-     * Gibt die Details zu einem User zurück.
-     * 
-     * @param principal enthält die UserId und wird durch Spring Security im
-     *                  authentication Prozess erzeugt.
-     * @return Details zum User
-     */
-    @GetMapping("/details")
-    public ResponseEntity<UserDetailsDto> details(Principal principal) {
-        UserDetailsDto userDetails = userService.getUserDetailsByUUID(UUID.fromString(principal.getName()));
-        return ResponseEntity.status(HttpStatus.OK).body(userDetails);
     }
 }

@@ -73,7 +73,7 @@ public class ProfilePictureControllerTest {
                 .andExpect(status().isOk());
 
         // Assert
-        File file = new File(PATH_TEST_SAVE_FOLDER + authHelper.getDefaultUUID() + ".jpg");
+        File file = new File(PATH_TEST_SAVE_FOLDER + authHelper.getDEFAULT_USER_UUID() + ".jpg");
         assertTrue(file.exists());
         file.delete();
         assertTrue(!file.exists());
