@@ -52,9 +52,9 @@ public class LobbyController {
      * @return neu erstellte Lobby.
      */
     @PostMapping("/create")
-    public ResponseEntity<Lobby> create(Principal principal, @RequestBody CreateRequest request) {
+    public ResponseEntity<Lobby> create(@AuthenticationPrincipal Jwt principal, @RequestBody CreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(lobbyService.createLobby(
-                UUID.fromString(principal.getName()), request.name, request.password));
+                UUID.fromString(principal.getSubject()), principal.getClaim("name"), request.password));
     }
 
     /**

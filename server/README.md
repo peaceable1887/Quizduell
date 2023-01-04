@@ -439,14 +439,13 @@ Beispiel:
 
   - Endpunkt
 
-        <host>:/api/auth/v1/get
+        <host>:/api/stats/v1/get
 
-  request method
-
-  - GET
-    request header
-  - bearer token (jwt)
-    request body
+  - request method
+    - GET
+  - request header
+    - bearer token (jwt)
+  - response body
 
         {
           "id":"cc884343-578b-4c95-9ef3-541d311c8682",

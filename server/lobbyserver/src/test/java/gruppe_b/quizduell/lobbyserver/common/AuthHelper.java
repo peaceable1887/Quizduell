@@ -12,11 +12,43 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthHelper {
 
+    private final String DEFAULT_USER_UUID = "00000000-0000-0000-0000-000000000000";
+    private final String DEFAULT_USER_NAME = "authHelper";
+    private final String DEFAULT_USER_MAIL = "john@john.de";
+    private final String DEFAULT_USER_PASSWORD = "password";
+    private final String DEFAULT_USER_SALT = "salt";
+
     @Autowired
     private final JwtEncoder jwtEncoder;
 
     public AuthHelper(JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
+    }
+
+    /**
+     * Gibt die UUID zurück, die verwendet wird, um einen Token ohne vorgegebene
+     * UUID zu erstellen.
+     * 
+     * @return default UUID
+     */
+    public String getDEFAULT_USER_UUID() {
+        return DEFAULT_USER_UUID;
+    }
+
+    public String getDEFAULT_USER_NAME() {
+        return DEFAULT_USER_NAME;
+    }
+
+    public String getDEFAULT_USER_MAIL() {
+        return DEFAULT_USER_MAIL;
+    }
+
+    public String getDEFAULT_USER_PASSWORD() {
+        return DEFAULT_USER_PASSWORD;
+    }
+
+    public String getDEFAULT_USER_SALT() {
+        return DEFAULT_USER_SALT;
     }
 
     public String generateToken(String id) {
@@ -26,13 +58,10 @@ public class AuthHelper {
                 .issuedAt(now)
                 .expiresAt(now.plus(1, ChronoUnit.HOURS))
                 .subject(id)
+                .claim("name", getDEFAULT_USER_NAME())
                 .claim("scope", "")
                 .build();
-        return "Bearer " + this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
-    }
-
-    public String generateToken() {
-        return generateToken("00000000-0000-0000-0000-000000000000");
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 
     public String generateExpiredToken(String id) throws Exception {
@@ -42,6 +71,7 @@ public class AuthHelper {
                 .issuedAt(now.minus(2, ChronoUnit.HOURS))
                 .expiresAt(now.minus(1, ChronoUnit.HOURS))
                 .subject(id)
+                .claim("name", getDEFAULT_USER_NAME())
                 .claim("scope", "")
                 .build();
 
@@ -50,5 +80,9 @@ public class AuthHelper {
 
     public String generateExpiredToken() throws Exception {
         return generateExpiredToken("00000000-0000-0000-0000-000000000000");
+    }
+
+    public String generateToken() {
+        return generateToken(DEFAULT_USER_UUID);
     }
 }
