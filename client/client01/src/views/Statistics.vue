@@ -5,11 +5,11 @@
         <div class="statContent">
             <div class="statData">
                 <span class="text">gewonnene Spiele</span>
-                <span class="data">20</span>
+                <span class="data">{{gameWonCount}}</span>
             </div>
             <div class="statData">
                 <span class="text">verlorene Spiele</span>
-                <span class="data">0</span>
+                <span class="data">{{gameLossCount}}</span>
             </div>
             <div class="statData">
                 <span class="text">Win Rate</span>
@@ -37,6 +37,35 @@ import Button from "../components/Button.vue";
             Headline,
             Button,
         },
+        data()
+        {
+            return{
+                gameCount: "",
+                gameWonCount: "",
+                gameLossCount: "",
+                gameDrawCount: "",
+            }
+        },
+        async created()
+        {
+            await fetch("http://localhost:8080/api/auth/v1/get", {
+                method: "GET",
+                headers: 
+                {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+            .then(res => res.json())
+            .then(data => 
+            {
+                this.gameCount = data.gameCount;
+                this.gameWonCount = data.gameWonCount;
+                this.gameLossCount = data.gameLossCount;
+                this.gameDrawCount = data.gameDrawCount;
+            })
+            
+        }
     }
 </script>
 

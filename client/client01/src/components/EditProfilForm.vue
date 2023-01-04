@@ -13,7 +13,7 @@
                 </div>
                 <div class="formData">
                     <label for="profilIcon">Profilbild</label>
-                    <input type="file" name="profilIcon" >
+                    <input type="file" @change="onFileSelected" name="profilIcon">
                 </div>
                 <div class="formData">
                     <label for="password">Passwort</label>
@@ -23,7 +23,8 @@
                     <label for="passwordRepeat">Passwort wiederholen</label>
                     <input type="password" name="passwordRepeat" v-model="passwordRepeat">
                 </div>
-                <div class="errMsg" v-html="errMsg"></div>
+                <div v-if="errMsg" class="errMsg" v-html="errMsg"></div>
+                <div v-if="sucMsg" class="sucMsg" v-html="sucMsg"></div>
                 <div class="btnWrapper">
                     <router-link to="/main"><Button text="Zurück"></Button></router-link>
                     <Button type="submit" text="Speichern"></Button>               
@@ -52,10 +53,11 @@
             return{
                 accountName: "",
                 eMail: "",
-                profilIcon: "", //noch ändern
+                profilIcon: null,
                 password: "",
                 passwordRepeat: "",
                 errMsg: "",
+                sucMsg: "",
             }
         },
         async created()
@@ -80,32 +82,71 @@
         {
             async onSubmit()
             {
-                await fetch("http://localhost:8080/api/auth/v1/update", {
-                method: "POST",
-                headers: 
+                if(this.password === this.passwordRepeat)
                 {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                },
-                body: JSON.stringify
-                ({
-                    name:  this.accountName, 
-                    mail: this.eMail,
-                    password: this.password                    
-                })
-                })
-                .then(res => {
-
-                    if(res.ok)
+                    await fetch("http://localhost:8080/api/auth/v1/update", {
+                    method: "POST",
+                    headers: 
                     {
-                        alert("Profildaten wurden erfolgreich geändert!")
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: JSON.stringify
+                    ({
+                        name:  this.accountName, 
+                        mail: this.eMail,
+                        password: this.password                    
+                    })
+                    })
+                    .then(res => {
 
-                    }else{
-                        console.log("Fehler ist aufgetreten.")
+                        if(res.ok)
+                        {
+                            this.sucMsg = "Profildaten wurden erfolgreich geändert!"
+
+                        }else{
+                            console.log("Fehler ist aufgetreten.")
+                        }
+
+                    })
+                    
+                    /*const fd = new FormData();
+                    fd.append("image", this.profilIcon.name)
+                    console.log(this.profilIcon.name)
+
+                    await fetch("http://localhost:8080/api/auth/v1/image", {
+                    method: "POST",
+                    headers: 
+                    {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    },
+                    body: 
+                    {
+                        file: this.profilIcon.name,                    
                     }
+                    })
+                    .then(res => {
 
-                })
+                        if(res.ok)
+                        {
+                            console.log("Profilbild wurde erfolgriech hochgeladen")
 
+                        }else{
+                            console.log("Fehler beim Hochladen des Bildes ist aufgetreten.")
+                        }
+
+                    })
+                    .catch(err => console.log(err))*/
+                }else
+                {
+                    this.errMsg = "Passwort muss identisch sein!"
+                }
+            },
+            onFileSelected(event)
+            {
+                console.log(event)
+                this.profilIcon = event.target.files[0]  
             }
         }
         
@@ -154,6 +195,11 @@
 .errMsg
 {
     color: red;
+    font-style: bold;
+}
+.sucMsg
+{
+    color: green;
     font-style: bold;
 }
 .btnWrapper 

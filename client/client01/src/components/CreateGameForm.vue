@@ -63,6 +63,18 @@ export default
     {
         async createLobby()
         {
+            if(this.passwordProtected === true)
+            {
+                console.log("passwort vorhanden")
+                this.password = this.password
+                console.log(this.password)
+            }else
+            {
+                console.log("kein passwort")
+                this.password = ""
+                console.log(this.password)
+            }
+
             await fetch("http://localhost:8080/api/lobby/v1/create", {
                 method: "POST",
                 headers: 
@@ -73,6 +85,7 @@ export default
                 body: JSON.stringify
                 ({
                     name: this.gameName,
+                    password: this.password
                 })
             }).then(res => {
                     if(res.ok){

@@ -3,7 +3,7 @@
     <Headline class="headline" text="Mehrspieler"></Headline>   
     <div class="containerLobby">
         <div class="activLobbyWrapper" v-for="lobby in lobbies" :key="lobby">
-            <JoinCreatedGame 
+            <JoinCreatedGame
                 :lobbyName="`${lobby.name}`" 
                 :playerName="`${lobby.players[0].userId}`" 
                 :lobbyId="`${lobby.id}`"
@@ -47,6 +47,7 @@ export default
             lobbyId: "",
             gameName: "",
             userName: "",
+            passwordProtected: false,
         }
     },
     created()
@@ -97,6 +98,7 @@ export default
                 body: JSON.stringify(
                 {
                     lobbyId: lobbyId,
+                    password: "123"
                 })
             })
             .then(res => 
