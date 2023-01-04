@@ -78,7 +78,7 @@ public class QuizController {
      * @param request enthält die LobbyId
      * @return Quiz
      */
-    @PostMapping("/get")
+    @GetMapping("/get")
     public ResponseEntity<Quiz> get(@RequestBody QuizRequest request) {
         return ResponseEntity.ok().body(quizService.getQuiz(request.lobbyId));
     }
