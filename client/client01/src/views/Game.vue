@@ -25,7 +25,7 @@ import Question from "../components/Question.vue";
         data()
         {
             return{
-               
+               test: "",
             }
         },
         async created()
@@ -44,19 +44,49 @@ import Question from "../components/Question.vue";
                         lobbyId: localStorage.getItem("lobbyId"),
                         playerId: localStorage.getItem("userId"),
                     })
-                }).then(res => {
-                        if(res.ok){
+                })
+                .then(res => res.json())
+                .then(data => 
+                {
+                    console.log("ID: " + data.id);
+                    console.log("Lobby ID: " + data.lobbyId);
 
-                            console.log("Verbinden mit dem Spiel hat geklappt!")
-                            
+                    for(let i = 0; i < 2; i++)
+                    {
+                        console.log("User ID: " + data.players[i].userId)
+                        console.log("Name: " + data.players[i].name)
+                    }
+                })
             
-                        }else{
-                            
-                            console.log("Fehler ist aufgetreten. Verbinden mit dem Spiel hat nicht geklappt!")
-                        }
-                    }),
+               /* const token = "Bearer " + localStorage.getItem("token");
 
-            await fetch("http://localhost:8080/api/quiz/v1/get", {
+                this.connection = new SockJS("http://localhost:8080/lobby-websocket");
+                const stompClient = Stomp.over(this.connection);
+
+                stompClient.connect({ Authorization: token }, 
+                    (frame) =>
+                    {
+                        console.log("Connected: " + frame);
+                        
+                        stompClient.subscribe("/topic/quiz/session/" + localStorage.getItem("lobbyId"), 
+                            (message) =>
+                            {
+                                let json = JSON.parse(message.body);
+                                this.lobbies = json;
+                            }
+                        );
+                        stompClient.subscribe("/topic/lobby/delete-lobby", 
+                            (message) =>
+                            {
+                                console.log("deleted lobbies");
+                                let json = JSON.parse(message.body);
+                                console.log("gelöschte lobbies:" + JSON.stringify(json))
+                            }
+                        );
+                    }
+                );
+*/
+           /* await fetch("http://localhost:8080/api/quiz/v1/get", {
                 method: "GET",
                 headers: 
                 {
@@ -68,17 +98,43 @@ import Question from "../components/Question.vue";
                 ({        
                     lobbyId: localStorage.getItem("lobbyId"),
                 })
-                }).then(res => {
-                        if(res.ok){
+                }).then(res => 
+                {
+                    if(res.ok){
 
-                            console.log("Quiz wurde geholt!")
-                            
-            
-                        }else{
-                            
-                            console.log("Fehler ist aufgetreten. Quiz konnte nicht geholt werden!")
-                        }
-                    })
+                        console.log("Quiz wurde geholt!")
+                        
+        
+                    }else{
+                        
+                        console.log("Fehler ist aufgetreten. Quiz konnte nicht geholt werden!")
+                    }
+                })*/
+
+                await fetch("http://localhost:8080/api/quiz/v1/get", {
+                    method: "POST",
+                    headers: 
+                    {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("gameToken")
+                    },      
+                })
+                .then(res => res.json())
+                .then(data => 
+                {
+                    console.log("Quiz ID: " + data.quizId);
+                    console.log("Lobby ID: " + data.lobbyId);
+                    console.log("Quizstatus: " + data.quizStatus);
+
+                    for(let i = 0; i < 2; i++)
+                    {
+                        console.log("User ID: " + data.quizStatus[i].userId)
+                        console.log("Name: " + data.quizStatus[i].name)
+                        console.log("Status: " + data.quizStatus[i].status)
+                    }
+                })
+                .catch(err => console.log(err))
+
         },
         methods:
         {
@@ -96,16 +152,17 @@ import Question from "../components/Question.vue";
                     ({
                         lobbyId: localStorage.getItem("lobbyId"),      
                     })
-                }).then(res => {
-                        if(res.ok){
+                }).then(res => 
+                {
+                    if(res.ok){
 
-                            console.log("Quiz wurde beendet.")
-            
-                        }else{
-                            
-                            console.log("Quiz konnte nicht beendet werden.")
-                        }
-                    }) 
+                        console.log("Quiz wurde beendet.")
+        
+                    }else{
+                        
+                        console.log("Quiz konnte nicht beendet werden.")
+                    }
+                }) 
             }
         }
     }

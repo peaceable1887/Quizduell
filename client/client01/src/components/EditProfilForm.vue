@@ -75,6 +75,38 @@
                 this.eMail = data.mail;
             })
             
+        },
+        methods:
+        {
+            async onSubmit()
+            {
+                await fetch("http://localhost:8080/api/auth/v1/update", {
+                method: "POST",
+                headers: 
+                {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                },
+                body: JSON.stringify
+                ({
+                    name:  this.accountName, 
+                    mail: this.eMail,
+                    password: this.password                    
+                })
+                })
+                .then(res => {
+
+                    if(res.ok)
+                    {
+                        alert("Profildaten wurden erfolgreich geändert!")
+
+                    }else{
+                        console.log("Fehler ist aufgetreten.")
+                    }
+
+                })
+
+            }
         }
         
     }
