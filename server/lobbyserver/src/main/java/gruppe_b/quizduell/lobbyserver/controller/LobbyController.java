@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gruppe_b.quizduell.lobbyserver.common.ConnectRequest;
@@ -53,6 +54,10 @@ public class LobbyController {
      */
     @PostMapping("/create")
     public ResponseEntity<Lobby> create(@AuthenticationPrincipal Jwt principal, @RequestBody CreateRequest request) {
+        logger.info("---/create---");
+        logger.info(request.name);
+        logger.info(request.password);
+        logger.info("---------");
         return ResponseEntity.status(HttpStatus.CREATED).body(lobbyService.createLobby(
                 UUID.fromString(principal.getSubject()), principal.getClaim("name"), request.password));
     }
@@ -69,6 +74,10 @@ public class LobbyController {
     @PostMapping("/connect")
     public ResponseEntity<Lobby> connect(@AuthenticationPrincipal Jwt principal, @RequestBody ConnectRequest request)
             throws LobbyFullException, LobbyStatusException, LobbyWrongPasswordException {
+        logger.info("---/connect---");
+        logger.info(request.lobbyId.toString());
+        logger.info(request.password);
+        logger.info("---------");
         Lobby lobby = null;
         try {
             lobby = lobbyService.connectToLobby(
@@ -96,6 +105,9 @@ public class LobbyController {
      */
     @PostMapping("/disconnect")
     public ResponseEntity<Void> disconnect(Principal principal, @RequestBody DisconnectRequest request) {
+        logger.info("---/disconnect---");
+        logger.info(request.lobbyId.toString());
+        logger.info("---------");
         lobbyService.disconnectFromLobby(
                 UUID.fromString(principal.getName()), request.lobbyId);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -104,12 +116,15 @@ public class LobbyController {
     /**
      * Gibt eine angefragte Lobby zurück.
      * 
-     * @param request enthält die LobbyId
+     * @param lobbyId LobbyId zu der Lobby, die angefragt wird.
      * @return Lobby
      */
     @GetMapping("/get")
-    public ResponseEntity<Lobby> get(@RequestBody LobbyRequest request) {
-        return ResponseEntity.ok(lobbyService.getLobby(request.lobbyId));
+    public ResponseEntity<Lobby> get(@RequestParam("lobbyId") UUID lobbyId) {
+        logger.info("---/get---");
+        logger.info(lobbyId.toString());
+        logger.info("---------");
+        return ResponseEntity.ok(lobbyService.getLobby(lobbyId));
     }
 
     /**
@@ -119,6 +134,8 @@ public class LobbyController {
      */
     @GetMapping("/all")
     public ResponseEntity<List<Lobby>> all() {
+        logger.info("---/all---");
+        logger.info("---------");
         return ResponseEntity.ok(lobbyService.getAllLobbies());
     }
 }

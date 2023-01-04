@@ -263,15 +263,12 @@ class LobbyControllerTests {
         // Arrange
         UUID lobbyId = lobbyHelper.createLobby();
 
-        JSONObject jgetRequest = new JSONObject();
-        jgetRequest.put("lobbyId", lobbyId.toString());
         String jwtToken = authHelper.generateToken();
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get")
                 .header("Authorization", "Bearer " + jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jgetRequest.toJSONString()))
+                .param("lobbyId", lobbyId.toString()))
                 .andReturn();
 
         String jsonStringLobby = result.getResponse().getContentAsString();
