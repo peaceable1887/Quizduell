@@ -529,7 +529,7 @@ Beispiel:
           <host>:/api/quiz/v1/get
 
   - request method
-    - GET
+    - POST
   - request header
     - bearer token (JWT)
   - request body
