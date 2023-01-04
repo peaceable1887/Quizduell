@@ -259,14 +259,10 @@ public class QuizControllerTest {
         QuizRequest quizRequest = new QuizRequest();
         quizRequest.lobbyId = quiz.getLobbyId();
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(quizRequest);
-
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get")
                 .header("Authorization", jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+                .param("lobbyId", quiz.getLobbyId().toString()))
                 .andExpect(status().isOk()).andReturn();
 
         // Assert
@@ -283,15 +279,13 @@ public class QuizControllerTest {
         quizRequest.lobbyId = quiz.getLobbyId();
 
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(quizRequest);
 
         Thread.sleep(1_000);
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get-session")
                 .header("Authorization", jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
+                .param("lobbyId", quiz.getLobbyId().toString()))
                 .andExpect(status().isOk()).andReturn();
 
         // Assert

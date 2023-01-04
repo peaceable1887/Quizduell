@@ -3,6 +3,8 @@ package gruppe_b.quizduell.quizserver.controller;
 import java.util.List;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gruppe_b.quizduell.application.models.Quiz;
@@ -31,6 +34,8 @@ import gruppe_b.quizduell.quizserver.services.QuizService;
 @RestController
 @RequestMapping("/v1")
 public class QuizController {
+
+    private static final Logger logger = LoggerFactory.getLogger(QuizController.class);
 
     private final QuizService quizService;
 
@@ -58,6 +63,12 @@ public class QuizController {
             JwtIsExpiredException {
         Quiz quiz;
 
+        logger.info("---/connect---");
+        logger.info(request.gameToken);
+        logger.info(request.lobbyId.toString());
+        logger.info(request.playerId.toString());
+        logger.info("---------");
+
         try {
             quiz = quizService.connectToQuiz(
                     request.lobbyId,
@@ -75,23 +86,47 @@ public class QuizController {
     /**
      * Gib eine angefragtes Quiz anhand der LobbyId zurück.
      * 
-     * @param request enthält die LobbyId
+     * @param lobbyId LobbyId zum angefragten Quiz
      * @return Quiz
      */
     @GetMapping("/get")
-    public ResponseEntity<Quiz> get(@RequestBody QuizRequest request) {
-        return ResponseEntity.ok().body(quizService.getQuiz(request.lobbyId));
+    public ResponseEntity<Quiz> get(@RequestParam("lobbyId") UUID lobbyId) {
+        logger.info("---/get---");
+        logger.info(lobbyId.toString());
+
+        Quiz quiz = quizService.getQuiz(lobbyId);
+        if (quiz == null) {
+            String msg = "quiz not found!";
+            logger.info(msg);
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        }
+
+        logger.info("---------");
+
+        return ResponseEntity.ok().body(quiz);
     }
 
     /**
      * Gibt die Runden einer angefragten Quiz Session anhand der LobbyId zurück.
      * 
-     * @param request enthält die LobbyId
+     * @param lobbyId LobbyId zur angefragten QuizSession
      * @return Quiz Session
      */
-    @GetMapping("get-session")
-    public ResponseEntity<QuizSessionDto> getSession(@RequestBody QuizRequest request) {
-        return ResponseEntity.ok().body(quizService.getSessionDtoList(request.lobbyId));
+    @GetMapping("/get-session")
+    public ResponseEntity<QuizSessionDto> getSession(@RequestParam("lobbyId") UUID lobbyId) {
+        logger.info("---/get---");
+        logger.info(lobbyId.toString());
+
+        QuizSessionDto dto = quizService.getSessionDtoList(lobbyId);
+        if (dto == null) {
+            String msg = "quiz session not found!";
+            logger.info(msg);
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        }
+
+        logger.info("---------");
+
+        return ResponseEntity.ok().body(dto);
     }
 
     /**
