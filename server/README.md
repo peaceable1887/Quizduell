@@ -569,7 +569,7 @@ Beispiel:
     -bearer token (JWT)
   - request body
 
-        { }
+        { "lobbyId":"cc884343-578b-4c95-9ef3-541d311c8682" }
 
   - response body
 
