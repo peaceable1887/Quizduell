@@ -132,7 +132,7 @@ public class StatsControllerTests {
 
     @Test
     @WithMockUser
-    void whenRequestFromPlayerWithNoStatsRecordInDbThenThrowException() throws Exception {
+    void whenRequestFromPlayerWithNoStatsRecordInDbThenReturnEmptyPlayerStats() throws Exception {
         // Arrange
         userRegisterService.saveUser(new UserCredentialsDto("test", "test@mail.com", "password"));
 
@@ -147,7 +147,13 @@ public class StatsControllerTests {
 
         // Assert
         assertNotNull(result);
-        assertTrue(result.getResponse().getContentAsString()
-                .contains("Stats not found! PlayerId: " + user.getId().toString()));
+        String response = result.getResponse().getContentAsString();
+        assertTrue(!response.isEmpty());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        PlayerStatsDto stats = objectMapper.readValue(response, PlayerStatsDto.class);
+
+        assertEquals(null, stats.playerId);
+        assertEquals(null, stats.id);
     }
 }

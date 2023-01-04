@@ -41,10 +41,10 @@ public class StatsService {
     @Autowired
     RequestHandler<GetUserDetailByUUIDQuery, User> getUserHandler;
 
-    public PlayerStats getStatsByUserId(UUID id) throws PlayerStatsNotFoundException {
+    public PlayerStats getStatsByUserId(UUID id) {
         PlayerStats stats = getStatsHandler.handle(new GetStatsDetailByPlayerIdQuery(id));
         if (stats == null) {
-            throw new PlayerStatsNotFoundException("Stats not found! PlayerId: " + id.toString());
+            stats = new PlayerStats(null, new User(), 0, 0, 0, 0);
         }
 
         return stats;
