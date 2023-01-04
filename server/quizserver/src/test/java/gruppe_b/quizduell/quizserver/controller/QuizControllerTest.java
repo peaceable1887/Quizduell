@@ -302,4 +302,29 @@ public class QuizControllerTest {
         assertEquals(2, quizSession.getPlayerList().size());
         assertEquals(1, quizSession.getRoundList().size());
     }
+
+    @Test
+    @WithMockUser
+    void whenGetUnknownSessionThenBadRequest() throws Exception {
+        // Arrange
+        Quiz quiz = quizSessionHelper.createAndStartQuizSession();
+        QuizRequest quizRequest = new QuizRequest();
+        quizRequest.lobbyId = quiz.getLobbyId();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Thread.sleep(1_000);
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/get-session")
+                .header("Authorization", jwtToken)
+                .param("lobbyId", UUID.randomUUID().toString()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // Assert
+        assertNotNull(result);
+        String content = result.getResponse().getContentAsString();
+
+        assertEquals("quiz session not found!", content);
+    }
 }

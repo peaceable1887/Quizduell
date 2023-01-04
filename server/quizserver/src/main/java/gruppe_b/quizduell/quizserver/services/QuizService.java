@@ -172,6 +172,10 @@ public class QuizService implements StartQuiz {
 
     public QuizSessionDto getSessionDtoList(UUID lobbyId) {
         Quiz quiz = quizRepo.get(lobbyId);
+        if (quiz == null) {
+            return null;
+        }
+
         QuizSessionDto dto = new QuizSessionDto();
 
         dto.setQuizId(quiz.getId());
