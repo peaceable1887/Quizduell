@@ -13,7 +13,7 @@
                 </div>
                 <div class="formData">
                     <label for="profilIcon">Profilbild</label>
-                    <input type="file" @change="onFileSelected">
+                    <input type="file" ref="fileInput">
                 </div>
                 <div class="formData">
                     <label for="password">Passwort</label>
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    import axios from "axios"
     import Headline from "./Headline.vue"
     import Button from "./Button.vue"
 
@@ -110,40 +111,38 @@
 
                     })
 
-                    /*
-                    const formData = new FormData();
-                    formData.append("profilIcon", this.profilIcon.target.files[0])
-                    console.log(this.this.profilIcon.target.files[0])
+                    const headers = {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': "Bearer " + localStorage.getItem("token")
+                                    }
 
-                    await fetch("http://localhost:8080/api/auth/v1/image", {
-                    method: "POST",
-                    headers: 
+                    const file = this.$refs.fileInput.files[0]
+                    const formData = new FormData()
+                    formData.append("file", file)
+
+                    try
                     {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    },
-                    body: 
+                        await axios.post("http://localhost:8080/api/auth/v1/image", {file:formData}, {headers: headers})
+                        console.log("Bild wurde hochgeladen")
+
+                    }catch(err)
                     {
-                        file: this.profilIcon                  
+                        console.log(err)
                     }
-                    })
-                    .then(res => {
 
-                        if(res.ok)
-                        {
-                            console.log("Profilbild wurde erfolgriech hochgeladen")
+                    
 
-                        }else{
-                            console.log("Fehler beim Hochladen des Bildes ist aufgetreten.")
-                        }
-
-                    })
-                    .catch(err => console.log(err))*/
                 }else
                 {
                     this.errMsg = "Passwort muss identisch sein!"
                 }
             },
+
+            async uploadImage()
+            {
+               
+            },
+
             onFileSelected(event)
             {
                 console.log(event)

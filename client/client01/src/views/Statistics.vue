@@ -4,6 +4,10 @@
         <Headline class="headline" text="Meine Statistik"></Headline>
         <div class="statContent">
             <div class="statData">
+                <span class="text">Spiele gesamt</span>
+                <span class="data">{{gameCount}}</span>
+            </div>
+            <div class="statData">
                 <span class="text">gewonnene Spiele</span>
                 <span class="data">{{gameWonCount}}</span>
             </div>
@@ -13,7 +17,7 @@
             </div>
             <div class="statData">
                 <span class="text">Win Rate</span>
-                <span class="data">100 %</span>
+                <span class="data">{{winRate}} %</span>
             </div>
             <form action="/main">
                 <Button text="Zurück"></Button>
@@ -44,6 +48,7 @@ import Button from "../components/Button.vue";
                 gameWonCount: "",
                 gameLossCount: "",
                 gameDrawCount: "",
+                winRate: (this.gameWonCount/this.gameCount)*100,
             }
         },
         async created()
