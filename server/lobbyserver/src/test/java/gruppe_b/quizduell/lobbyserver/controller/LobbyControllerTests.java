@@ -86,8 +86,8 @@ class LobbyControllerTests {
 
         assertEquals("", responseLobby.getPassword());
         assertEquals(1, responseLobby.playerCount());
-        // assertEquals(authHelper.getDEFAULT_USER_NAME(),
-        // responseLobby.getPlayers().get(0).getName());
+        assertEquals("testLobby", responseLobby.getName());
+        assertEquals(authHelper.getDEFAULT_USER_NAME(), responseLobby.getPlayers().get(0).getName());
     }
 
     @Test

@@ -65,9 +65,8 @@ public class QuizController {
 
         logger.info("---/connect---");
         logger.info(request.gameToken);
-        logger.info(request.lobbyId.toString());
-        logger.info(request.playerId.toString());
-        logger.info("---------");
+        logger.info("LobbyId: {}", request.lobbyId);
+        logger.info("PlayerId: {}", request.playerId);
 
         try {
             quiz = quizService.connectToQuiz(
@@ -75,12 +74,17 @@ public class QuizController {
                     UUID.fromString(principal.getSubject()),
                     principal.getClaimAsString("name"),
                     request.gameToken);
+
+            logger.info("return quizId: {}", quiz.getId());
+
+            return ResponseEntity.status(HttpStatus.OK).body(quiz);
         } catch (PlayerAlreadyConnectedException | PlayerAlreadyInOtherGameException
                 | JwtNotIssuedByLobbyServerException | JwtIsExpiredException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } finally {
+            logger.info("---------");
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(quiz);
     }
 
     /**
@@ -92,7 +96,7 @@ public class QuizController {
     @GetMapping("/get")
     public ResponseEntity<Quiz> get(@RequestParam("lobbyId") UUID lobbyId) {
         logger.info("---/get---");
-        logger.info(lobbyId.toString());
+        logger.info("LobbyId: {}", lobbyId);
 
         Quiz quiz = quizService.getQuiz(lobbyId);
         if (quiz == null) {
@@ -115,7 +119,7 @@ public class QuizController {
     @GetMapping("/get-session")
     public ResponseEntity<QuizSessionDto> getSession(@RequestParam("lobbyId") UUID lobbyId) {
         logger.info("---/get---");
-        logger.info(lobbyId.toString());
+        logger.info("LobbyId: {}", lobbyId);
 
         QuizSessionDto dto = quizService.getSessionDtoList(lobbyId);
         if (dto == null) {

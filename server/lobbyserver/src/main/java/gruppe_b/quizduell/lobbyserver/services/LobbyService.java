@@ -52,14 +52,15 @@ public class LobbyService {
     /**
      * Neue Lobby erstellen.
      * 
-     * @param playerId erster Spieler der die Lobby erstellt.
-     * @param name     name der Lobby
-     * @param password password für die Lobby. Wenn keins gesetzt werden soll ""
-     *                 oder null setzen.
+     * @param lobbyName  name der Lobby
+     * @param playerId   erster Spieler der die Lobby erstellt.
+     * @param playerName Name des ersten Spielers
+     * @param password   password für die Lobby. Wenn keins gesetzt werden soll ""
+     *                   oder null setzen.
      * @return erstellte Lobby
      */
-    public Lobby createLobby(UUID playerId, String name, String password) {
-        Lobby newLobby = new Lobby(name, new Player(playerId, name), password);
+    public Lobby createLobby(String lobbyName, UUID playerId, String playerName, String password) {
+        Lobby newLobby = new Lobby(lobbyName, new Player(playerId, playerName), password);
         this.lobbyRepo.put(newLobby.getId(), newLobby);
 
         // Publish new lobby on websocket /topic/new-lobby

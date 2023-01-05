@@ -24,7 +24,7 @@ public class LobbyHelper {
     }
 
     public UUID createLobby(String password) {
-        return lobbyService.createLobby(UUID.randomUUID(), "test", password).getId();
+        return lobbyService.createLobby("test", UUID.randomUUID(), "testUser", password).getId();
     }
 
     public UUID createFullLobby() throws Exception {
@@ -32,7 +32,7 @@ public class LobbyHelper {
     }
 
     public UUID createFullLobby(String password) throws Exception {
-        Lobby lobby = lobbyService.createLobby(UUID.randomUUID(), "test", password);
+        Lobby lobby = lobbyService.createLobby("test", UUID.randomUUID(), "testUser", password);
         lobby.addPlayer(new Player(UUID.randomUUID(), "john"));
         return lobby.getId();
     }

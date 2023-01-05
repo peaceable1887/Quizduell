@@ -55,11 +55,11 @@ public class LobbyController {
     @PostMapping("/create")
     public ResponseEntity<Lobby> create(@AuthenticationPrincipal Jwt principal, @RequestBody CreateRequest request) {
         logger.info("---/create---");
-        logger.info(request.name);
-        logger.info(request.password);
+        logger.info("LobbyName: {}", request.name);
+        logger.info("LobbyPassword: {}", request.password);
         logger.info("---------");
         return ResponseEntity.status(HttpStatus.CREATED).body(lobbyService.createLobby(
-                UUID.fromString(principal.getSubject()), principal.getClaim("name"), request.password));
+                request.name, UUID.fromString(principal.getSubject()), principal.getClaim("name"), request.password));
     }
 
     /**
@@ -75,9 +75,9 @@ public class LobbyController {
     public ResponseEntity<Lobby> connect(@AuthenticationPrincipal Jwt principal, @RequestBody ConnectRequest request)
             throws LobbyFullException, LobbyStatusException, LobbyWrongPasswordException {
         logger.info("---/connect---");
-        logger.info(request.lobbyId.toString());
+        logger.info("LobbyId: {}", request.lobbyId);
         logger.info(request.password);
-        logger.info("---------");
+
         Lobby lobby = null;
         try {
             lobby = lobbyService.connectToLobby(
@@ -85,15 +85,20 @@ public class LobbyController {
                     principal.getClaim("name"),
                     request.lobbyId,
                     request.password);
+
+            return ResponseEntity.ok(lobby);
         } catch (LobbyFullException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (LobbyStatusException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (LobbyWrongPasswordException e) {
+            logger.error(e.getMessage(), e);
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } finally {
+            logger.info("---------");
         }
-
-        return ResponseEntity.ok(lobby);
     }
 
     /**
@@ -106,7 +111,7 @@ public class LobbyController {
     @PostMapping("/disconnect")
     public ResponseEntity<Void> disconnect(Principal principal, @RequestBody DisconnectRequest request) {
         logger.info("---/disconnect---");
-        logger.info(request.lobbyId.toString());
+        logger.info("LobbyId: {}", request.lobbyId);
         logger.info("---------");
         lobbyService.disconnectFromLobby(
                 UUID.fromString(principal.getName()), request.lobbyId);
@@ -122,7 +127,7 @@ public class LobbyController {
     @GetMapping("/get")
     public ResponseEntity<Lobby> get(@RequestParam("lobbyId") UUID lobbyId) {
         logger.info("---/get---");
-        logger.info(lobbyId.toString());
+        logger.info("LobbyId: {}", lobbyId);
         logger.info("---------");
         return ResponseEntity.ok(lobbyService.getLobby(lobbyId));
     }

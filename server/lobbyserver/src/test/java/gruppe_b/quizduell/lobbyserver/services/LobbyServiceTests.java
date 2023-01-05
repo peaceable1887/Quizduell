@@ -40,7 +40,7 @@ public class LobbyServiceTests {
         for (int i = 0; i < threadCount; i++) {
             Callable<Void> task = () -> {
                 for (int j = 0; j < threadLoopCount; j++) {
-                    lobbyService.createLobby(UUID.randomUUID(), String.valueOf(j), "");
+                    lobbyService.createLobby(String.valueOf(j), UUID.randomUUID(), "testUser", "");
                 }
                 return null;
             };

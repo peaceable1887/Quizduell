@@ -51,7 +51,7 @@ public class QuizHelper {
     }
 
     public Lobby createLobby(UUID playerId, String password) {
-        return lobbyService.createLobby(playerId, "testLobby", password);
+        return lobbyService.createLobby("testLobby", playerId, "testUser", password);
     }
 
     public String createToken(Lobby lobby) {
