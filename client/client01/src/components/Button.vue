@@ -21,6 +21,7 @@
         background-color: #184e98;
         border: none;
         cursor: pointer;
+        border-radius: 5px;
     }
     button:hover
     {

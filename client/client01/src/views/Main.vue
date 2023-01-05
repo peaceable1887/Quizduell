@@ -4,14 +4,11 @@
     <div class="container">
         <Headline class="headline" text="Quizduell"></Headline>
         <div class="menu">
-            <form action="/game">
-                <Button text="Spiel starten"></Button>
-            </form>
             <form action="/lobby">
                 <Button text="Mehrspieler"></Button>
             </form>
             <form action="/statistics">
-                <Button text="Statistik"></Button>  
+                <Button text="Meine Statistik"></Button>  
             </form>            
         </div>
     </div>

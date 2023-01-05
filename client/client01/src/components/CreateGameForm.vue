@@ -8,17 +8,6 @@
                     <input type="text" name="gameName" v-model="gameName">
                 </div>
                 <div class="formData">
-                    <label for="roundQuantity">Rundenanzahl</label>
-                    <input list="roundQuantity" name="roundQuantity">
-                    <datalist id="roundQuantity">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </datalist>
-                </div>
-                <div class="formData">
                     <label for="passwordProtected">Passwortgeschützt</label> 
                     <div class="checkboxContainer">
                         <input type="checkbox" name="passwordProtected" v-model="passwordProtected">

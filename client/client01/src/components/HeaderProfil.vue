@@ -4,7 +4,7 @@
             <div class="profilInfo">
                 <span>Hallo, {{text}}</span>
                 <div class="links">
-                    <a href="/editProfil">Profil</a>
+                    <a href="/editProfil">Profil bearbeiten</a>
                     &nbsp;|&nbsp;
                     <a href="javascript:void(0)" @click="handleClick">Abmelden</a>
                 </div>
