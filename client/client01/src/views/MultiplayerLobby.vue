@@ -5,7 +5,7 @@
         <div class="activLobbyWrapper" v-for="lobby in lobbies" :key="lobby">
             <JoinCreatedGame
                 :lobbyName="`${lobby.name}`" 
-                :playerName="`${lobby.players[0].userId}`" 
+                :playerName="`${lobby.players[0].name}`" 
                 :lobbyId="`${lobby.id}`"
                 @connect-lobby="connectLobby(lobby.id)">  
             </JoinCreatedGame>

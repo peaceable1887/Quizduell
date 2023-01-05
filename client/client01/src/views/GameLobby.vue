@@ -2,13 +2,12 @@
     <Header></Header>
     <div class="containerGame">
         <Headline class="headline" :text="`${lobby.name}`"></Headline>
-        <div class="gameInfos">
-            
+        <div class="gameInfos">   
             <span>Anzahl der Runden: 4</span>
-            <span>erstellt von: {{lobby.players[0].userId}}</span>
+            <span>erstellt von: {{lobby.players[0].name}}</span>
         </div>
         <div class="playerContainer" v-for="player in players" :key="player">
-            <PlayerInLobby :playerName="`${player.userId}`"></PlayerInLobby>       
+            <PlayerInLobby :playerName="`${player.name}`"></PlayerInLobby>       
         </div>
         <div class="btnWrapper">
             <router-link to="/lobby">

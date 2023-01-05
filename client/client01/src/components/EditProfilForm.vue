@@ -13,7 +13,7 @@
                 </div>
                 <div class="formData">
                     <label for="profilIcon">Profilbild</label>
-                    <input type="file" @change="onFileSelected" name="profilIcon">
+                    <input type="file" @change="onFileSelected">
                 </div>
                 <div class="formData">
                     <label for="password">Passwort</label>
@@ -109,10 +109,11 @@
                         }
 
                     })
-                    
-                    /*const fd = new FormData();
-                    fd.append("image", this.profilIcon.name)
-                    console.log(this.profilIcon.name)
+
+                    /*
+                    const formData = new FormData();
+                    formData.append("profilIcon", this.profilIcon.target.files[0])
+                    console.log(this.this.profilIcon.target.files[0])
 
                     await fetch("http://localhost:8080/api/auth/v1/image", {
                     method: "POST",
@@ -123,7 +124,7 @@
                     },
                     body: 
                     {
-                        file: this.profilIcon.name,                    
+                        file: this.profilIcon                  
                     }
                     })
                     .then(res => {
@@ -146,7 +147,8 @@
             onFileSelected(event)
             {
                 console.log(event)
-                this.profilIcon = event.target.files[0]  
+                
+                console.log(this.profilIcon)
             }
         }
         

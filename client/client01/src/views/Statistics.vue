@@ -48,7 +48,7 @@ import Button from "../components/Button.vue";
         },
         async created()
         {
-            await fetch("http://localhost:8080/api/auth/v1/get", {
+            await fetch("http://localhost:8080/api/stats/v1/get", {
                 method: "GET",
                 headers: 
                 {
