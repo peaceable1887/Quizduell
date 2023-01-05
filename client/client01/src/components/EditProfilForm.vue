@@ -12,8 +12,8 @@
                     <input type="text" name="eMail" v-model="eMail">
                 </div>
                 <div class="formData">
-                    <label for="profilIcon">Profilbild</label>
-                    <input type="file" ref="fileInput">
+                    <label for="selectedFile">Profilbild</label>
+                    <input type="file" @change="onFileSelected">
                 </div>
                 <div class="formData">
                     <label for="password">Passwort</label>
@@ -54,7 +54,7 @@
             return{
                 accountName: "",
                 eMail: "",
-                profilIcon: null,
+                selectedFile: null,
                 password: "",
                 passwordRepeat: "",
                 errMsg: "",
@@ -83,15 +83,17 @@
         {
             async onSubmit()
             {
+                const headers = 
+                    {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+
                 if(this.password === this.passwordRepeat)
                 {
                     await fetch("http://localhost:8080/api/auth/v1/update", {
                     method: "POST",
-                    headers: 
-                    {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    },
+                    headers: headers,
                     body: JSON.stringify
                     ({
                         name:  this.accountName, 
@@ -108,29 +110,43 @@
                         }else{
                             console.log("Fehler ist aufgetreten.")
                         }
-
                     })
 
-                    const headers = {
-                                        'Content-Type': 'application/json',
-                                        'Authorization': "Bearer " + localStorage.getItem("token")
-                                    }
+                    const formData = new FormData();
+                    formData.append("image", this.selectedFile)
 
-                    const file = this.$refs.fileInput.files[0]
-                    const formData = new FormData()
-                    formData.append("file", file)
+                    await fetch("http://localhost:8080/api/auth/v1/image",{
+                        method: "POST",
+                        headers: headers,
+                        body: JSON.stringify
+                        (
+                            {
+                                file: formData
+                            }
+                        )
+                    })
+                    .then(res => {
 
-                    try
-                    {
-                        await axios.post("http://localhost:8080/api/auth/v1/image", {file:formData}, {headers: headers})
-                        console.log("Bild wurde hochgeladen")
+                        if(res.ok)
+                        {
+                            this.sucMsg = "Bild wurde hochgeladen"
 
-                    }catch(err)
-                    {
-                        console.log(err)
-                    }
+                        }else{
+                            console.log("Fehler ist aufgetreten beim hochladen des Bildes.")
+                        }
+                        })
 
-                    
+                    /*await axios.post("http://localhost:8080/api/auth/v1/image",
+                        {file:JSON.stringify(formData)},
+                        {headers: headers},
+                        )
+                        .then(res => {
+                            console.log(res)
+                        })
+                        .catch(err => 
+                        {
+                            console.log(err)
+                        })*/
 
                 }else
                 {
@@ -138,16 +154,9 @@
                 }
             },
 
-            async uploadImage()
-            {
-               
-            },
-
             onFileSelected(event)
             {
-                console.log(event)
-                
-                console.log(this.profilIcon)
+                this.selectedFile = event.target.files[0]
             }
         }
         

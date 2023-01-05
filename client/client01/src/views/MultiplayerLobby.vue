@@ -1,6 +1,6 @@
 <template>
     <Header></Header>
-    <Headline class="headline" text="Mehrspieler"></Headline>   
+    <Headline class="headline" text="Mehrspieler"></Headline>  
     <div class="containerLobby">
         <div class="activLobbyWrapper" v-for="lobby in lobbies" :key="lobby">
             <JoinCreatedGame

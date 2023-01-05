@@ -24,6 +24,6 @@
     }
     button:hover
     {
-        color: rgb(177, 177, 177);
+        color: rgba(255, 255, 255, 0.678);
     }
 </style>

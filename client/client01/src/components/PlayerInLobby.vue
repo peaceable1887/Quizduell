@@ -1,11 +1,9 @@
 <template>
     <div class="container">
-        <span class="playerName"><b>Spieler:</b> {{playerName}}</span>
-        <div class="playerCheck">
-            <div class="checkboxContainer">
-                <button @click="$emit('toggleBtn')">{{btnText}}</button>
-            </div>
+        <div class="playerNameContainer">
+            <span class="playerName"><b>Spieler:</b> {{playerName}}</span>
         </div>
+        <div class="profilIcon"></div>
     </div>
 </template>
 
@@ -29,13 +27,19 @@ export default
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: 2% 1% 2% 1%;
+    
+    padding: 1% 1% 1% 1%;
     margin-bottom: 30px;
     border-radius: 5px;
     border: 1px rgb(168, 168, 168) solid;
     box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
     -webkit-box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
     -moz-box-shadow: 0px 5px 5px -1px rgba(64,64,64,0.74);
+}
+.playerNameContainer
+{
+    display: flex;
+    align-items: center;
 }
 .playerName
 {
@@ -46,15 +50,10 @@ export default
     color: #184e98;
     font-size: 20px;
 }
-.playerCheck
+.profilIcon
 {
-    display: flex;
-    width: 150px;
-    justify-content: space-between;
-    align-items: center;
-}
-.checkboxContainer
-{
-
+    width: 60px;
+    height: 60px;
+    background-color: blueviolet;
 }
 </style>

@@ -3,8 +3,8 @@
     <div class="containerGame">
         <Headline class="headline" :text="`${lobby.name}`"></Headline>
         <div class="gameInfos">   
-            <span>Anzahl der Runden: 4</span>
-            <span>erstellt von: {{lobby.players[0].name}}</span>
+            <span><b>Anzahl der Runden:</b> 6</span>
+            <span><b>erstellt von:</b> {{lobby.players[0].name}}</span>
         </div>
         <div class="playerContainer" v-for="player in players" :key="player">
             <PlayerInLobby :playerName="`${player.name}`"></PlayerInLobby>       
@@ -209,17 +209,21 @@ export default
     font-size: 45px;
     padding: 50px 0 50px 0;
 }
+
 .gameInfos
 {
     display: flex;
     width: 100%;
     color: black;
-    font-weight: bold;
     justify-content: space-between;
-    font-size: 20px;
+    font-size: 24px;
     padding: 1% 1% 1% 1%;
     margin-bottom: 40px;
     border-bottom: 1px black solid;
+}
+.gameInfos span b
+{
+    color: #184e98;
 }
 .btnWrapper
 {
