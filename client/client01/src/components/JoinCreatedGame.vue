@@ -54,7 +54,7 @@ export default
     }
     .border
     {
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid rgb(168, 168, 168);
         margin-top: 15px;
         margin-bottom: 20px;
     }

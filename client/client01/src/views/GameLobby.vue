@@ -219,7 +219,7 @@ export default
     font-size: 24px;
     padding: 1% 1% 1% 1%;
     margin-bottom: 40px;
-    border-bottom: 1px black solid;
+    border-bottom: 1px rgb(168, 168, 168) solid;
 }
 .gameInfos span b
 {
