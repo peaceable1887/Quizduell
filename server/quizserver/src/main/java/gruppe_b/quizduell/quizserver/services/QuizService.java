@@ -180,7 +180,10 @@ public class QuizService implements StartQuiz {
 
         dto.setQuizId(quiz.getId());
         dto.setLobbyId(quiz.getLobbyId());
-        dto.setRoundList(sessionRepo.get(lobbyId).createGameSessionDtoList());
+        QuizSession quizSession = sessionRepo.get(lobbyId);
+        if (quizSession != null) {
+            dto.setRoundList(quizSession.createGameSessionDtoList());
+        }
         dto.setPlayerList(quiz.getPlayers());
         dto.setQuizStatus(quiz.getQuizStatus());
 

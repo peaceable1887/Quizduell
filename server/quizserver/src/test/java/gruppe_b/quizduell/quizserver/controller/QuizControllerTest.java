@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,12 +23,12 @@ import gruppe_b.quizduell.lobbyserver.models.Lobby;
 import gruppe_b.quizduell.quizserver.common.AuthHelper;
 import gruppe_b.quizduell.quizserver.common.ConnectRequest;
 import gruppe_b.quizduell.quizserver.common.QuizHelper;
-import gruppe_b.quizduell.quizserver.common.QuizRequest;
 import gruppe_b.quizduell.quizserver.common.QuizSessionDto;
 import gruppe_b.quizduell.quizserver.common.QuizSessionHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -256,8 +255,6 @@ public class QuizControllerTest {
     void whenGetThenReturnQuiz() throws Exception {
         // Arrange
         Quiz quiz = quizHelper.createQuiz();
-        QuizRequest quizRequest = new QuizRequest();
-        quizRequest.lobbyId = quiz.getLobbyId();
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get")
@@ -272,11 +269,42 @@ public class QuizControllerTest {
 
     @Test
     @WithMockUser
+    void whenGetWithWrongIdThenReturnBadError() throws Exception {
+        // Arrange
+        Quiz quiz = quizHelper.createQuiz();
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/get")
+                .header("Authorization", jwtToken)
+                .param("lobbyId", UUID.randomUUID().toString()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // Assert
+        String content = result.getResponse().getContentAsString();
+        assertEquals("quiz not found!", content);
+    }
+
+    @Test
+    @WithMockUser
+    void whenGetAndQuizCountZeroThenReturnBadRequest() throws Exception {
+        // Arrange
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/get")
+                .header("Authorization", jwtToken)
+                .param("lobbyId", UUID.randomUUID().toString()))
+                .andExpect(status().isBadRequest()).andReturn();
+
+        // Assert
+        String content = result.getResponse().getContentAsString();
+        assertEquals("quiz not found!", content);
+    }
+
+    @Test
+    @WithMockUser
     void whenGetSessionThenReturnQuizSession() throws Exception {
         // Arrange
         Quiz quiz = quizSessionHelper.createAndStartQuizSession();
-        QuizRequest quizRequest = new QuizRequest();
-        quizRequest.lobbyId = quiz.getLobbyId();
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -305,15 +333,38 @@ public class QuizControllerTest {
 
     @Test
     @WithMockUser
-    void whenGetUnknownSessionThenBadRequest() throws Exception {
+    void whenGetNotStartedSessionThenReturnQuizSession() throws Exception {
         // Arrange
-        Quiz quiz = quizSessionHelper.createAndStartQuizSession();
-        QuizRequest quizRequest = new QuizRequest();
-        quizRequest.lobbyId = quiz.getLobbyId();
+        Quiz quiz = quizSessionHelper.createQuizSession();
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         Thread.sleep(1_000);
+
+        // Act
+        MvcResult result = this.mvc.perform(get("/v1/get-session")
+                .header("Authorization", jwtToken)
+                .param("lobbyId", quiz.getLobbyId().toString()))
+                .andExpect(status().isOk()).andReturn();
+
+        // Assert
+        assertNotNull(result);
+        String content = result.getResponse().getContentAsString();
+
+        QuizSessionDto quizSession = objectMapper.readValue(content, QuizSessionDto.class);
+        assertEquals(quizSession.getLobbyId(), quiz.getLobbyId());
+        assertNotNull(quizSession.getQuizId());
+        assertNotNull(quizSession.getPlayerList());
+        assertNull(quizSession.getRoundList());
+        assertNotNull(quizSession.getQuizStatus());
+        assertEquals(QuizStatus.WAIT, quizSession.getQuizStatus());
+        assertEquals(2, quizSession.getPlayerList().size());
+    }
+
+    @Test
+    @WithMockUser
+    void whenGetUnknownSessionThenBadRequest() throws Exception {
+        // Arrange
 
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get-session")
