@@ -361,7 +361,13 @@ public class QuizSession extends Thread {
      */
     public int calcRemainingSeconds() {
         int passSeconds = (int) roundStartTime.until(Instant.now(), ChronoUnit.SECONDS);
-        return currentMaxRoundLength - passSeconds;
+        int seconds = currentMaxRoundLength - passSeconds;
+
+        if (seconds < 0) {
+            seconds = 0;
+        }
+
+        return seconds;
     }
 
     /**
