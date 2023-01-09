@@ -27,6 +27,7 @@ import gruppe_b.quizduell.quizserver.common.QuizSessionDto;
 import gruppe_b.quizduell.quizserver.common.QuizSessionHelper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -310,6 +311,10 @@ public class QuizControllerTest {
 
         Thread.sleep(1_000);
 
+        quizSessionHelper.sendAnswer(quiz, 2);
+
+        Thread.sleep(1_000);
+
         // Act
         MvcResult result = this.mvc.perform(get("/v1/get-session")
                 .header("Authorization", jwtToken)
@@ -329,6 +334,8 @@ public class QuizControllerTest {
         assertEquals(QuizStatus.STARTED, quizSession.getQuizStatus());
         assertEquals(2, quizSession.getPlayerList().size());
         assertEquals(1, quizSession.getRoundList().size());
+        assertNotEquals(0, quizSession.getRoundList().get(0).correctAnswer);
+        assertEquals(2, quizSession.getRoundList().get(0).playerList.get(0).chosenAnswer);
     }
 
     @Test

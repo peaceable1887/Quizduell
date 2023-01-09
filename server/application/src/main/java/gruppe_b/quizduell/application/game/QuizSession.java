@@ -400,7 +400,18 @@ public class QuizSession extends Thread {
         List<GameSessionDto> list = new ArrayList<>();
 
         for (QuizRound round : roundList) {
-            list.add(createGameSessionDto(round));
+            GameSessionDto dto = createGameSessionDto(round);
+            dto.correctAnswer = getCurrentRound().getQuestion().getCorrectAnswer();
+
+            // Antworten der Spieler in das dto übernehmen
+            for (GameSessionPlayerDto playerDto : dto.playerList) {
+                QuizPlayer quizPlayer = getCurrentRound().getPlayerAnswered().get(playerDto.playerId);
+                if (quizPlayer != null) {
+                    playerDto.chosenAnswer = quizPlayer.getAnswer();
+                }
+            }
+
+            list.add(dto);
         }
 
         return list;
