@@ -145,6 +145,7 @@ public class QuizSession extends Thread {
             roundStartTime = Instant.now();
             currentMaxRoundLength = MAX_ROUND_LENGTH;
             currentRoundClose = false;
+            sendUpdate = true;
         } finally {
             lock.unlock();
         }

@@ -139,11 +139,38 @@ class GameSessionTest {
 
         Thread.sleep(1_000);
 
+        // Assert
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 any(GameSessionDto.class));
 
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
                 argThat(getGameSessionArgumentMatcher(1)));
+    }
+
+    @Test
+    void whenStartSecoundRoundThenSendGameDto() throws Exception {
+        // Arrange
+        UUID playerId = quiz.getPlayers().get(0).getUserId();
+        UUID player2Id = quiz.getPlayers().get(1).getUserId();
+
+        // Act
+        session.start();
+
+        Thread.sleep(1_000);
+        session.playerAnswer(playerId, 1);
+        session.playerAnswer(playerId, 2);
+
+        Thread.sleep(13_000);
+
+        // Assert
+        verify(sendToPlayerService, times(4)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                any(GameSessionDto.class));
+
+        verify(sendToPlayerService, times(2)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(1)));
+
+        verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
+                argThat(getGameSessionArgumentMatcher(2)));
     }
 
     @Test
