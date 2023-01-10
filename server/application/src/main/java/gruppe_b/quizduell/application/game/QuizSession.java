@@ -112,6 +112,10 @@ public class QuizSession extends Thread {
 
         // Schleife für 6 Runden
         for (int i = 0; i < MAX_ROUNDS; i++) {
+            if (cancel) {
+                return;
+            }
+
             // neue Runde starten
             startNewRound();
 
