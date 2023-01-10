@@ -55,6 +55,7 @@
                 accountName: "",
                 eMail: "",
                 selectedFile: null,
+                image: "",
                 password: "",
                 passwordRepeat: "",
                 errMsg: "",
@@ -112,41 +113,30 @@
                         }
                     })
 
+                    const headersFile = 
+                    {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+
                     const formData = new FormData();
-                    formData.append("image", this.selectedFile)
+                    formData.append("file", this.selectedFile)
 
                     await fetch("http://localhost:8080/api/auth/v1/image",{
                         method: "POST",
-                        headers: headers,
-                        body: JSON.stringify
-                        (
-                            {
-                                file: formData
-                            }
-                        )
+                        headers: headersFile,
+                        body: formData
                     })
                     .then(res => {
 
                         if(res.ok)
                         {
-                            this.sucMsg = "Bild wurde hochgeladen"
-
+                            console.log("Bild wurde hochgeladen")
+                            this.image = "http://test.burmeister.hamburg/static/" + localStorage.getItem("userId") + ".jpg"
+                            localStorage.setItem("profilIcon", this.image)
                         }else{
                             console.log("Fehler ist aufgetreten beim hochladen des Bildes.")
                         }
                         })
-
-                    /*await axios.post("http://localhost:8080/api/auth/v1/image",
-                        {file:JSON.stringify(formData)},
-                        {headers: headers},
-                        )
-                        .then(res => {
-                            console.log(res)
-                        })
-                        .catch(err => 
-                        {
-                            console.log(err)
-                        })*/
 
                 }else
                 {

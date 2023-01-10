@@ -9,7 +9,7 @@
                     <a href="javascript:void(0)" @click="handleClick">Abmelden</a>
                 </div>
             </div>
-            <div class="profilIcon"></div>
+            <div class="profilIcon"><img :src="profilIcon"></div>
         </div>
     </div>
 </template>
@@ -21,6 +21,31 @@
         props:
         {
             text: String,
+        },
+        data()
+        {
+            return{
+                profilIcon: localStorage.getItem("profilIcon"),
+            }
+            
+        },
+        async created()
+        {
+            await fetch("http://localhost:8080/api/auth/v1/details", {
+                method: "GET",
+                headers: 
+                {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("token")
+                }
+            })
+            .then(res => res.json())
+            .then(data => 
+            {
+                console.log(data)
+                this.file = data.file;
+                console.log(this.file)
+            })
         },
         methods:
         {
@@ -71,6 +96,13 @@
     {
         width: 60px;
         height: 60px;
-        background-color: blueviolet;
+        background-color: white;
+        border: 1px rgb(168, 168, 168) solid;
+    }
+    img
+    {
+        width: 60px;
+        height: 60px;
+        border: 1px rgb(168, 168, 168) solid;
     }
 </style>

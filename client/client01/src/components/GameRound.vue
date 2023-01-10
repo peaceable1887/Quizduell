@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="round">
-            Runde 1
+            Runde {{ text }}
         </div>
     </div>
 </template>
@@ -10,6 +10,10 @@
     export default 
     {
         name: "GameRound",
+        props:
+        {
+            text: String,
+        }
     }
 </script>
 

@@ -3,7 +3,7 @@
         <div class="playerNameContainer">
             <span class="playerName"><b>Spieler:</b> {{playerName}}</span>
         </div>
-        <div class="profilIcon"></div>
+        <div class="profilIcon"><img :src="`${profilIcon}`"></div>
     </div>
 </template>
 
@@ -17,6 +17,13 @@ export default
         playerName: String,
         status: String,
         btnText: String,
+        profilIcon: String,
+    },
+    data()
+    {
+        return{
+            
+        }
     },
 }
 </script>
@@ -55,5 +62,11 @@ export default
     width: 60px;
     height: 60px;
     background-color: blueviolet;
+}
+img
+{
+    width: 60px;
+    height: 60px;
+    border: 1px rgb(168, 168, 168) solid;
 }
 </style>

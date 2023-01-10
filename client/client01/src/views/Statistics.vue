@@ -48,7 +48,7 @@ import Button from "../components/Button.vue";
                 gameWonCount: "",
                 gameLossCount: "",
                 gameDrawCount: "",
-                winRate: (this.gameWonCount/this.gameCount)*100,
+                winRate: "",
             }
         },
         async created()
@@ -69,7 +69,9 @@ import Button from "../components/Button.vue";
                 this.gameLossCount = data.gameLossCount;
                 this.gameDrawCount = data.gameDrawCount;
             })
-            
+
+            let number = (this.gameWonCount/this.gameCount)*100;
+            this.winRate = Math.round(number * 100) / 100
         }
     }
 </script>

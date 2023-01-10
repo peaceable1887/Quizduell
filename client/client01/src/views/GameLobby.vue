@@ -7,7 +7,7 @@
             <span><b>erstellt von:</b> {{lobby.players[0].name}}</span>
         </div>
         <div class="playerContainer" v-for="player in players" :key="player">
-            <PlayerInLobby :playerName="`${player.name}`"></PlayerInLobby>       
+            <PlayerInLobby :playerName="`${player.name}`" :profilIcon="`${'http://test.burmeister.hamburg/static/' + player.userId + '.jpg'}`"></PlayerInLobby>       
         </div>
         <div class="btnWrapper">
             <router-link to="/lobby">
@@ -68,6 +68,7 @@ export default
             abortMsg: false,
             countdown: "5",
             msg: "",
+            profilIcon: localStorage.getItem("profilIcon"),
         }
     },
     created()

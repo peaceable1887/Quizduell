@@ -17,6 +17,12 @@ module.exports = {
         logLevel: "debug",
         ws: true,
       },
+      '^/quiz-websocket': {
+        target: 'http://test.burmeister.hamburg/',
+        changeOrigin: true,
+        logLevel: "debug",
+        ws: true,
+      },
     },
   },
 }
