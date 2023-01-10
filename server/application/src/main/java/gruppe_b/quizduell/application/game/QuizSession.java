@@ -185,6 +185,8 @@ public class QuizSession extends Thread {
                     countdown = setNewMaxRoundLengthAndSetCountdown();
                     // Haben alle Spieler geantwortet?
                 } else if (getCurrentRound().getPlayerAnswered().size() >= playerCount) {
+                    logger.info("countdown {} in session {} on thread: {}", 0, quiz.getLobbyId(), threadName);
+                    send.sendRoundCountdown(quiz.getLobbyId(), 0);
                     break;
                 }
 
