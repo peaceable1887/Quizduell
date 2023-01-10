@@ -357,7 +357,7 @@ class GameSessionTest {
 
         session.cancel();
 
-        Thread.sleep(2_000);
+        Thread.sleep(10_000);
 
         // Assert
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),
