@@ -400,6 +400,11 @@ public class QuizSession extends Thread {
         return this.quiz;
     }
 
+    /**
+     * Gibt eine Übersicht über alle Runden zurück.
+     * 
+     * @return Liste mit den einzelnen Runden.
+     */
     public List<GameSessionDto> createGameSessionDtoList() {
         List<GameSessionDto> list = new ArrayList<>();
 
@@ -409,7 +414,7 @@ public class QuizSession extends Thread {
 
             // Antworten der Spieler in das dto übernehmen
             for (GameSessionPlayerDto playerDto : dto.playerList) {
-                QuizPlayer quizPlayer = getCurrentRound().getPlayerAnswered().get(playerDto.playerId);
+                QuizPlayer quizPlayer = round.getPlayerAnswered().get(playerDto.playerId);
                 if (quizPlayer != null) {
                     playerDto.chosenAnswer = quizPlayer.getAnswer();
                 }
