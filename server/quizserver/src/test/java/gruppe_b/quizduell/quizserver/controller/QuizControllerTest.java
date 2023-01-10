@@ -339,6 +339,7 @@ public class QuizControllerTest {
         assertEquals(2, quizSession.getPlayerList().size());
         assertEquals(2, quizSession.getRoundList().size());
         assertNotEquals(0, quizSession.getRoundList().get(0).correctAnswer);
+        assertNotEquals(0, quizSession.getRoundList().get(1).correctAnswer);
         assertEquals(2, quizSession.getRoundList().get(0).playerList.get(0).chosenAnswer);
         assertEquals(3, quizSession.getRoundList().get(1).playerList.get(0).chosenAnswer);
     }

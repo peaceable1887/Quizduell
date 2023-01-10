@@ -425,7 +425,7 @@ public class QuizSession extends Thread {
 
         for (QuizRound round : roundList) {
             GameSessionDto dto = createGameSessionDto(round);
-            dto.correctAnswer = getCurrentRound().getQuestion().getCorrectAnswer();
+            dto.correctAnswer = round.getQuestion().getCorrectAnswer();
 
             // Antworten der Spieler in das dto übernehmen
             for (GameSessionPlayerDto playerDto : dto.playerList) {
