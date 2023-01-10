@@ -183,6 +183,7 @@ public class QuizService implements StartQuiz {
         QuizSession quizSession = sessionRepo.get(lobbyId);
         if (quizSession != null) {
             dto.setRoundList(quizSession.createGameSessionDtoList());
+            dto.setQuizSessionResult(quizSession.getGameSessionResult());
         }
         dto.setPlayerList(quiz.getPlayers());
         dto.setQuizStatus(quiz.getQuizStatus());

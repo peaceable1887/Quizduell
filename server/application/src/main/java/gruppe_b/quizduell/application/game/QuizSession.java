@@ -246,9 +246,9 @@ public class QuizSession extends Thread {
     }
 
     private void endGame() {
-        quiz.setQuizFinish();
-
         updateStatsInDb();
+
+        quiz.setQuizFinish();
 
         logger.info("finish session {} on thread: {}", quiz.getLobbyId(), threadName);
     }
@@ -400,6 +400,14 @@ public class QuizSession extends Thread {
         gameSessionResult = new GameSessionResult();
         for (Player player : quiz.getPlayers()) {
             gameSessionResult.addPlayer(player.getUserId(), player.getName());
+        }
+    }
+
+    public GameSessionResult getGameSessionResult() {
+        if (this.quiz.getQuizStatus() == QuizStatus.FINISH) {
+            return gameSessionResult;
+        } else {
+            return null;
         }
     }
 
