@@ -182,8 +182,7 @@ public class QuizSession extends Thread {
                 // Gab es eine Antwort von einem Spieler und die Zeit muss noch verkürzt werden?
                 if (getCurrentRound().getPlayerAnswered().size() == 1 &&
                         countdown > MAX_ROUND_LENGTH_AFTER_ANSWER) {
-                    countdown = MAX_ROUND_LENGTH_AFTER_ANSWER;
-                    currentMaxRoundLength = MAX_ROUND_LENGTH_AFTER_ANSWER + 1;
+                    countdown = setNewMaxRoundLengthAndSetCountdown();
                     // Haben alle Spieler geantwortet?
                 } else if (getCurrentRound().getPlayerAnswered().size() >= playerCount) {
                     break;
@@ -372,6 +371,12 @@ public class QuizSession extends Thread {
         }
 
         return seconds;
+    }
+
+    public int setNewMaxRoundLengthAndSetCountdown() {
+        currentMaxRoundLength = MAX_ROUND_LENGTH_AFTER_ANSWER;
+        roundStartTime = Instant.now();
+        return MAX_ROUND_LENGTH_AFTER_ANSWER;
     }
 
     /**
