@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import gruppe_b.quizduell.application.common.GameSessionDto;
+import gruppe_b.quizduell.application.common.GameSessionResult;
 import gruppe_b.quizduell.application.enums.QuizStatus;
 import gruppe_b.quizduell.application.models.Player;
 
@@ -14,6 +15,7 @@ public class QuizSessionDto {
     private QuizStatus quizStatus;
     private List<Player> playerList;
     private List<GameSessionDto> roundList;
+    private GameSessionResult quizSessionResult;
 
     public UUID getQuizId() {
         return quizId;
@@ -53,5 +55,13 @@ public class QuizSessionDto {
 
     public void setRoundList(List<GameSessionDto> roundList) {
         this.roundList = roundList;
+    }
+
+    public GameSessionResult getQuizSessionResult() {
+        return quizSessionResult;
+    }
+
+    public void setQuizSessionResult(GameSessionResult quizSessionResult) {
+        this.quizSessionResult = quizSessionResult;
     }
 }

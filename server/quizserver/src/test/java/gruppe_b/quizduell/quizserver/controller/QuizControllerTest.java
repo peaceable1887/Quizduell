@@ -313,6 +313,10 @@ public class QuizControllerTest {
 
         quizSessionHelper.sendAnswer(quiz, 2);
 
+        Thread.sleep(12_000);
+
+        quizSessionHelper.sendAnswer(quiz, 3);
+
         Thread.sleep(1_000);
 
         // Act
@@ -333,9 +337,11 @@ public class QuizControllerTest {
         assertNotNull(quizSession.getQuizStatus());
         assertEquals(QuizStatus.STARTED, quizSession.getQuizStatus());
         assertEquals(2, quizSession.getPlayerList().size());
-        assertEquals(1, quizSession.getRoundList().size());
+        assertEquals(2, quizSession.getRoundList().size());
         assertNotEquals(0, quizSession.getRoundList().get(0).correctAnswer);
+        assertNotEquals(0, quizSession.getRoundList().get(1).correctAnswer);
         assertEquals(2, quizSession.getRoundList().get(0).playerList.get(0).chosenAnswer);
+        assertEquals(3, quizSession.getRoundList().get(1).playerList.get(0).chosenAnswer);
     }
 
     @Test

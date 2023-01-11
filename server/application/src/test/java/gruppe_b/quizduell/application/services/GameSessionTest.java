@@ -148,7 +148,7 @@ class GameSessionTest {
     }
 
     @Test
-    void whenStartSecoundRoundThenSendGameDto() throws Exception {
+    void whenStartSecondRoundThenSendGameDto() throws Exception {
         // Arrange
         UUID playerId = quiz.getPlayers().get(0).getUserId();
         UUID player2Id = quiz.getPlayers().get(1).getUserId();
@@ -274,11 +274,11 @@ class GameSessionTest {
         // Act
         session.start();
 
-        Thread.sleep(2_000);
+        Thread.sleep(2_500);
 
         session.playerAnswer(playerId, 1);
 
-        Thread.sleep(3_000);
+        Thread.sleep(6_000);
 
         // Assert
         verify(sendToPlayerService, times(1)).sendRoundCountdown(quiz.getLobbyId(), 20);
@@ -357,7 +357,7 @@ class GameSessionTest {
 
         session.cancel();
 
-        Thread.sleep(2_000);
+        Thread.sleep(10_000);
 
         // Assert
         verify(sendToPlayerService, times(1)).sendGameSessionUpdate(eq(quiz.getLobbyId()),

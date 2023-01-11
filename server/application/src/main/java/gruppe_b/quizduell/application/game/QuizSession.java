@@ -112,6 +112,10 @@ public class QuizSession extends Thread {
 
         // Schleife für 6 Runden
         for (int i = 0; i < MAX_ROUNDS; i++) {
+            if (cancel) {
+                return;
+            }
+
             // neue Runde starten
             startNewRound();
 
@@ -178,10 +182,11 @@ public class QuizSession extends Thread {
                 // Gab es eine Antwort von einem Spieler und die Zeit muss noch verkürzt werden?
                 if (getCurrentRound().getPlayerAnswered().size() == 1 &&
                         countdown > MAX_ROUND_LENGTH_AFTER_ANSWER) {
-                    countdown = MAX_ROUND_LENGTH_AFTER_ANSWER;
-                    currentMaxRoundLength = MAX_ROUND_LENGTH_AFTER_ANSWER + 1;
+                    countdown = setNewMaxRoundLengthAndSetCountdown();
                     // Haben alle Spieler geantwortet?
                 } else if (getCurrentRound().getPlayerAnswered().size() >= playerCount) {
+                    logger.info("countdown {} in session {} on thread: {}", 0, quiz.getLobbyId(), threadName);
+                    send.sendRoundCountdown(quiz.getLobbyId(), 0);
                     break;
                 }
 
@@ -241,9 +246,9 @@ public class QuizSession extends Thread {
     }
 
     private void endGame() {
-        quiz.setQuizFinish();
-
         updateStatsInDb();
+
+        quiz.setQuizFinish();
 
         logger.info("finish session {} on thread: {}", quiz.getLobbyId(), threadName);
     }
@@ -370,6 +375,12 @@ public class QuizSession extends Thread {
         return seconds;
     }
 
+    public int setNewMaxRoundLengthAndSetCountdown() {
+        currentMaxRoundLength = MAX_ROUND_LENGTH_AFTER_ANSWER;
+        roundStartTime = Instant.now();
+        return MAX_ROUND_LENGTH_AFTER_ANSWER;
+    }
+
     /**
      * Spielerstatistik in der Datenbank aktualisieren.
      */
@@ -392,20 +403,33 @@ public class QuizSession extends Thread {
         }
     }
 
+    public GameSessionResult getGameSessionResult() {
+        if (this.quiz.getQuizStatus() == QuizStatus.FINISH) {
+            return gameSessionResult;
+        } else {
+            return null;
+        }
+    }
+
     public Quiz getQuiz() {
         return this.quiz;
     }
 
+    /**
+     * Gibt eine Übersicht über alle Runden zurück.
+     * 
+     * @return Liste mit den einzelnen Runden.
+     */
     public List<GameSessionDto> createGameSessionDtoList() {
         List<GameSessionDto> list = new ArrayList<>();
 
         for (QuizRound round : roundList) {
             GameSessionDto dto = createGameSessionDto(round);
-            dto.correctAnswer = getCurrentRound().getQuestion().getCorrectAnswer();
+            dto.correctAnswer = round.getQuestion().getCorrectAnswer();
 
             // Antworten der Spieler in das dto übernehmen
             for (GameSessionPlayerDto playerDto : dto.playerList) {
-                QuizPlayer quizPlayer = getCurrentRound().getPlayerAnswered().get(playerDto.playerId);
+                QuizPlayer quizPlayer = round.getPlayerAnswered().get(playerDto.playerId);
                 if (quizPlayer != null) {
                     playerDto.chosenAnswer = quizPlayer.getAnswer();
                 }
