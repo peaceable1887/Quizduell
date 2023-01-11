@@ -4,13 +4,13 @@
         <span><b>Start in:</b></span>
         <span class="showCountdown"><b>{{startCountdown}}</b></span>
     </div>
-    <div class="game" v-show="seen">
+    <div class="game" v-show="seen && !seenGivenAnswer">
         <GameRound :text="`${this.currentRound}`"></GameRound>
         <Versus 
             :profilIconOne="`${'http://test.burmeister.hamburg/static/' + profilIconOne + '.jpg'}`" 
             :profilIconTwo="`${'http://test.burmeister.hamburg/static/' + profilIconTwo + '.jpg'}`">
         </Versus>
-        <Question 
+        <Question
             :topic="`${this.categoryName}`" 
             :question="`${this.questionText}`" 
             :answerOne="`${this.answerOne}`" @answerOne="chosenAnswer(this.answerValue[0])" 
@@ -22,6 +22,10 @@
         <div class="btnWrapper">
             <Button text="Spiel abbrechen" @click="abortQuiz()"></Button>
         </div>
+    </div>
+    <div class="roundEvaluation" v-show="seenGivenAnswer">
+        <span class="answer">gewählte Antwort: <b>{{ answerAsText }}</b></span> 
+        <span class="result" :style="{color: this.textColor}">{{ isCorrectAnswer }}</span>     
     </div>
 </template>
 
@@ -49,19 +53,23 @@ import Question from "../components/Question.vue";
         {
             return{
                seen: false,
+               seenGivenAnswer: false,
+               answerAsText: "",
+               isCorrectAnswer: "",
                startCountdown: "5",
                currentRound: "6",
                categoryName: "",
                questionText: "",
-               answerOne: "1",
-               answerTwo: "2",
-               answerThree: "3",
-               answerFour: "4",
+               answerOne: "",
+               answerTwo: "",
+               answerThree: "",
+               answerFour: "",
                answerValue: ["1","2","3","4"],
                roundCountdown: "",
                profilIcon: localStorage.getItem("profilIcon"),
                profilIconOne: "",
                profilIconTwo: "",
+               textColor: "black",
             }
         },
         async created()
@@ -115,6 +123,20 @@ import Question from "../components/Question.vue";
                                 this.answerThree = JSON.stringify(json.answerThree)
                                 this.answerFour = JSON.stringify(json.answerFour)
 
+                                for(let i = 0; i < 2; i++)
+                                {
+                                    if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    {
+                                        this.isCorrectAnswer = "Richtig";
+                                        this.textColor = "green";
+                                    }
+                                    if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    {
+                                        this.isCorrectAnswer = "Falsch";
+                                        this.textColor = "red";
+                                    }
+                                }
+                               
                             }
                         );
 
@@ -164,6 +186,17 @@ import Question from "../components/Question.vue";
                                 console.log(JSON.stringify(json))
                                 this.roundCountdown = JSON.stringify(json)
                                 localStorage.setItem("roundCountdown", this.roundCountdown)
+
+                                if(this.roundCountdown === "20")
+                                {
+                                    console.log("json.roundStatus")
+                                    this.seenGivenAnswer = false;
+                                }
+                                if(this.roundCountdown === "0")
+                                {
+                                    console.log("json.roundStatus")
+                                    this.seenGivenAnswer = true;
+                                }
                             }
                         );   
                         console.log("---------------------- SET STATUS TO READY ----------------------");
@@ -182,6 +215,7 @@ import Question from "../components/Question.vue";
         {
            chosenAnswer(answer)
             {
+                this.seenGivenAnswer = true;
                 const token = "Bearer " + localStorage.getItem("token");
                 this.connection = new SockJS("http://localhost:8080/quiz-websocket");
                 const stompClient = Stomp.over(this.connection);
@@ -193,24 +227,30 @@ import Question from "../components/Question.vue";
                             console.log("---------------------- Antowrt 1")
                             console.log("Antwort: " +  JSON.stringify(this.answerValue[0]))
                             stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[0]));
+                            console.log(this.answerOne)
+                            this.answerAsText = this.answerOne;
                         }
                         if(answer === "2")
                         {
                             console.log("---------------------- Antowrt 2")
                             console.log("Antwort: " + this.answerValue[1])
                             stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[1]));
+                            console.log(this.answerTwo)
+                            this.answerAsText = this.answerTwo;
                         }
                         if(answer === "3")
                         {
                             console.log("---------------------- Antowrt 3")
                             console.log("Antwort: " + this.answerValue[2])
                             stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[2]));
+                            this.answerAsText = this.answerThree;
                         }
                         if(answer === "4")
                         {
                             console.log("---------------------- Antowrt 4")
                             console.log("Antwort: " + this.answerValue[3])
                             stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[3]));
+                            this.answerAsText = this.answerFour;
                         }
                      
                     }
@@ -258,6 +298,26 @@ import Question from "../components/Question.vue";
     font-size: 60px;
     height: 100vh;
     color: #184e98;
+}
+.roundEvaluation
+{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size: 50px;
+    height: 100vh;
+    color: #184e98;
+}
+.headlineAnswer
+{
+    
+}
+.result
+{
+    margin-top: 30px;
+    font-weight: bold;
 }
 .showCountdown
 {

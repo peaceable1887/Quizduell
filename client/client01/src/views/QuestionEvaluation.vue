@@ -5,20 +5,30 @@
         <div class="tableWrapper">
             <table>
                 <tr>
-                    <th>{{ player[1].name }}</th>
+                    <th>{{player[1].name }}</th>
                     <th>Runde</th>
                     <th>{{player[0].name}}</th>
                 </tr>
-                <tr v-for="round in rounds" :key="round">
-                    <td>{{ round.playerList[0].chosenAnswer }}</td>
-                    <td class="categoryName">{{ round.categoryName }}Programmierung</td>
-                    <td>{{ round.playerList[1].chosenAnswer }}</td>
-                </tr>
-                <tr class="tableSum">
-                    <td></td>
-                    <td class="resultCol">Ergebnis</td>
-                    <td></td>
-                </tr>
+                <tbody v-for="round in rounds" :key="round" >
+                    <tr>
+                        <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[1].chosenAnswer">{{answerAsText(round, 1)}}</td>
+                        <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 1)}}</td>
+                        <td class="categoryName">{{ round.categoryName }}Programmierung</td>
+                        <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[0].chosenAnswer">{{answerAsText(round, 0)}}</td>
+                        <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 0)}}</td>
+                    </tr>
+                </tbody>
+                <tr>
+                        <td>{{ this.result.players[1].points }} / 6</td>
+                        <td class="categoryName">Punkte</td>
+                        <td>{{ this.result.players[0].points }} / 6</td>
+                    </tr>
+                    <tr class="tableSum">
+                        <td>{{ this.result.players[1].playerResult }}</td>
+                        <td class="resultCol">Ergebnis</td>
+                        <td>{{ this.result.players[0].playerResult }}</td>
+                    </tr>
+                
             </table>
         </div>
         <div class="btnWrapper">
@@ -47,7 +57,14 @@ export default
             quizEvaluation: "",
             categoryName: "",
             chosenAnswer: "",
+            answerText: "",
+            result: "",
+            points: "",
             rounds: [],
+            answers:[],
+            answerRight: "green",
+            answerFalse: "red"
+
         }
     },
     async created()
@@ -69,11 +86,46 @@ export default
                 console.log(data)
                 this.player = data.playerList
                 this.rounds = data.roundList
+                this.result = data.quizSessionResult
 
+               for(let i = 0; i < 7; i++)
+                {
+                    console.log("-------Runde-------")
+                    console.log(data.roundList[i].answerOne)
+                    console.log(data.roundList[i].answerTwo)
+                    console.log(data.roundList[i].answerThree)
+                    console.log(data.roundList[i].answerFour)
+                    console.log("korrekte antwort: " + data.roundList[i].correctAnswer)        
+                }
             })
     },
     methods:
     {
+        answerAsText(roundList, number)
+        {
+            if(roundList.playerList[number].chosenAnswer === 1)
+            {
+                return roundList.answerOne;
+            }
+            if(roundList.playerList[number].chosenAnswer === 2)
+            {
+
+                return roundList.answerTwo
+            }
+            if(roundList.playerList[number].chosenAnswer === 3)
+            {
+                return roundList.answerThree
+            }
+            if(roundList.playerList[number].chosenAnswer === 4)
+            {
+                return roundList.answerFour
+            }
+                
+           
+                
+            
+        },
+
         async backToMain()
         {
             await fetch("http://localhost:8080/api/quiz/v1/cancel", {
@@ -158,7 +210,6 @@ td
 {
     border-left: 1px rgb(168, 168, 168) solid;
     border-right: 1px rgb(168, 168, 168) solid;
-    padding-top: 30px;
 }
 
 

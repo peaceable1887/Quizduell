@@ -7,7 +7,7 @@
             </div>            
         </div>  
         <div id="time">
-            <div id="bar" ref="bar"></div>
+           <!--<div id="bar" ref="bar"></div>--> 
             <div>Timer: {{ roundCountdown}} Sekungen</div>
         </div>
         <form class="answers" @submit.prevent>
@@ -49,17 +49,11 @@ export default
         return{
             
            connection: "",
-        
         }
     },
-    async created()
-    {
-    
-
-    }, 
     updated()
     {
-        let elem = this.$refs.bar;
+       /* let elem = this.$refs.bar;
         let width = 100;
         let millisec = localStorage.getItem("roundCountdown")*100;
         console.log("Roundcountdown" + millisec)
@@ -89,14 +83,8 @@ export default
                 width--;
                 elem.style.width = width + "%";
             }
-        }          
+        }   */       
     },
-   
-    methods:
-    {
-        
-    }   
-
 }
 </script>
 
