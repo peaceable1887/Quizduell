@@ -6,7 +6,10 @@
     </div>
     <div class="game" v-show="seen">
         <GameRound :text="`${this.currentRound}`"></GameRound>
-        <Versus></Versus>
+        <Versus 
+            :profilIconOne="`${'http://test.burmeister.hamburg/static/' + profilIconOne + '.jpg'}`" 
+            :profilIconTwo="`${'http://test.burmeister.hamburg/static/' + profilIconTwo + '.jpg'}`">
+        </Versus>
         <Question 
             :topic="`${this.categoryName}`" 
             :question="`${this.questionText}`" 
@@ -16,9 +19,9 @@
             :answerFour="`${this.answerFour}`" @answerFour="chosenAnswer(this.answerValue[3])"
             :roundCountdown="`${this.roundCountdown}`">
         </Question>
-    </div>
-    <div class="btnWrapper">
-        <Button text="Spiel abbrechen" @click="abortQuiz()"></Button>
+        <div class="btnWrapper">
+            <Button text="Spiel abbrechen" @click="abortQuiz()"></Button>
+        </div>
     </div>
 </template>
 
@@ -56,6 +59,9 @@ import Question from "../components/Question.vue";
                answerFour: "4",
                answerValue: ["1","2","3","4"],
                roundCountdown: "",
+               profilIcon: localStorage.getItem("profilIcon"),
+               profilIconOne: "",
+               profilIconTwo: "",
             }
         },
         async created()
@@ -118,7 +124,11 @@ import Question from "../components/Question.vue";
                                 console.log("---------------------- QUIZ WS ----------------------");
                                 let json = JSON.parse(message.body);
                                 console.log(json)
+                                this.profilIconOne = json.players[0].userId;
+                                this.profilIconTwo = json.players[1].userId;
                             }
+
+                            /*{"id":"89a0b70b-8cd0-40dc-baba-a4b967a1f408","quizStatus":"WAIT","lobbyId":"71097497-7490-46a0-b4d2-36f966a59698","players":[{"userId":"44d6bab4-7dec-472b-99f9-314270ac221c","name":"felixchrome1","status":"ready"},{"userId":"b67c9df9-b787-4f84-baed-5f3ece362aec","name":"felixedge1","status":"wait"}]} */
                         );
                         stompClient.subscribe("/topic/quiz/" + localStorage.getItem("lobbyId") + "/start-quiz", 
                             (message) =>
@@ -153,6 +163,7 @@ import Question from "../components/Question.vue";
                                 let json = JSON.parse(message.body);
                                 console.log(JSON.stringify(json))
                                 this.roundCountdown = JSON.stringify(json)
+                                localStorage.setItem("roundCountdown", this.roundCountdown)
                             }
                         );   
                         console.log("---------------------- SET STATUS TO READY ----------------------");
@@ -245,8 +256,12 @@ import Question from "../components/Question.vue";
     flex-direction: column;
     align-items: center;
     font-size: 60px;
-    padding: 50% 0 50% 0;
+    height: 100vh;
     color: #184e98;
+}
+.showCountdown
+{
+    color: green;
 }
 .btnWrapper
 {

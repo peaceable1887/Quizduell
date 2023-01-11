@@ -25,7 +25,7 @@
         data()
         {
             return{
-                profilIcon: localStorage.getItem("profilIcon"),
+                profilIcon: 'http://test.burmeister.hamburg/static/' + localStorage.getItem("userId") + '.jpg',
             }
             
         },

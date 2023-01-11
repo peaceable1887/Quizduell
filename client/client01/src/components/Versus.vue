@@ -1,9 +1,9 @@
 <template>
     <div class="container">
         <div class="versus">
-            <div class="player"></div>
+            <div class="player"><img :src="`${profilIconTwo}`"></div>
             <span>VS</span>
-            <div class="player"></div>
+            <div class="player"><img :src="`${profilIconOne}`"></div>
         </div>
     </div>
 </template>
@@ -12,7 +12,13 @@
     export default 
     {
         name: "VersusItem",
+        props:
+        {
+            profilIconOne: String,
+            profilIconTwo: String
+        },
     }
+    
 </script>
 
 <style scoped>
@@ -39,7 +45,14 @@
     {
         width: 60px;
         height: 60px;
-        background-color: blueviolet;
+        background-color: white;
+        border: 1px rgb(168, 168, 168) solid;
+    }
+    img
+    {
+        width: 60px;
+        height: 60px;
+        border: 1px rgb(168, 168, 168) solid;
     }
     @media screen and (max-width:650px) 
     {

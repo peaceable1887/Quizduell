@@ -131,8 +131,7 @@
                         if(res.ok)
                         {
                             console.log("Bild wurde hochgeladen")
-                            this.image = "http://test.burmeister.hamburg/static/" + localStorage.getItem("userId") + ".jpg"
-                            localStorage.setItem("profilIcon", this.image)
+                        
                         }else{
                             console.log("Fehler ist aufgetreten beim hochladen des Bildes.")
                         }

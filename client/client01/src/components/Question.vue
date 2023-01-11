@@ -57,11 +57,11 @@ export default
     
 
     }, 
-    mounted()
+    updated()
     {
         let elem = this.$refs.bar;
         let width = 100;
-        let millisec = this.roundCountdown*1000
+        let millisec = localStorage.getItem("roundCountdown")*100;
         console.log("Roundcountdown" + millisec)
         let id = setInterval(frame, millisec);
     
@@ -114,7 +114,7 @@ export default
         box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
         -webkit-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
         -moz-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
-        width: 750px;
+        width: 100%;
         
     }
     .question .counter

@@ -19,12 +19,6 @@ export default
         btnText: String,
         profilIcon: String,
     },
-    data()
-    {
-        return{
-            
-        }
-    },
 }
 </script>
 
@@ -34,7 +28,6 @@ export default
     display: flex;
     width: 100%;
     justify-content: space-between;
-    
     padding: 1% 1% 1% 1%;
     margin-bottom: 30px;
     border-radius: 5px;
@@ -61,7 +54,8 @@ export default
 {
     width: 60px;
     height: 60px;
-    background-color: blueviolet;
+    background-color: white;
+    border: 1px rgb(168, 168, 168) solid;
 }
 img
 {
