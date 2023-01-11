@@ -24,6 +24,7 @@
 </template>
 
 <script>
+
 import QuestionCategory from "./QuestionCategory.vue";
 
 export default 
@@ -89,84 +90,84 @@ export default
 </script>
 
 <style scoped>
-    .container
-    {
-        display: flex;
-        margin: auto;
-        flex-direction: column;
-        margin-top: 15px;
-        align-items: center;
-    }
-    .question
-    {
-        box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
-        -webkit-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
-        -moz-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
-        width: 100%;
-        
-    }
-    .question .counter
-    {
-        font-size: 30px;
-        font-weight: bold;
-        padding: 10px 0 0 10px;
-        color: #184e98;
-    }
-    .question .text
-    {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        font-size: 30px;
-        height: 200px;
-    }
-    #time
-    {
-        width: 100%; 
-    }
-    #bar
-    {
-        width: 100%;
-        height: 20px;
-        background-color: green;
-    }
-    .answers
-    {
-        padding-top: 20px;
-    }
-    .answers .option
-    {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;  
-    }
-    .answers .option input
-    {
-        font-size: 30px;
-        width: 400px;
-        height: 170px;
-        margin: 10px 20px 10px 20px;
-        background-color: rgb(95, 95, 95);
-        color: white;
-        border: none;
-        cursor: pointer;
-        box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
-        -webkit-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
-        -moz-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
-        word-wrap: break-word;
-    }
-    .answers .option input:hover
-    { 
-        background-color: white;
-        color: black;
-        border: none;
-    }
-    @media screen and (max-width:650px) 
-    {
-        .question .counter{font-size: 24px; padding: 5px 0 0 5px;}
-        .question .text{font-size: 20px; height: 160px;}
-        .answers{padding-top: 40px}
-        .answers .option input{width: 180px;height: 100px; font-size: 20px;}
-    }
+.container
+{
+    display: flex;
+    margin: auto;
+    flex-direction: column;
+    margin-top: 15px;
+    align-items: center;
+}
+.question
+{
+    box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
+    -webkit-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
+    -moz-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
+    width: 100%;
+    
+}
+.question .counter
+{
+    font-size: 30px;
+    font-weight: bold;
+    padding: 10px 0 0 10px;
+    color: #184e98;
+}
+.question .text
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+    height: 200px;
+}
+#time
+{
+    width: 100%; 
+}
+#bar
+{
+    width: 100%;
+    height: 20px;
+    background-color: green;
+}
+.answers
+{
+    padding-top: 20px;
+}
+.answers .option
+{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;  
+}
+.answers .option input
+{
+    font-size: 30px;
+    width: 400px;
+    height: 170px;
+    margin: 10px 20px 10px 20px;
+    background-color: rgb(95, 95, 95);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
+    -webkit-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
+    -moz-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
+    word-wrap: break-word;
+}
+.answers .option input:hover
+{ 
+    background-color: white;
+    color: black;
+    border: none;
+}
+@media screen and (max-width:650px) 
+{
+    .question .counter{font-size: 24px; padding: 5px 0 0 5px;}
+    .question .text{font-size: 20px; height: 160px;}
+    .answers{padding-top: 40px}
+    .answers .option input{width: 180px;height: 100px; font-size: 20px;}
+}
 </style>

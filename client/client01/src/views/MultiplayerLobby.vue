@@ -22,6 +22,7 @@
 </template>
 
 <script>
+
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import Header from "../components/Header.vue";
@@ -102,14 +103,14 @@ export default
                 })
             })
             .then(res => 
+            {
+                if(res.ok)
                 {
-                    if(res.ok)
-                    {
-                        console.log("Erfolgreich mit der Lobby verbunden!")
-                    }else{
-                        console.log("Fehler beim verbinden mit der Lobby!")
-                    }
-                })
+                    console.log("Erfolgreich mit der Lobby verbunden!")
+                }else{
+                    console.log("Fehler beim verbinden mit der Lobby!")
+                }
+            })
             .then(data => console.log(data))
             .catch(error => console.log("ERROR"))       
         },
@@ -119,28 +120,28 @@ export default
 </script>
 
 <style scoped>
-    .headline
-    {
-        font-size: 45px;
-        padding: 50px 0 50px 0;
-    }
-    .containerLobby
-    {
-        display: flex;
-        flex-direction: column;
-        margin: 0 15% 0 15%;
-    }
-    .btnWrapper
-    {
-        display: flex;
-        justify-content: space-evenly;
-        width: 100%;
-        bottom: 0;
-    }
-    Button
-    {
-        width: 200px;
-        padding: 12px 0 12px 0;
-        font-size: 22px;
-    }
+.headline
+{
+    font-size: 45px;
+    padding: 50px 0 50px 0;
+}
+.containerLobby
+{
+    display: flex;
+    flex-direction: column;
+    margin: 0 15% 0 15%;
+}
+.btnWrapper
+{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    bottom: 0;
+}
+Button
+{
+    width: 200px;
+    padding: 12px 0 12px 0;
+    font-size: 22px;
+}
 </style>

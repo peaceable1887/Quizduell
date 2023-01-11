@@ -4,23 +4,21 @@
 </template>
 
 <script>
+
 import Header from "../components/Header.vue"
 import EditProfilForm from '../components/EditProfilForm.vue';
 
-    export default 
+export default 
+{
+    name: "EditProfil", 
+    components:
     {
-        name: "EditProfil", 
-
-        components:
-        {
-            EditProfilForm,
-            Header,
-        }
+        EditProfilForm,
+        Header,
     }
+}
 </script>
 
 <style scoped>
-
-
 
 </style>

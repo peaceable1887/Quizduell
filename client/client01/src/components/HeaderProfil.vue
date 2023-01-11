@@ -15,47 +15,46 @@
 </template>
 
 <script>
-    export default 
+export default 
+{
+    name: "HeaderProfil",
+    props:
     {
-        name: "HeaderProfil",
-        props:
-        {
-            text: String,
-        },
-        data()
-        {
-            return{
-                profilIcon: 'http://test.burmeister.hamburg/static/' + localStorage.getItem("userId") + '.jpg',
-            }
-            
-        },
-        async created()
-        {
-            await fetch("http://localhost:8080/api/auth/v1/details", {
-                method: "GET",
-                headers: 
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            })
-            .then(res => res.json())
-            .then(data => 
+        text: String,
+    },
+    data()
+    {
+        return{
+            profilIcon: 'http://test.burmeister.hamburg/static/' + localStorage.getItem("userId") + '.jpg',
+        }  
+    },
+    async created()
+    {
+        await fetch("http://localhost:8080/api/auth/v1/details", {
+            method: "GET",
+            headers: 
             {
-                console.log(data)
-                this.file = data.file;
-                console.log(this.file)
-            })
-        },
-        methods:
-        {
-            handleClick()
-            {
-                localStorage.removeItem("token");
-                this.$router.push("/");
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
             }
+        })
+        .then(res => res.json())
+        .then(data => 
+        {
+            console.log(data)
+            this.file = data.file;
+            console.log(this.file)
+        })
+    },
+    methods:
+    {
+        handleClick()
+        {
+            localStorage.removeItem("token");
+            this.$router.push("/");
         }
     }
+}
 </script>
 
 <style scoped>

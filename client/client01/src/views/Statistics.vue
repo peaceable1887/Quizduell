@@ -27,53 +27,53 @@
 </template>
 
 <script>
+
 import Header from "../components/Header.vue";
 import Headline from "../components/Headline.vue";
 import Button from "../components/Button.vue";
 
-    export default 
+export default 
+{
+    name: "StatisticsItem",
+    components:
     {
-        name: "StatisticsItem",
-
-        components:
-        {
-            Header,
-            Headline,
-            Button,
-        },
-        data()
-        {
-            return{
-                gameCount: "",
-                gameWonCount: "",
-                gameLossCount: "",
-                gameDrawCount: "",
-                winRate: "",
-            }
-        },
-        async created()
-        {
-            await fetch("http://localhost:8080/api/stats/v1/get", {
-                method: "GET",
-                headers: 
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-            })
-            .then(res => res.json())
-            .then(data => 
-            {
-                this.gameCount = data.gameCount;
-                this.gameWonCount = data.gameWonCount;
-                this.gameLossCount = data.gameLossCount;
-                this.gameDrawCount = data.gameDrawCount;
-            })
-
-            let number = (this.gameWonCount/this.gameCount)*100;
-            this.winRate = Math.round(number * 100) / 100
+        Header,
+        Headline,
+        Button,
+    },
+    data()
+    {
+        return{
+            gameCount: "",
+            gameWonCount: "",
+            gameLossCount: "",
+            gameDrawCount: "",
+            winRate: "",
         }
+    },
+    async created()
+    {
+        await fetch("http://localhost:8080/api/stats/v1/get", {
+            method: "GET",
+            headers: 
+            {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        })
+        .then(res => res.json())
+        .then(data => 
+        {
+            this.gameCount = data.gameCount;
+            this.gameWonCount = data.gameWonCount;
+            this.gameLossCount = data.gameLossCount;
+            this.gameDrawCount = data.gameDrawCount;
+        })
+
+        let number = (this.gameWonCount/this.gameCount)*100;
+        this.winRate = Math.round(number * 100) / 100
     }
+}
 </script>
 
 <style scoped>

@@ -7,14 +7,16 @@
 </template>
 
 <script>
-    export default 
+
+export default 
+{
+    name: "QuestionCategory",    
+    props:
     {
-        name: "QuestionCategory",    
-        props:
-        {
-            topic: String,
-        }
+        topic: String,
     }
+}
+
 </script>
 
 <style scoped>

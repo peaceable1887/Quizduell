@@ -76,20 +76,22 @@ export default
                     name: this.gameName,
                     password: this.password
                 })
-            }).then(res => {
-                    if(res.ok){
-
-                        alert("Spiel wurde erfolgreich erstellt!")
-                        return res.json()
-                    }else{
-                        
-                        console.log("Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden")
-                        this.errMsg = "Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden"
-                    }
-                }).then(data => {
-                    console.log(data.id)
-                    this.$router.push("/gameLobby/"+ data.id)
-                })
+            }).then(res => 
+            {
+                if(res.ok)
+                {
+                    alert("Spiel wurde erfolgreich erstellt!")
+                    return res.json()
+                }else
+                {
+                    console.log("Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden")
+                    this.errMsg = "Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden"
+                }
+            }).then(data => 
+            {
+                console.log(data.id)
+                this.$router.push("/gameLobby/"+ data.id)
+            })
              
         },
     },
@@ -150,7 +152,8 @@ input[type=checkbox]
     justify-content: space-around;
     margin-top: 80px;
 }
-a{
+a
+{
     width: auto;
 }
 Button

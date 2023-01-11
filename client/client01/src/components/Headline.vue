@@ -5,26 +5,26 @@
 </template>
 
 <script>
-    export default 
+export default 
+{
+    name: "HeadlineItem",
+    props:
     {
-        name: "HeadlineItem",
-        props:
-        {
-            text: String,
-        }   
-    }
+        text: String,
+    }   
+}
 </script>
 
 <style scoped>
-    .headline
-    {
-        display: flex;
-        justify-content: center;
-    }
-    h2
-    {
-        margin: 0;
-        padding: 0;
-        color: #184e98;
-    }
+.headline
+{
+    display: flex;
+    justify-content: center;
+}
+h2
+{
+    margin: 0;
+    padding: 0;
+    color: #184e98;
+}
 </style>

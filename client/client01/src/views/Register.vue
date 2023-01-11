@@ -4,6 +4,7 @@
 </template>
 
 <script>
+
 import RegisterForm from "../components/RegisterForm.vue";
 import Header from "../components/Header.vue";
 
@@ -15,12 +16,6 @@ export default
         RegisterForm,
         Header
     },
-    data()
-    {
-       return{
-        
-       }
-    }
 }
 </script>
 
