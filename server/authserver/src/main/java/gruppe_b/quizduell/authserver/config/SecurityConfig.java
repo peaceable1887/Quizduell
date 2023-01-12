@@ -88,6 +88,7 @@ public class SecurityConfig extends AbstractSecurityConfig {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(ImmutableList.of(
                 "https://test.burmeister.hamburg",
+                "https://test2.burmeister.hamburg",
                 "http://localhost",
                 "http://localhost:8080",
                 "http://localhost:8000"));
