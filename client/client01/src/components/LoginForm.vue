@@ -80,8 +80,7 @@ export default
                         this.errMsg = "Accountname und Passwort fehlen!";
                     }
                     console.log(err)
-                })
-            
+                }) 
         },
     },
 }
@@ -160,6 +159,5 @@ Button
         font-size: 20px;
     }
 }
-
 
 </style>

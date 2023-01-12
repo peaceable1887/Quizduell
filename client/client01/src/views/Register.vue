@@ -15,12 +15,6 @@ export default
         RegisterForm,
         Header
     },
-    data()
-    {
-       return{
-        
-       }
-    }
 }
 </script>
 

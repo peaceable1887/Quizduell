@@ -7,14 +7,16 @@
 </template>
 
 <script>
-    export default 
+
+export default 
+{
+    name: "QuestionCategory",    
+    props:
     {
-        name: "QuestionCategory",    
-        props:
-        {
-            topic: String,
-        }
+        topic: String,
     }
+}
+
 </script>
 
 <style scoped>
@@ -30,6 +32,7 @@
     font-size: 30px;
     width: 250px;
     text-align: center;
+    border-radius: 5px;
     padding: 15px 80px 15px 80px;
     box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);
     -webkit-box-shadow: 1px 4px 5px -1px rgba(0,0,0,0.74);

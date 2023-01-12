@@ -179,6 +179,7 @@ export default
                 this.status = "wait"
                 console.log("------------------wait------------------")  
             }
+
             this.notReady = !this.notReady;
             this.playerStatus = this.playerStatus ? false : true; 
         
@@ -194,9 +195,7 @@ export default
                 }
             );
         },
-
     }
-
 }
 </script>
 
@@ -210,7 +209,6 @@ export default
     font-size: 45px;
     padding: 50px 0 50px 0;
 }
-
 .gameInfos
 {
     display: flex;
