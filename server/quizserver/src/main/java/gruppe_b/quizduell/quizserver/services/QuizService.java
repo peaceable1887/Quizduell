@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -38,6 +40,8 @@ import gruppe_b.quizduell.quizserver.exceptions.QuizNotFoundException;
 @Service
 public class QuizService implements StartQuiz {
 
+    private final Lock lock;
+
     private final ConcurrentHashMap<UUID, Quiz> quizRepo;
 
     private final ConcurrentHashMap<UUID, Player> playerRepo;
@@ -60,6 +64,7 @@ public class QuizService implements StartQuiz {
     JwtDecoder jwtDecoder;
 
     public QuizService() {
+        lock = new ReentrantLock(true);
         this.quizRepo = new ConcurrentHashMap<>();
         this.playerRepo = new ConcurrentHashMap<>();
         this.sessionRepo = new ConcurrentHashMap<>();
@@ -103,29 +108,35 @@ public class QuizService implements StartQuiz {
 
         Quiz quiz;
 
-        // Gibt es das Spiel schon?
-        if (quizRepo.containsKey(lobbyId)) {
-            // Ja.
-            quiz = quizRepo.get(lobbyId);
-        } else {
-            // Nein. Spiel erstellen.
-            quiz = new Quiz(lobbyId);
-            quizRepo.put(lobbyId, quiz);
-        }
+        lock.lock();
 
-        Player player = playerRepo.get(playerId);
+        try {
+            // Gibt es das Spiel schon?
+            if (quizRepo.containsKey(lobbyId)) {
+                // Ja.
+                quiz = quizRepo.get(lobbyId);
+            } else {
+                // Nein. Spiel erstellen.
+                quiz = new Quiz(lobbyId);
+                quizRepo.put(lobbyId, quiz);
+            }
 
-        // Ist der Spieler schon in dem Spiel oder einem anderen?
-        if (player != null && quiz.getPlayers().contains(player)) {
-            // Spieler ist bereits in dem Spiel.
-            throw new PlayerAlreadyConnectedException("Player already connected to the game!");
-        } else if (player != null) {
-            // Spieler ist in einem anderen Spiel.
-            throw new PlayerAlreadyInOtherGameException("Player already connected to other game!");
-        } else {
-            // Nein. Spieler dem Spiel hinzufügen.
-            Player newPlayer = quiz.addPlayer(playerId, playerName);
-            playerRepo.put(playerId, newPlayer);
+            Player player = playerRepo.get(playerId);
+
+            // Ist der Spieler schon in dem Spiel oder einem anderen?
+            if (player != null && quiz.getPlayers().contains(player)) {
+                // Spieler ist bereits in dem Spiel.
+                throw new PlayerAlreadyConnectedException("Player already connected to the game!");
+            } else if (player != null) {
+                // Spieler ist in einem anderen Spiel.
+                throw new PlayerAlreadyInOtherGameException("Player already connected to other game!");
+            } else {
+                // Nein. Spieler dem Spiel hinzufügen.
+                Player newPlayer = quiz.addPlayer(playerId, playerName);
+                playerRepo.put(playerId, newPlayer);
+            }
+        } finally {
+            lock.unlock();
         }
 
         return quiz;

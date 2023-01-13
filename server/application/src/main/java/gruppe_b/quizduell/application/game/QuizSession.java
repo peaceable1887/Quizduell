@@ -388,9 +388,9 @@ public class QuizSession extends Thread {
         try {
             gameSessionResult.endQuiz();
 
-            send.sendQuizResult(quiz.getLobbyId(), gameSessionResult);
-
             statsService.createOrUpdatePlayerStats(gameSessionResult);
+
+            send.sendQuizResult(quiz.getLobbyId(), gameSessionResult);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

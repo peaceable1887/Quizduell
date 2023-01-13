@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.common.exceptions.JwtIsExpiredException;
 import gruppe_b.quizduell.quizserver.common.ConnectRequest;
@@ -114,10 +117,12 @@ public class QuizController {
      * 
      * @param lobbyId LobbyId zur angefragten QuizSession
      * @return Quiz Session
+     * @throws JsonProcessingException
      */
     @GetMapping("/get-session")
-    public ResponseEntity<QuizSessionDto> getSession(@RequestParam("lobbyId") UUID lobbyId) {
-        logger.info("---/get---");
+    public ResponseEntity<QuizSessionDto> getSession(@RequestParam("lobbyId") UUID lobbyId)
+            throws JsonProcessingException {
+        logger.info("---/get-session---");
         logger.info("LobbyId: {}", lobbyId);
 
         QuizSessionDto dto = quizService.getSessionDtoList(lobbyId);
@@ -126,6 +131,13 @@ public class QuizController {
             logger.info(msg);
             return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
         }
+
+        ObjectMapper objMapper = new ObjectMapper();
+        String dtoString = objMapper.writeValueAsString(dto);
+
+        logger.info("---json---");
+        logger.info(dtoString);
+        logger.info("---json---");
 
         logger.info("---------");
 
