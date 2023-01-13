@@ -67,7 +67,13 @@ export default
                     (message) =>
                     {
                         let json = JSON.parse(message.body);
-                        this.lobbies = json;
+                        if (json.constructor === Array) 
+                        {
+                            this.lobbies = json;
+                        } else 
+                        {
+                            this.lobbies.push(json);
+                        }
                     }
                 );
                 stompClient.subscribe("/topic/lobby/delete-lobby", 
