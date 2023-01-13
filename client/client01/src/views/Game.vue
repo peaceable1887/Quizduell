@@ -138,16 +138,23 @@ export default
                             //In Funktion auslagern
                             for(let i = 0; i < 2; i++)
                             {
-                                if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                if(json.playerList[i].playerRoundStatus === "FINISH")
                                 {
-                                    this.isCorrectAnswer = "Richtig";
-                                    this.textColor = "green";
+                                    if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    {
+                                        this.isCorrectAnswer = "Richtig";
+                                        this.textColor = "green";
+                                    }
+                                    if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    {
+                                        this.isCorrectAnswer = "Falsch";
+                                        this.textColor = "red";
+                                    }
                                 }
-                                if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                else
                                 {
-                                    this.isCorrectAnswer = "Falsch";
-                                    this.textColor = "red";
-                                }
+                                    this.isCorrectAnswer = "";
+                                }            
                             }                            
                         }
                     );
