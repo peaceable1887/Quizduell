@@ -49,82 +49,83 @@ import GameRound from "../components/GameRound.vue";
 import Versus from "../components/Versus.vue";
 import Question from "../components/Question.vue";
 
-    export default 
+export default 
+{
+    name: "GameItem",   
+    components:
     {
-        name: "GameItem",   
-        components:
-        {
-            Header,
-            Button,
-            GameRound,
-            Versus,
-            Question,
-        },
-        data()
-        {
-            return{
-               seen: false,
-               seenGivenAnswer: false,
-               answerAsText: "",
-               isCorrectAnswer: "",
-               startCountdown: "5",
-               currentRound: "6",
-               categoryName: "",
-               questionText: "",
-               answerOne: "",
-               answerTwo: "",
-               answerThree: "",
-               answerFour: "",
-               answerValue: ["1","2","3","4"],
-               roundCountdown: "",
-               profilIcon: localStorage.getItem("profilIcon"),
-               profilIconOne: "",
-               profilIconTwo: "",
-               textColor: "black",
-            }
-        },
-        async created()
-        {
-            await fetch("http://localhost:8080/api/quiz/v1/connect", {
-                    method: "POST",
-                    headers: 
-                    {
-                        "Content-Type": "application/json",
-                        Authorization: "Bearer " + localStorage.getItem("token")
-                        
-                    },
-                    body: JSON.stringify
-                    ({
-                        gameToken: localStorage.getItem("gameToken"), 
-                        lobbyId: localStorage.getItem("lobbyId"),
-                        playerId: localStorage.getItem("userId"),
-                    })
-                })
-                .then(res => {
-                    console.log(res)
-                })
-                .then(data => 
+        Header,
+        Button,
+        GameRound,
+        Versus,
+        Question,
+    },
+    data()
+    {
+        return{
+            seen: false,
+            seenGivenAnswer: false,
+            answerAsText: "",
+            isCorrectAnswer: "",
+            startCountdown: "5",
+            currentRound: "6",
+            categoryName: "",
+            questionText: "",
+            answerOne: "",
+            answerTwo: "",
+            answerThree: "",
+            answerFour: "",
+            answerValue: ["1","2","3","4"],
+            roundCountdown: "",
+            profilIcon: localStorage.getItem("profilIcon"),
+            profilIconOne: "",
+            profilIconTwo: "",
+            textColor: "black",
+        }
+    },
+    async created()
+    {
+        await fetch("http://localhost:8080/api/quiz/v1/connect", {
+                method: "POST",
+                headers: 
                 {
-                    console.log("Erfolgreich mit Quiz verbunden!")
-                    console.log(data)
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                    
+                },
+                body: JSON.stringify
+                ({
+                    gameToken: localStorage.getItem("gameToken"), 
+                    lobbyId: localStorage.getItem("lobbyId"),
+                    playerId: localStorage.getItem("userId"),
                 })
-                .catch(err => {
-                    console.log(err)
-                })
-            
-                const token = "Bearer " + localStorage.getItem("token");
-    
-                this.connection = new SockJS("http://localhost:8080/quiz-websocket");
-                const stompClient = Stomp.over(this.connection);
+            })
+            .then(res => 
+            {
+                console.log(res)
+            })
+            .then(data => 
+            {
+                console.log("Erfolgreich mit Quiz verbunden!")
+                console.log(data)
+            })
+            .catch(err => 
+            {
+                console.log(err)
+            })
+        
+            const token = "Bearer " + localStorage.getItem("token");
+            this.connection = new SockJS("http://localhost:8080/quiz-websocket");
+            const stompClient = Stomp.over(this.connection);
 
-                stompClient.connect({ Authorization: token }, 
-                    (frame) =>
-                    {
-                        stompClient.subscribe("/topic/quiz/session/" + localStorage.getItem("lobbyId"), 
-                            (message) =>
-                            {
-                                console.log("---------------------- GET CURRENT SESSION STATUS ----------------------");
-                                let json = JSON.parse(message.body);
+            stompClient.connect({ Authorization: token }, 
+                (frame) =>
+                {
+                    stompClient.subscribe("/topic/quiz/session/" + localStorage.getItem("lobbyId"), 
+                        (message) =>
+                        {
+                            console.log("---------------------- GET CURRENT SESSION STATUS ----------------------");
+                            let json = JSON.parse(message.body);
 
                             this.currentRound = json.currentRound
                             this.categoryName = json.categoryName
@@ -216,14 +217,14 @@ import Question from "../components/Question.vue";
     {
         chosenAnswer(answer)
         {
-           chosenAnswer(answer)
-            {
-                this.seenGivenAnswer = true;
-                const token = "Bearer " + localStorage.getItem("token");
-                this.connection = new SockJS("http://localhost:8080/quiz-websocket");
-                const stompClient = Stomp.over(this.connection);
-                stompClient.connect({ Authorization: token }, 
-                    (frame) =>
+            this.seenGivenAnswer = true;
+            const token = "Bearer " + localStorage.getItem("token");
+            this.connection = new SockJS("http://localhost:8080/quiz-websocket");
+            const stompClient = Stomp.over(this.connection);
+            stompClient.connect({ Authorization: token }, 
+                (frame) =>
+                {
+                    if(answer === "1")
                     {
                         console.log("---------------------- Antowrt 1")
                         console.log("Antwort: " +  JSON.stringify(this.answerValue[0]))
@@ -274,17 +275,17 @@ import Question from "../components/Question.vue";
             {
                 if(res.ok){
 
-                        console.log("Quiz wurde beendet.")
-                        this.$router.push("/main")
-        
-                    }else{
-                        
-                        console.log("Quiz konnte nicht beendet werden.")
-                    }
-                }) 
-            }
+                    console.log("Quiz wurde beendet.")
+                    this.$router.push("/main")
+    
+                }else{
+                    
+                    console.log("Quiz konnte nicht beendet werden.")
+                }
+            }) 
         }
     }
+}
 </script>
 
 <style scoped>
