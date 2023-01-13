@@ -4,7 +4,7 @@ import Register from '../views/Register.vue';
 import Main from '../views/Main.vue';
 import EditProfil from '../views/EditProfil.vue';
 import Game from '../views/Game.vue';
-import QuestionEvaluation from '../views/QuestionEvaluation.vue';
+import GameEvaluation from '../views/GameEvaluation.vue';
 import MultiplayerLobby from '../views/MultiplayerLobby.vue';
 import CreateGame from '../views/CreateGame.vue';
 import GameLobby from '../views/GameLobby.vue';
@@ -37,9 +37,9 @@ const routes = [
     component: Game,
   },
   {
-    path: '/questionEvaluation',
-    name: 'QuestionEvaluation',
-    component: QuestionEvaluation,
+    path: '/gameEvaluation',
+    name: 'GameEvaluation',
+    component: GameEvaluation,
   },
   {
     path: '/lobby',

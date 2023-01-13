@@ -44,7 +44,7 @@ import Button from "../components/Button.vue";
 
 export default 
 {
-    name: "QuestionEvaluation",
+    name: "GameEvaluation",
     components:
     {
         Header,

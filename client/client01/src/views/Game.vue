@@ -23,11 +23,11 @@
             <Button text="Spiel abbrechen" @click="abortQuiz()"></Button>
         </div>
     </div>
-    <div class="roundEvaluation" v-show="seenGivenAnswer">
+    <div class="roundEvaluation" v-show="seenGivenAnswer" >
         <span class="round">Runde {{ currentRound }}</span>
         <span class="answer">Deine Antwort: <br><b>{{ answerAsText }}</b></span> 
         <span class="result" :style="{color: this.textColor}">{{ isCorrectAnswer }}</span>   
-        <span class="waitNextRound">Gleich gehts weiter
+        <span class="waitNextRound" v-if="currentRound <= 5">Gleich gehts weiter
             <div class="col-3">
                 <div class="snippet" data-title="dot-flashing">
                     <div class="stage">
@@ -35,7 +35,16 @@
                     </div>
                 </div>
             </div>
-        </span>  
+        </span> 
+        <span class="waitNextRound" v-else>Spiel wird ausgewertet
+            <div class="col-3">
+                <div class="snippet" data-title="dot-flashing">
+                    <div class="stage">
+                        <div class="dot-flashing"></div>
+                    </div>
+                </div>
+            </div>
+        </span> 
     </div>
 </template>
 
@@ -190,7 +199,7 @@ export default
                             let json = JSON.parse(message.body);
                             console.log(JSON.stringify(json))
                             localStorage.setItem("quizEvaluation", JSON.stringify(json));
-                            this.$router.push("/questionEvaluation")
+                            this.$router.push("/gameEvaluation")
                         }
                     );
                     stompClient.subscribe("/topic/quiz/session/" + localStorage.getItem("lobbyId") + "/round-countdown", 
