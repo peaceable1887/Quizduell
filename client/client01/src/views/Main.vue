@@ -50,11 +50,13 @@ export default
             {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
-        }).then(resp => {
+        }).then(resp => 
+        {
             console.log("resp: " + JSON.stringify(resp.data))
             this.token = JSON.stringify(resp.data);
 
-        }).catch((err) => {
+        }).catch((err) => 
+        {
             console.log("Nicht erfolgreich")
             console.log(err)
         })
@@ -65,14 +67,16 @@ export default
             {
                 Authorization: "Bearer " + localStorage.getItem("token")
             }
-        }).then(resp => {
+        }).then(resp => 
+        {
     
             let removeChars = JSON.stringify(resp.data.name);
             removeChars = removeChars.split('"').join('');      
             this.name = removeChars;          
             localStorage.setItem("userName", this.name);
 
-        }).catch((err) => {
+        }).catch((err) => 
+        {
             console.log("Nicht erfolgreich")
             console.log(err)
         })
@@ -81,42 +85,42 @@ export default
 </script>
 
 <style scoped>
-    .headline
-    {
-        font-size: 80px;
-        padding: 100px 0 100px 0;
-    }
-    .container
-    {
-        margin: auto;
-    }
-    .menu
-    {
-        display:flex;
-        flex-direction: column;
-    }
-    form
-    {
-        display:flex;
-    }
+.headline
+{
+    font-size: 80px;
+    padding: 100px 0 100px 0;
+}
+.container
+{
+    margin: auto;
+}
+.menu
+{
+    display:flex;
+    flex-direction: column;
+}
+form
+{
+    display:flex;
+}
+Button
+{
+    width: 280px;
+    margin: 30px auto auto auto;
+    padding: 12px 0 12px 0;
+    font-size: 22px;
+}
+@media screen and (max-width:650px) 
+{
+    .headline{font-size: 60px}
+    #loginForm { width: 100%;}
+    .formData{font-size: 22px; }
+    .formData input{width: 200px; }
     Button
     {
-        width: 280px;
-        margin: 30px auto auto auto;
-        padding: 12px 0 12px 0;
-        font-size: 22px;
+        width: 250px;
+        font-size: 20px;
     }
-    @media screen and (max-width:650px) 
-    {
-        .headline{font-size: 60px}
-        #loginForm { width: 100%;}
-        .formData{font-size: 22px; }
-        .formData input{width: 200px; }
-        Button
-        {
-            width: 250px;
-            font-size: 20px;
-        }
-    }
+}
 
 </style>

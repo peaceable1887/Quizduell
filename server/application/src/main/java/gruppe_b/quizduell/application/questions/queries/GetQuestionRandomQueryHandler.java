@@ -26,7 +26,6 @@ public class GetQuestionRandomQueryHandler implements RequestHandler<GetQuestion
     }
 
     public Question handle(GetQuestionRandomQuery query) {
-        Question question = repo.random(random);
         return repo.random(random);
     }
 }

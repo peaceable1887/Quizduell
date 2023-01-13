@@ -27,8 +27,7 @@
                         <td>{{ this.result.players[1].playerResult }}</td>
                         <td class="resultCol">Ergebnis</td>
                         <td>{{ this.result.players[0].playerResult }}</td>
-                    </tr>
-                
+                    </tr>             
             </table>
         </div>
         <div class="btnWrapper">
@@ -38,9 +37,11 @@
 </template>
 
 <script>
+
 import Header from "../components/Header.vue";
 import Headline from "../components/Headline.vue";
 import Button from "../components/Button.vue";
+
 export default 
 {
     name: "QuestionEvaluation",
@@ -82,21 +83,9 @@ export default
             .then(res => res.json())
             .then(data => 
             {
-                console.log("Ausgabe: " + data.roundList[0].playerList[0].chosenAnswer);
-                console.log(data)
                 this.player = data.playerList
                 this.rounds = data.roundList
                 this.result = data.quizSessionResult
-
-               for(let i = 0; i < 7; i++)
-                {
-                    console.log("-------Runde-------")
-                    console.log(data.roundList[i].answerOne)
-                    console.log(data.roundList[i].answerTwo)
-                    console.log(data.roundList[i].answerThree)
-                    console.log(data.roundList[i].answerFour)
-                    console.log("korrekte antwort: " + data.roundList[i].correctAnswer)        
-                }
             })
     },
     methods:
@@ -109,7 +98,6 @@ export default
             }
             if(roundList.playerList[number].chosenAnswer === 2)
             {
-
                 return roundList.answerTwo
             }
             if(roundList.playerList[number].chosenAnswer === 3)
@@ -119,11 +107,7 @@ export default
             if(roundList.playerList[number].chosenAnswer === 4)
             {
                 return roundList.answerFour
-            }
-                
-           
-                
-            
+            }            
         },
 
         async backToMain()
@@ -211,8 +195,6 @@ td
     border-left: 1px rgb(168, 168, 168) solid;
     border-right: 1px rgb(168, 168, 168) solid;
 }
-
-
 .btnWrapper
 {
     display: flex;

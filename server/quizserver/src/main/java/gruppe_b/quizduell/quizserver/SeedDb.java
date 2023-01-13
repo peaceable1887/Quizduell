@@ -18,6 +18,13 @@ public class SeedDb {
     QuestionRepository questionRepo;
 
     public void Seed() {
+        java();
+        patterns();
+        framework();
+        python();
+    }
+
+    void java() {
         if (categoryRepo.findAll().isEmpty()) {
             Category category = categoryRepo
                     .save(new Category("Java", "Fragen zur Programmiersprache Java"));
@@ -77,6 +84,171 @@ public class SeedDb {
                     "Anleitung",
                     "Frühling",
                     2));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Was ist ein Beispiel für eine statische Methode in Java?",
+                    "public void printName()",
+                    "public static int addNumbers(int x, int y)",
+                    "public String getAddress()",
+                    "public static String getCurrentDate()",
+                    4));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Schlüsselwort wird verwendet, um eine Methode zu überschreiben?",
+                    "override",
+                    "overwrite",
+                    "redefine",
+                    "@override",
+                    4));
+        }
+    }
+
+    void patterns() {
+        if (categoryRepo.findAll().isEmpty()) {
+            Category category = categoryRepo
+                    .save(new Category("Patterns", "Fragen zu Patterns"));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Muster wird verwendet, um die Erstellung von Objekten zu vereinfachen?",
+                    "Observer-Muster",
+                    "Singleton-Muster",
+                    "Factory-Muster",
+                    "Adapter-Muster",
+                    3));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Muster wird verwendet, um die Kommunikation zwischen unterschiedlichen Klassen zu ermöglichen?",
+                    "Observer-Muster",
+                    "Singleton-Muster",
+                    "Factory-Muster",
+                    "Adapter-Muster",
+                    4));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Muster wird verwendet, um die Anzahl der Objekte einer bestimmten Klasse zu begrenzen?",
+                    "Observer-Muster",
+                    "Singleton-Muster",
+                    "Pool-Muster",
+                    "Adapter-Muster",
+                    2));
+        }
+    }
+
+    void framework() {
+        if (categoryRepo.findAll().isEmpty()) {
+            Category category = categoryRepo
+                    .save(new Category("Framworks", "Fragen zu Frameworks"));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Framework wird hauptsächlich für die Entwicklung von Desktop-Anwendungen verwendet?",
+                    "ReactJS",
+                    "AngularJS",
+                    "Electron",
+                    "Node.js",
+                    3));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Framework wird hauptsächlich für die Entwicklung von Machine-Learning-Modellen verwendet?",
+                    "TensorFlow",
+                    "AngularJS",
+                    "Spring Framework",
+                    "Keras",
+                    1));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welches Framework wird hauptsächlich für die Entwicklung von künstlicher Intelligenz verwendet?",
+                    "TensorFlow",
+                    "AngularJS",
+                    "Spring Framework",
+                    "PyTorch",
+                    4));
+        }
+    }
+
+    void python() {
+        if (categoryRepo.findAll().isEmpty()) {
+            Category category = categoryRepo
+                    .save(new Category("Python", "Fragen zu Python"));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Funktion in Python verwendet man, um einen String in eine Zahl umzuwandeln?",
+                    "to_string()",
+                    "to_int()",
+                    "int()",
+                    "parse_int()",
+                    3));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Funktion in Python verwendet man, um eine Liste von Strings in eine Liste von Integers umzuwandeln?",
+                    "to_integers()",
+                    "int_list()",
+                    "list(map(int, list_of_strings))",
+                    "parse_int_list()",
+                    3));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Bibliothek in Python verwendet man, um CSV-Dateien zu lesen und zu schreiben?",
+                    "pandas",
+                    "xlrd",
+                    "openpyxl",
+                    "csv",
+                    4));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Funktion in Python verwendet man, um einen String in Großbuchstaben umzuwandeln?",
+                    "upper()",
+                    "to_uppercase()",
+                    "capitalize()",
+                    "to_upper()",
+                    1));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Funktion in Python verwendet man, um die Länge einer Liste zu erhalten?",
+                    "length()",
+                    "size()",
+                    "len()",
+                    "count()",
+                    3));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Bibliothek in Python verwendet man, um mit Datenbanken zu arbeiten?",
+                    "sqlite3",
+                    "pandas",
+                    "openpyxl",
+                    "csv",
+                    1));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Funktion in Python verwendet man, um eine Liste zu sortieren?",
+                    "sort()",
+                    "order()",
+                    "sorted()",
+                    "organize()",
+                    1));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Bibliothek in Python verwendet man, um mit regulären Ausdrücken zu arbeiten?",
+                    "re",
+                    "string",
+                    "os",
+                    "json",
+                    1));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Bibliothek in Python verwendet man, um HTTP-Requests zu senden?",
+                    "http",
+                    "requests",
+                    "os",
+                    "json",
+                    2));
+
+            questionRepo.save(new Question(category.getId(),
+                    "Welche Bibliothek in Python verwendet man, um mit JSON-Daten zu arbeiten?",
+                    "json",
+                    "http",
+                    "os",
+                    "requests",
+                    1));
         }
     }
 }

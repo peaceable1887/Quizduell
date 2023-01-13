@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import axios from "axios";
+
 import Headline from "./Headline.vue"
 import Button from "./Button.vue"
 
@@ -87,7 +87,8 @@ export default
                         mail: this.eMail,
                         password: this.password
                     })
-                }).then(res => {
+                }).then(res =>
+                    {
                         if(res.ok){
 
                             console.log("Account wurde erfolgreich angelegt !")

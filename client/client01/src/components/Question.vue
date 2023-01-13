@@ -23,7 +23,6 @@
 </template>
 
 <script>
-
 import QuestionCategory from "./QuestionCategory.vue";
 
 export default 

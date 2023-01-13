@@ -24,6 +24,7 @@
 </template>
 
 <script>
+
 import axios from "axios";
 import Headline from "./Headline.vue"
 import Button from "./Button.vue"
@@ -55,16 +56,16 @@ export default
                         username: this.accountName,
                         password: this.password
                     }
-                }).then(resp => {
-
+                }).then(resp => 
+                {
                     console.log("Erfolgreich eingeloggt!")
                     console.log(resp);
                     localStorage.setItem("token", resp.data.token)
                     localStorage.setItem("userId", resp.data.userId)
                     this.$router.push("/main")
                     
-                }).catch((err) => {
-                    
+                }).catch((err) => 
+                {
                     this.errMsg = "Accountname und/oder Passwort falsch!";
                     
                     if(!this.accountName)
@@ -159,5 +160,6 @@ Button
         font-size: 20px;
     }
 }
+
 
 </style>

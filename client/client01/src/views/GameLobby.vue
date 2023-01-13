@@ -35,6 +35,7 @@
 </template>
 
 <script>
+
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import Header from "../components/Header.vue";
@@ -96,7 +97,6 @@ export default
                         this.players = this.lobby.players;
 
                         console.log("hier:" + JSON.stringify(this.lobby.players[0].userId))
-
                     }
                 );
                 stompClient.subscribe("/topic/lobby/" + this.urlId + "/start-lobby", 

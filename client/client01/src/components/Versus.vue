@@ -9,54 +9,55 @@
 </template>
 
 <script>
-    export default 
+
+export default 
+{
+    name: "VersusItem",
+    props:
     {
-        name: "VersusItem",
-        props:
-        {
-            profilIconOne: String,
-            profilIconTwo: String
-        },
-    }
+        profilIconOne: String,
+        profilIconTwo: String
+    },
+}
     
 </script>
 
 <style scoped>
-    .container
-    {
-        display: flex;
-        justify-content: center;
-        padding: 10px;
-    }
-    .versus
-    {
-        display: flex;
-        justify-content: space-between;
-        width: 308px;
-        align-items: center;
-    }
-    span
-    {
-        font-weight: bold;
-        color: #184e98;
-        font-size: 30px;
-    }
-    .player
-    {
-        width: 60px;
-        height: 60px;
-        background-color: white;
-        border: 1px rgb(168, 168, 168) solid;
-    }
-    img
-    {
-        width: 60px;
-        height: 60px;
-        border: 1px rgb(168, 168, 168) solid;
-    }
-    @media screen and (max-width:650px) 
-    {
-        span{font-size: 24px;}
-       .player{width: 50px; height: 50px;}
-    }
+.container
+{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+.versus
+{
+    display: flex;
+    justify-content: space-between;
+    width: 308px;
+    align-items: center;
+}
+span
+{
+    font-weight: bold;
+    color: #184e98;
+    font-size: 30px;
+}
+.player
+{
+    width: 60px;
+    height: 60px;
+    background-color: white;
+    border: 1px rgb(168, 168, 168) solid;
+}
+img
+{
+    width: 60px;
+    height: 60px;
+    border: 1px rgb(168, 168, 168) solid;
+}
+@media screen and (max-width:650px) 
+{
+    span{font-size: 24px;}
+    .player{width: 50px; height: 50px;}
+}
 </style>

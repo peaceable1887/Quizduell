@@ -3,6 +3,7 @@
 </template>
 
 <script>
+
 import LoginForm from "../components/LoginForm";
 
 export default 
@@ -12,10 +13,6 @@ export default
     {
         LoginForm,
     },
-    methods:
-    {
-      
-    }
 }
 
 </script>

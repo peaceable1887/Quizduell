@@ -36,120 +36,117 @@
 </template>
 
 <script>
-    import axios from "axios"
-    import Headline from "./Headline.vue"
-    import Button from "./Button.vue"
 
-    export default 
+import Headline from "./Headline.vue"
+import Button from "./Button.vue"
+
+export default 
+{
+    name: "EditProfilForm",
+    components:
     {
-        name: "EditProfilForm",
-
-        components:
-        {
-            Headline,
-            Button
-        },
-        data()
-        {
-            return{
-                accountName: "",
-                eMail: "",
-                selectedFile: null,
-                image: "",
-                password: "",
-                passwordRepeat: "",
-                errMsg: "",
-                sucMsg: "",
+        Headline,
+        Button
+    },
+    data()
+    {
+        return{
+            accountName: "",
+            eMail: "",
+            selectedFile: null,
+            image: "",
+            password: "",
+            passwordRepeat: "",
+            errMsg: "",
+            sucMsg: "",
+        }
+    },
+    async created()
+    {
+        await fetch("http://localhost:8080/api/auth/v1/details", {
+            method: "GET",
+            headers: 
+            {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
             }
-        },
-        async created()
+        })
+        .then(res => res.json())
+        .then(data => 
         {
-            await fetch("http://localhost:8080/api/auth/v1/details", {
-                method: "GET",
-                headers: 
+            this.accountName = data.name;
+            this.eMail = data.mail;
+        })       
+    },
+    methods:
+    {
+        async onSubmit()
+        {
+            const headers = 
                 {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("token")
                 }
-            })
-            .then(res => res.json())
-            .then(data => 
+
+            if(this.password === this.passwordRepeat)
             {
-                this.accountName = data.name;
-                this.eMail = data.mail;
-            })
-            
-        },
-        methods:
-        {
-            async onSubmit()
-            {
-                const headers = 
-                    {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }
-
-                if(this.password === this.passwordRepeat)
+                await fetch("http://localhost:8080/api/auth/v1/update", {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify
+                ({
+                    name:  this.accountName, 
+                    mail: this.eMail,
+                    password: this.password                    
+                })
+                })
+                .then(res => 
                 {
-                    await fetch("http://localhost:8080/api/auth/v1/update", {
-                    method: "POST",
-                    headers: headers,
-                    body: JSON.stringify
-                    ({
-                        name:  this.accountName, 
-                        mail: this.eMail,
-                        password: this.password                    
-                    })
-                    })
-                    .then(res => {
-
-                        if(res.ok)
-                        {
-                            this.sucMsg = "Profildaten wurden erfolgreich geändert!"
-
-                        }else{
-                            console.log("Fehler ist aufgetreten.")
-                        }
-                    })
-
-                    const headersFile = 
+                    if(res.ok)
                     {
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        this.sucMsg = "Profildaten wurden erfolgreich geändert!"
+                    }else
+                    {
+                        console.log("Fehler ist aufgetreten.")
                     }
+                })
 
-                    const formData = new FormData();
-                    formData.append("file", this.selectedFile)
-
-                    await fetch("http://localhost:8080/api/auth/v1/image",{
-                        method: "POST",
-                        headers: headersFile,
-                        body: formData
-                    })
-                    .then(res => {
-
-                        if(res.ok)
-                        {
-                            console.log("Bild wurde hochgeladen")
-                        
-                        }else{
-                            console.log("Fehler ist aufgetreten beim hochladen des Bildes.")
-                        }
-                        })
-
-                }else
+                const headersFile = 
                 {
-                    this.errMsg = "Passwort muss identisch sein!"
+                    "Authorization": "Bearer " + localStorage.getItem("token")
                 }
-            },
 
-            onFileSelected(event)
+                const formData = new FormData();
+                formData.append("file", this.selectedFile)
+
+                await fetch("http://localhost:8080/api/auth/v1/image",{
+                    method: "POST",
+                    headers: headersFile,
+                    body: formData
+                })
+                .then(res => 
+                {
+                    if(res.ok)
+                    {
+                        console.log("Bild wurde hochgeladen")
+                    
+                    }else{
+                        console.log("Fehler ist aufgetreten beim hochladen des Bildes.")
+                    }
+                })       
+            }else
             {
-                this.selectedFile = event.target.files[0]
+                this.errMsg = "Passwort muss identisch sein!"
             }
+        },
+
+        onFileSelected(event)
+        {
+            this.selectedFile = event.target.files[0]
         }
-        
     }
+    
+}
 </script>
 
 <style scoped>
@@ -171,7 +168,6 @@
     justify-content: center;
     flex-direction: column;
     width: 600px;
-
 }
 .formData
 {
@@ -221,11 +217,7 @@ Button
     #registerForm { width: 100%; }
     .formData{font-size: 22px; }
     .formData input{width: 160px; }
-    Button
-    {
-        width: 150px;
-        font-size: 20px;
-    }
+    Button{width: 150px;font-size: 20px;}
 }
 
 </style>
