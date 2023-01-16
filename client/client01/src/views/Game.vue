@@ -25,7 +25,7 @@
     </div>
     <div class="roundEvaluation" v-show="seenGivenAnswer" >
         <span class="round">Runde {{ currentRound }}</span>
-        <span class="answer">Deine Antwort: <br><b>{{ answerAsText }}</b></span> 
+        <span class="answer">Deine Antwort: <br><b>{{ answerAsText }}{{ noAnswer }}</b></span>
         <span class="result" :style="{color: this.textColor}">{{ isCorrectAnswer }}</span>   
         <span class="waitNextRound" v-if="currentRound <= 5">Gleich gehts weiter
             <div class="col-3">
@@ -75,6 +75,8 @@ export default
             seen: false,
             seenGivenAnswer: false,
             answerAsText: "",
+            noAnswer: "",
+            notSelected: false,
             isCorrectAnswer: "",
             startCountdown: "5",
             currentRound: "6",
@@ -135,7 +137,6 @@ export default
                         {
                             console.log("---------------------- GET CURRENT SESSION STATUS ----------------------");
                             let json = JSON.parse(message.body);
-
                             this.currentRound = json.currentRound
                             this.categoryName = json.categoryName
                             this.questionText = json.questionText
@@ -147,23 +148,44 @@ export default
                             //In Funktion auslagern
                             for(let i = 0; i < 2; i++)
                             {
-                                if(json.playerList[i].playerRoundStatus === "FINISH")
+                                if(json.roundStatus === "CLOSE") // json.playerList[i].playerRoundStatus === "FINISH" 
                                 {
-                                    if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    if((json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
                                     {
+                                        this.noAnswer = "";
                                         this.isCorrectAnswer = "Richtig";
                                         this.textColor = "green";
                                     }
-                                    if(json.roundStatus === "CLOSE" && (json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    else if((json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
                                     {
+                                        this.noAnswer = "";
                                         this.isCorrectAnswer = "Falsch";
                                         this.textColor = "red";
                                     }
+                                    //nochmal überarbeiten, funktioniert noch nicht wie gewollt
+                                    else if((json.playerList[i].playerRoundStatus === "GUESS") && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    {
+                                        console.log("keine antwort gewählt")
+                                        this.noAnswer = "Keine Antwort ausgewählt";
+                                        this.isCorrectAnswer = "Falsch";
+                                        this.textColor = "red";
+                                    }    
                                 }
-                                else
+                                else if(json.roundStatus === "OPEN" && json.playerList[i].playerRoundStatus === "GUESS")
                                 {
-                                    this.isCorrectAnswer = "";
-                                }            
+                                    if((json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    {
+                                        this.noAnswer = "";
+                                        this.answerAsText = "";
+                                        this.isCorrectAnswer = "";        
+                                    }
+                                    else if((json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
+                                    {
+                                        this.noAnswer = "";
+                                        this.answerAsText = "";
+                                        this.isCorrectAnswer = "";
+                                    }  
+                                }
                             }                            
                         }
                     );
@@ -248,7 +270,7 @@ export default
                         console.log(this.answerOne)
                         this.answerAsText = this.answerOne;
                     }
-                    if(answer === "2")
+                    else if(answer === "2")
                     {
                         console.log("---------------------- Antowrt 2")
                         console.log("Antwort: " + this.answerValue[1])
@@ -256,20 +278,20 @@ export default
                         console.log(this.answerTwo)
                         this.answerAsText = this.answerTwo;
                     }
-                    if(answer === "3")
+                    else if(answer === "3")
                     {
                         console.log("---------------------- Antowrt 3")
                         console.log("Antwort: " + this.answerValue[2])
                         stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[2]));
                         this.answerAsText = this.answerThree;
                     }
-                    if(answer === "4")
+                    else if(answer === "4")
                     {
                         console.log("---------------------- Antowrt 4")
                         console.log("Antwort: " + this.answerValue[3])
                         stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[3]));
                         this.answerAsText = this.answerFour;
-                    }      
+                    }
                 }
             );        
         },
