@@ -1,15 +1,28 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "Game.vue" ist für die Darstellung und Anwendungslogik, 
+    der Fragen und entsprechender Evaluation, zuständig.
+-->
 <template>
+    <!-- Header Komponente -->
     <Header></Header>
+    <!-- zeige Countdown -->
     <div class="countdown" v-show="!seen">
         <span><b>Start in:</b></span>
         <span class="showCountdown"><b>{{startCountdown}}</b></span>
     </div>
+    <!-- zeige Frage und Antworten -->
     <div class="game" v-show="seen && !seenGivenAnswer">
+        <!-- Komponente für die aktuelle Runde -->
         <GameRound :text="`${this.currentRound}`"></GameRound>
+        <!-- Komponente für die Darstellung der teilnehmenden Spieler -->
         <Versus 
             :profilIconOne="`${'http://test.burmeister.hamburg/static/' + profilIconOne + '.jpg'}`" 
             :profilIconTwo="`${'http://test.burmeister.hamburg/static/' + profilIconTwo + '.jpg'}`">
         </Versus>
+        <!-- Komponente für Frage und Antowrt-->
         <Question
             :topic="`${this.categoryName}`" 
             :question="`${this.questionText}`" 
@@ -19,10 +32,12 @@
             :answerFour="`${this.answerFour}`" @answerFour="chosenAnswer(this.answerValue[3])"
             :roundCountdown="`${this.roundCountdown}`">
         </Question>
+        <!-- Button für Spielabbruch -->
         <div class="btnWrapper">
             <Button text="Spiel abbrechen" @click="abortQuiz()"></Button>
         </div>
     </div>
+    <!-- zeige Evaluation der Frage -->
     <div class="roundEvaluation" v-show="seenGivenAnswer" >
         <span class="round">Runde {{ currentRound }}</span>
         <span class="answer">Deine Antwort: <br><b>{{ answerAsText }}{{ noAnswer }}</b></span>
@@ -94,8 +109,13 @@ export default
             textColor: "black",
         }
     },
+
+    /**
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und Websocket Verbinungen her.
+     */
     async created()
     {
+        //Stellt die Verbindung zum Quiz, per REST, her.
         await fetch("http://localhost:8080/api/quiz/v1/connect", {
                 method: "POST",
                 headers: 
@@ -125,17 +145,19 @@ export default
                 console.log(err)
             })
         
+            //Initialisierung und Deklaration der WebSocket-Verbindung
             const token = "Bearer " + localStorage.getItem("token");
             this.connection = new SockJS("http://localhost:8080/quiz-websocket");
             const stompClient = Stomp.over(this.connection);
 
+            //Stellt die Verbindung mit dem Quiz Websocket Endpunkt her.
             stompClient.connect({ Authorization: token }, 
                 (frame) =>
                 {
+                    //Websocket Endpunkt zum Abonnieren für Updates einer QuizSession
                     stompClient.subscribe("/topic/quiz/session/" + localStorage.getItem("lobbyId"), 
                         (message) =>
                         {
-                            console.log("---------------------- GET CURRENT SESSION STATUS ----------------------");
                             let json = JSON.parse(message.body);
                             this.currentRound = json.currentRound
                             this.categoryName = json.categoryName
@@ -144,157 +166,176 @@ export default
                             this.answerTwo = json.answerTwo
                             this.answerThree = json.answerThree
                             this.answerFour = json.answerFour
-
-                            //In Funktion auslagern
-                            for(let i = 0; i < 2; i++)
-                            {
-                                if(json.roundStatus === "CLOSE") // json.playerList[i].playerRoundStatus === "FINISH" 
-                                {
-                                    if((json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
-                                    {
-                                        this.noAnswer = "";
-                                        this.isCorrectAnswer = "Richtig";
-                                        this.textColor = "green";
-                                    }
-                                    else if((json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
-                                    {
-                                        this.noAnswer = "";
-                                        this.isCorrectAnswer = "Falsch";
-                                        this.textColor = "red";
-                                    }
-                                    //nochmal überarbeiten, funktioniert noch nicht wie gewollt
-                                    else if((json.playerList[i].playerRoundStatus === "GUESS") && (json.playerList[i].playerId === localStorage.getItem("userId")))
-                                    {
-                                        console.log("keine antwort gewählt")
-                                        this.noAnswer = "Keine Antwort ausgewählt";
-                                        this.isCorrectAnswer = "Falsch";
-                                        this.textColor = "red";
-                                    }    
-                                }
-                                else if(json.roundStatus === "OPEN" && json.playerList[i].playerRoundStatus === "GUESS")
-                                {
-                                    if((json.playerList[i].chosenAnswer === json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
-                                    {
-                                        this.noAnswer = "";
-                                        this.answerAsText = "";
-                                        this.isCorrectAnswer = "";        
-                                    }
-                                    else if((json.playerList[i].chosenAnswer != json.correctAnswer) && (json.playerList[i].playerId === localStorage.getItem("userId")))
-                                    {
-                                        this.noAnswer = "";
-                                        this.answerAsText = "";
-                                        this.isCorrectAnswer = "";
-                                    }  
-                                }
-                            }                            
+                    
+                            this.questionEvaluation(json);
                         }
                     );
-
+                    
+                    //Websocket Endpunkt zum Abonnieren für Änderungen an einem Quiz
                     stompClient.subscribe("/topic/quiz/" + localStorage.getItem("lobbyId"), 
                         (message) =>
                         {
-                            console.log("---------------------- QUIZ WS ----------------------");
                             let json = JSON.parse(message.body);
-                            console.log(json)
                             this.profilIconOne = json.players[0].userId;
                             this.profilIconTwo = json.players[1].userId;
                         }
                     );
+
+                    //Websocket Endpunkt zum Abonnieren, der über Start, Countdown und Abbruch informiert
                     stompClient.subscribe("/topic/quiz/" + localStorage.getItem("lobbyId") + "/start-quiz", 
                         (message) =>
                         {
-                            console.log("---------------------- START QUIZ ----------------------");
                             let json = JSON.parse(message.body);
-                            console.log(json)
                             this.startCountdown = JSON.stringify(json.countdown)
+
+                            //Spiel wird sichtbar wenn der Countdown bei 0 ist
                             if(this.startCountdown == 0)
                             {
                                 this.seen = !this.seen;
-                                console.log("counter bei 0")
                             }      
                         }
                     );
+
+                    //Websocket Endpunkt zum Abonnieren für das Spielergebnis am Ende einer QuizSession
                     stompClient.subscribe("/topic/quiz/session/" + localStorage.getItem("lobbyId") + "/result", 
                         (message) =>
                         {
-                            console.log("---------------------- RESULT STATUS ----------------------");
                             let json = JSON.parse(message.body);
-                            console.log(JSON.stringify(json))
                             localStorage.setItem("quizEvaluation", JSON.stringify(json));
                             this.$router.push("/gameEvaluation")
                         }
                     );
+
+                    //Websocket Endpunkt zum Abonnieren für den Countdown einer Runde
                     stompClient.subscribe("/topic/quiz/session/" + localStorage.getItem("lobbyId") + "/round-countdown", 
                         (message) =>
                         {
-                            console.log("---------------------- ROUND COUNTDOWN ----------------------");
                             let json = JSON.parse(message.body);
-                            console.log(JSON.stringify(json))
                             this.roundCountdown = JSON.stringify(json)
                             localStorage.setItem("roundCountdown", this.roundCountdown)
 
+                            //ausgewählte Anwort wird angezeigt, spät. wenn der Countdown der Frage bei 0 ist
                             if(this.roundCountdown === "20")
                             {
-                                console.log("json.roundStatus")
                                 this.seenGivenAnswer = false;
                             }
-                            if(this.roundCountdown === "0")
+                            else if(this.roundCountdown === "0")
                             {
-                                console.log("json.roundStatus")
                                 this.seenGivenAnswer = true;
                             }
                         }
                     );   
-                    console.log("---------------------- SET STATUS TO READY ----------------------");
-                    stompClient.send("/app/quiz/" + localStorage.getItem("lobbyId") + "/status-player", {}, JSON.stringify({status: "ready"}));
-                    /*stompClient.send("/app/quiz/" + this.urlId + "/status-player", , {}, JSON.stringify({status: this.status}));*/         
+
+                    //Websocket Endpunkt zum Senden für Status-Update des Spielers
+                    stompClient.send("/app/quiz/" + localStorage.getItem("lobbyId") + "/status-player", {}, JSON.stringify({status: "ready"}));       
                 }
             );
     },
     methods:
     {
+        /**
+         * Die Methode "chosenAnswer" sendet die gewählte Antwort, des Users, an den WebSocket-Endpunkt und
+         * weißt Diese der Variable "answerAsText", zur Darstellung in Evaluation der Fragerunde, zu.
+         * 
+         * @param answer
+         * 
+         */
         chosenAnswer(answer)
         {
+            //ausgewählte Anwort wird angezeigt
             this.seenGivenAnswer = true;
+            
+            //WS-Connection noch rausnehmen!
             const token = "Bearer " + localStorage.getItem("token");
             this.connection = new SockJS("http://localhost:8080/quiz-websocket");
             const stompClient = Stomp.over(this.connection);
+
             stompClient.connect({ Authorization: token }, 
                 (frame) =>
                 {
+                    //Sendet an den Websocket Endpunkt die ausgewählte Antwort, auf die Frage.
                     if(answer === "1")
                     {
-                        console.log("---------------------- Antowrt 1")
-                        console.log("Antwort: " +  JSON.stringify(this.answerValue[0]))
                         stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[0]));
-                        console.log(this.answerOne)
                         this.answerAsText = this.answerOne;
                     }
                     else if(answer === "2")
                     {
-                        console.log("---------------------- Antowrt 2")
-                        console.log("Antwort: " + this.answerValue[1])
                         stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[1]));
-                        console.log(this.answerTwo)
                         this.answerAsText = this.answerTwo;
                     }
                     else if(answer === "3")
                     {
-                        console.log("---------------------- Antowrt 3")
-                        console.log("Antwort: " + this.answerValue[2])
                         stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[2]));
                         this.answerAsText = this.answerThree;
                     }
                     else if(answer === "4")
                     {
-                        console.log("---------------------- Antowrt 4")
-                        console.log("Antwort: " + this.answerValue[3])
                         stompClient.send("/app/quiz/session/" + localStorage.getItem("lobbyId") + "/answer", {}, JSON.stringify(this.answerValue[3]));
                         this.answerAsText = this.answerFour;
                     }
                 }
             );        
         },
+
+        /**
+         * Die Methode "questionEvaluation" ist für die Darstellung des Feedbacks, nach einer Fragerunde, 
+         * ob eine Frage richig oder falsch beantwortet wurde.
+         * 
+         * @param object
+         * 
+         */
+        questionEvaluation(object)
+        {
+            for(let i = 0; i < 2; i++)
+            {
+                if(object.roundStatus === "CLOSE") 
+                {
+                    //Wenn die Antwort richtig ist
+                    if((object.playerList[i].chosenAnswer === object.correctAnswer) && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    {
+                        this.noAnswer = "";
+                        this.isCorrectAnswer = "Richtig";
+                        this.textColor = "green";
+                    }
+                    //Wenn die Antwort falsch ist
+                    else if((object.playerList[i].chosenAnswer != object.correctAnswer) && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    {
+                        this.noAnswer = "";
+                        this.isCorrectAnswer = "Falsch";
+                        this.textColor = "red";
+                    }
+                    //Wenn keine Antwort ausgewählt wurde (nochmal überarbeiten, funktioniert noch nicht wie gewollt)
+                    else if((object.playerList[i].playerRoundStatus === "GUESS") && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    {
+                        console.log("keine antwort gewählt")
+                        this.noAnswer = "Keine Antwort ausgewählt";
+                        this.isCorrectAnswer = "Falsch";
+                        this.textColor = "red";
+                    }    
+                }
+                //Setzt die Antworten und das Ergebnis, für die neue Fragerunde, zurück
+                else if(object.roundStatus === "OPEN" && object.playerList[i].playerRoundStatus === "GUESS")
+                {
+                    if((object.playerList[i].chosenAnswer === object.correctAnswer) && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    {
+                        this.noAnswer = "";
+                        this.answerAsText = "";
+                        this.isCorrectAnswer = "";        
+                    }
+                    else if((object.playerList[i].chosenAnswer != object.correctAnswer) && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    {
+                        this.noAnswer = "";
+                        this.answerAsText = "";
+                        this.isCorrectAnswer = "";
+                    }  
+                }
+            }      
+        },
+
+        /**
+         * Die Methode "abortQuiz" bricht die laufende Quiz-Session ab und leitet den User zurück zur Main-Seite.
+         */
         async abortQuiz()
         {
             await fetch("http://localhost:8080/api/quiz/v1/cancel", {
@@ -313,7 +354,7 @@ export default
             {
                 if(res.ok){
 
-                    console.log("Quiz wurde beendet.")
+                    console.log("Quiz-Session wurde beendet.")
                     this.$router.push("/main")
     
                 }else{
@@ -399,7 +440,8 @@ Button
     justify-content: center;
     margin-top: 20px;
  }
- .dot-flashing {
+ .dot-flashing 
+ {
   position: relative;
   width: 10px;
   height: 10px;
@@ -409,13 +451,15 @@ Button
   animation: dot-flashing 1s infinite linear alternate;
   animation-delay: 0.5s;
 }
-.dot-flashing::before, .dot-flashing::after {
+.dot-flashing::before, .dot-flashing::after 
+{
   content: "";
   display: inline-block;
   position: absolute;
   top: 0;
 }
-.dot-flashing::before {
+.dot-flashing::before 
+{
   left: -15px;
   width: 10px;
   height: 10px;
@@ -425,7 +469,8 @@ Button
   animation: dot-flashing 1s infinite alternate;
   animation-delay: 0s;
 }
-.dot-flashing::after {
+.dot-flashing::after 
+{
   left: 15px;
   width: 10px;
   height: 10px;
@@ -436,11 +481,14 @@ Button
   animation-delay: 1s;
 }
 
-@keyframes dot-flashing {
-  0% {
+@keyframes dot-flashing 
+{
+  0% 
+  {
     background-color: #184e98;
   }
-  50%, 100% {
+  50%, 100% 
+  {
     background-color: rgba(152, 128, 255, 0.2);
   }
 }
