@@ -13,6 +13,7 @@ import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.application.questions.QuestionRepository;
 import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
 import gruppe_b.quizduell.application.services.StatsService;
+import gruppe_b.quizduell.domain.entities.Category;
 import gruppe_b.quizduell.domain.entities.Question;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -71,8 +72,11 @@ class GameSessionTest {
         quiz.addPlayer(UUID.randomUUID(), "john");
         quiz.addPlayer(UUID.randomUUID(), "jane");
         session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler, statsService);
+        Category category = Mockito.mock(Category.class);
+        when(category.getName()).thenReturn("categoryName");
+
         when(questionRepository.random(random)).thenReturn(
-                new Question(UUID.randomUUID(),
+                new Question(category,
                         "mockQuestionText",
                         "mockAnswer1",
                         "mockAnswer2",
@@ -516,6 +520,7 @@ class GameSessionTest {
 
     ArgumentMatcher<GameSessionDto> getGameSessionArgumentMatcher(int currentRound) {
         return x -> x.maxRounds == 6 &&
+                x.categoryName != null &&
                 x.currentRound == currentRound &&
                 x.correctAnswer == 0 &&
                 x.questionText.length() > 0 &&

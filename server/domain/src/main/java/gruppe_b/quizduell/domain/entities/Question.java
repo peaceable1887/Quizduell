@@ -10,39 +10,39 @@ import java.util.UUID;
 public class Question {
 
     UUID id;
-    UUID categoryId;
     String questionText;
     String answerOne;
     String answerTwo;
     String answerThree;
     String answerFour;
     int correctAnswer;
+    Category category;
 
     public Question() {
 
     }
 
-    public Question(UUID categoryId, String questionText, String answerOne, String answerTwo, String answerThree,
+    public Question(Category category, String questionText, String answerOne, String answerTwo, String answerThree,
             String answerFour, int correctAnswer) {
-        this.categoryId = categoryId;
         this.questionText = questionText;
         this.answerOne = answerOne;
         this.answerTwo = answerTwo;
         this.answerThree = answerThree;
         this.answerFour = answerFour;
         this.correctAnswer = correctAnswer;
+        this.category = category;
     }
 
     public UUID getId() {
         return id;
     }
 
-    public UUID getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryId(UUID categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public void setId(UUID id) {
