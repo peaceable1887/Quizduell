@@ -111,7 +111,7 @@ export default
     },
 
     /**
-     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und Websocket Verbinungen her.
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
      */
     async created()
     {
@@ -201,6 +201,7 @@ export default
                         (message) =>
                         {
                             let json = JSON.parse(message.body);
+                            //Spielergebnis wird lokal zwischengespeichert
                             localStorage.setItem("quizEvaluation", JSON.stringify(json));
                             this.$router.push("/gameEvaluation")
                         }

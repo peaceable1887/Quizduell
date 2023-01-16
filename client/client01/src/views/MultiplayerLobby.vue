@@ -1,8 +1,18 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "MultiplayerLobby.vue" ist für Darstellung der Seite "Mehrspieler" zuständig.
+-->
 <template>
+    <!-- Header Komponente -->
     <Header></Header>
+    <!-- Headline Komponente (Mehrspieler) -->
     <Headline class="headline" text="Mehrspieler"></Headline>  
     <div class="containerLobby">
+        <!-- zeigt alle verfügbaren Lobbies an -->
         <div class="activLobbyWrapper" v-for="lobby in lobbies" :key="lobby">
+            <!-- Lobby Komponente -->
             <JoinCreatedGame
                 :lobbyName="`${lobby.name}`" 
                 :playerName="`${lobby.players[0].name}`" 
@@ -51,49 +61,56 @@ export default
             passwordProtected: false,
         }
     },
+    /**
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
+     */
     created()
     {
+        //Initialisierung und Deklaration der WebSocket-Verbindung
         const token = "Bearer " + localStorage.getItem("token");
-
         this.connection = new SockJS("http://localhost:8080/lobby-websocket");
         const stompClient = Stomp.over(this.connection);
 
         stompClient.connect({ Authorization: token }, 
             (frame) =>
             {
-                console.log("Connected: " + frame);
-                
+                //Websocket Endpunkt zum Abonnieren für neue Lobbies
                 stompClient.subscribe("/topic/new-lobby", 
                     (message) =>
                     {
+                        //nochmal überabreiten bzw. angucken ob so smart 
                         let json = JSON.parse(message.body);
+
                         if (json.constructor === Array) 
                         {
                             this.lobbies = json;
-                        } else 
+                        }else 
                         {
                             this.lobbies.push(json);
                         }
                     }
                 );
+                //Websocket Endpunkt zum Abonnieren für Lobbies die gelöscht werden
                 stompClient.subscribe("/topic/lobby/delete-lobby", 
                     (message) =>
                     {
-                        console.log("deleted lobbies");
                         let json = JSON.parse(message.body);
                         console.log("gelöschte lobbies:" + JSON.stringify(json))
                     }
                 );
             }
-        );
-        
+        );    
     },
     methods:
     { 
+         /**
+         * Die Methode "connectLobby" verbindet Spieler mit einer verfügbaren Lobby.
+         * 
+         * @param lobbyId
+         * 
+         */
         async connectLobby(lobbyId)
         {
-            console.log(lobbyId)
-
             fetch("http://localhost:8080/api/lobby/v1/connect",
             {
                 method: "POST",
@@ -105,7 +122,7 @@ export default
                 body: JSON.stringify(
                 {
                     lobbyId: lobbyId,
-                    password: "123"
+                    password: "123" //vllt noch raus nehmen
                 })
             })
             .then(res => 
@@ -118,7 +135,7 @@ export default
                 }
             })
             .then(data => console.log(data))
-            .catch(error => console.log("ERROR"))       
+            .catch(error => console.log("ERROR: " + error))       
         },
     }
 

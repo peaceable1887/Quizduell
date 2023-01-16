@@ -1,14 +1,26 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "GameLobby.vue" ist für die Darstellung und Anwendungslogik, 
+    innerhalb einer bestehenden Spiellobby zuständig.
+-->
 <template>
+    <!-- Header Komponente -->
     <Header></Header>
     <div class="containerGame">
+        <!-- Headline Komponente (Spielname) -->
         <Headline class="headline" :text="`${lobby.name}`"></Headline>
         <div class="gameInfos">   
             <span><b>Anzahl der Runden:</b> 6</span>
             <span><b>erstellt von:</b> {{lobby.players[0].name}}</span>
         </div>
+        <!-- zeigt alle Spieler (max. 2) an, die sich in der Spiellobby befinden  -->
         <div class="playerContainer" v-for="player in players" :key="player">
+            <!-- Spieler Komponente -->
             <PlayerInLobby :playerName="`${player.name}`" :profilIcon="`${'http://test.burmeister.hamburg/static/' + player.userId + '.jpg'}`"></PlayerInLobby>       
         </div>
+        <!-- Buttons zum verlassen der Spiellobby und zum ändern des Status -->
         <div class="btnWrapper">
             <router-link to="/lobby">
                 <Button @click="deleteLobby(this.urlId)" text="Verlassen"></Button>
@@ -19,6 +31,7 @@
                 @click="toggle(), waitForPlayer = !waitForPlayer">
             </Button>                 
         </div>
+        <!-- Nachricht wenn der Gegenspieler noch nicht bereit ist -->
         <div class="infoMsg">
             <span class="waitForPlayer" v-if="waitForPlayer">Warte bis der Gegenspieler bereit ist
                 <div class="col-3">
@@ -29,6 +42,7 @@
                     </div>
                 </div>
             </span><br>
+            <!-- zeige Countdown wenn beide Spieler bereit sind -->
             <span class="showCountdown" v-if="showCountdown">Start in: <b>{{countdown}} Sekunden</b>{{ msg }}</span>
         </div>
     </div>  
@@ -72,33 +86,34 @@ export default
             profilIcon: localStorage.getItem("profilIcon"),
         }
     },
+    /**
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
+     */
     created()
     {
+        //ID aus der Spiellobby URL wird geholt
         const url = window.location.href;
         const lastSegment = url.split("/").pop();
         this.urlId = lastSegment;
         
+        //Initialisierung und Deklaration der WebSocket-Verbindung
         const token = "Bearer " + localStorage.getItem("token");
-    
         this.connection = new SockJS("http://localhost:8080/lobby-websocket");
         const stompClient = Stomp.over(this.connection);
 
         stompClient.connect({ Authorization: token }, 
             (frame) =>
             {
-                console.log("Connected: " + frame);
-                
+                //Websocket Endpunkt zum Abonnieren für Änderungen in einer Lobby
                 stompClient.subscribe("/topic/lobby/" + this.urlId, 
                     (message) =>
                     {
-                        console.log("new lobby");
                         let json = JSON.parse(message.body);
                         this.lobby = json;
                         this.players = this.lobby.players;
-
-                        console.log("hier:" + JSON.stringify(this.lobby.players[0].userId))
                     }
                 );
+                //Websocket Endpunkt zum Abonnieren, der über Start, Countdown und Abbruch informiert
                 stompClient.subscribe("/topic/lobby/" + this.urlId + "/start-lobby", 
                     (message) =>
                     {
@@ -108,20 +123,20 @@ export default
                         let json = JSON.parse(message.body);
                         this.countdown = JSON.stringify(json.countdown);
                         localStorage.setItem("gameToken", json.gameToken);
-                        localStorage.setItem("lobbyId", this.urlId)
-                        console.log(this.countdown)
-                        console.log("Status: " + JSON.stringify(json.status))
+                        localStorage.setItem("lobbyId", this.urlId);
 
+                        //nochmal ansehen. eventuell redundant.
                         let removeChars = JSON.stringify(json.status);
                         removeChars = removeChars.split('"').join('');      
         
+                        //wenn Spieler (doch) nicht bereit ist  
                         if(removeChars === "abort")
                         {
                             this.showCountdown = false;
                             this.waitForPlayer  = true;
-                            console.log("abgebrochen")
                         }
-                        if(this.countdown == 0)
+                        //sobald der Countdown abgelaufen ist  
+                        else if(this.countdown == 0)
                         {
                             this.$router.push("/game"); 
                         }
@@ -134,6 +149,12 @@ export default
     },
     methods:
     {
+         /**
+         * Die Methode "deleteLobby" löscht die bestehende Spiellobby (erst wenn alle Spieler wieder rausgegangen sind).
+         * 
+         * @param lobbyId
+         * 
+         */
         async deleteLobby(lobbyId)
         {
             fetch("http://localhost:8080/api/lobby/v1/disconnect",
@@ -153,44 +174,49 @@ export default
                 {
                     if(res.ok)
                     {
-                        console.log("Lobby wurde gelöscht!")
-                    }else{
-                        console.log("Fehler beim löschen der Lobby!")
+                        console.log("Spiellobby wurde gelöscht");
+                    }else
+                    {
+                        console.log("Ein Fehler ist beim löschen der Spiellobby aufgetreten!");
                     }
                 })
             .then(data => console.log(data))
-            .catch(error => console.log("ERROR"))       
+            .catch(error => console.log("ERROR: " + error))       
         },
 
+         /**
+         * Die Methode "toggle" ist dafür zuständig den Spielerstatus(bereit/nicht bereit), per Websocket, zu übermitteln.
+         * 
+         */
         async toggle() 
         {
+            //nochmal überdenken und bearbeiten
             if(localStorage.getItem("userId"))
             {
-                console.log("du hast abgebrochen")
                 this.waitForPlayer = false;
             }
-            if(!this.playerStatus)
+            else if(!this.playerStatus)
             {
-                this.status = "ready" 
-                console.log("------------------ready----------------")   
+                this.status = "ready";
             }
-            if(this.playerStatus)
+            else if(this.playerStatus)
             {
-                this.status = "wait"
-                console.log("------------------wait------------------")  
+                this.status = "wait";
             }
 
+            //Text und Farbe des Buttons wird, entsprechend der Spielerstatus, geändert
             this.notReady = !this.notReady;
             this.playerStatus = this.playerStatus ? false : true; 
         
+            //Initialisierung und Deklaration der WebSocket-Verbindung
             const token = "Bearer " + localStorage.getItem("token");
-    
             this.connection = new SockJS("http://localhost:8080/lobby-websocket");
             const stompClient = Stomp.over(this.connection);
 
             stompClient.connect({ Authorization: token }, 
                 (frame) =>
                 {
+                    //Websocket Endpunkt zum Senden für Status-Update des Spielers
                     stompClient.send("/app/lobby/" + this.urlId + "/status-player", {}, JSON.stringify({status: this.status}));
                 }
             );
@@ -275,7 +301,8 @@ Button
     justify-content: center;
     margin-top: 20px;
  }
- .dot-flashing {
+ .dot-flashing 
+ {
   position: relative;
   width: 10px;
   height: 10px;
@@ -285,13 +312,15 @@ Button
   animation: dot-flashing 1s infinite linear alternate;
   animation-delay: 0.5s;
 }
-.dot-flashing::before, .dot-flashing::after {
+.dot-flashing::before, .dot-flashing::after 
+{
   content: "";
   display: inline-block;
   position: absolute;
   top: 0;
 }
-.dot-flashing::before {
+.dot-flashing::before 
+{
   left: -15px;
   width: 10px;
   height: 10px;
@@ -301,7 +330,8 @@ Button
   animation: dot-flashing 1s infinite alternate;
   animation-delay: 0s;
 }
-.dot-flashing::after {
+.dot-flashing::after 
+{
   left: 15px;
   width: 10px;
   height: 10px;
@@ -312,11 +342,14 @@ Button
   animation-delay: 1s;
 }
 
-@keyframes dot-flashing {
-  0% {
+@keyframes dot-flashing 
+{
+  0% 
+  {
     background-color: #184e98;
   }
-  50%, 100% {
+  50%, 100% 
+  {
     background-color: rgba(152, 128, 255, 0.2);
   }
 }

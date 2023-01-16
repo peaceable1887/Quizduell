@@ -1,8 +1,17 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "Main.vue" ist für Darstellung des Hauptmenü zuständig .
+-->
 <template>
+    <!-- Profil (Bild, Profil bearbeiten, Abmelden) -->
     <HeaderProfil v-if="token" :text="`${this.name}`"></HeaderProfil>
     <HeaderProfil v-if="!token" text="Nicht eingeloggt!"></HeaderProfil>
     <div class="container">
+        <!-- Headline Komponente (Überschrift) -->
         <Headline class="headline" text="Quizduell"></Headline>
+        <!-- Menü -->
         <div class="menu">
             <form action="/lobby">
                 <Button text="Mehrspieler"></Button>
@@ -39,11 +48,13 @@ export default
         Headline,
         Button,
     },
-  
+    /**
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
+     */
     async created()
     {
         console.log("token: " + localStorage.getItem("token"))
-
+        //nochmal überarbeiten und auf fetch wechseln !!!!
         await axios.get("http://localhost:8080/api/auth/v1/",
         {
             headers:

@@ -1,5 +1,13 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "Register.vue" ist für Darstellung der Seite "Registrieren" zuständig, 
+-->
 <template>
+    <!-- Header Komponente -->
     <Header></Header>
+    <!-- Formular Komponente (Register) -->
     <RegisterForm></RegisterForm>
 </template>
 

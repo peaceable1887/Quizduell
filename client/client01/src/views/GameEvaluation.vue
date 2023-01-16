@@ -1,6 +1,16 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "GameEvaluation.vue" ist für die Darstellung und Anwendungslogik, 
+    der Auswertung des gesamten Spiels zuständig.
+-->
 <template>
+    <!-- Header Komponente -->
     <Header></Header>
+    <!-- Headline Komponente -->
     <Headline class="headline" text="Spielauswertung"></Headline>
+    <!-- zeigt alle Antworten der entsprechenden Runden -->
     <div class="evaluationContent">
         <div class="tableWrapper">
             <table>
@@ -9,6 +19,7 @@
                     <th>Runde</th>
                     <th>{{player[0].name}}</th>
                 </tr>
+                <!-- listet alle ausgewählten Antworten jeder Runde auf. Mit entsprechender Farbe nach Richtig/Falsch -->
                 <tbody v-for="round in rounds" :key="round" >
                     <tr>
                         <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[1].chosenAnswer">{{answerAsText(round, 1)}}</td>
@@ -18,7 +29,8 @@
                         <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 0)}}</td>
                     </tr>
                 </tbody>
-                <tr>
+                    <!-- zeigt Endergebnis -->
+                    <tr>
                         <td>{{ this.result.players[1].points }} / 6</td>
                         <td class="categoryName">Punkte</td>
                         <td>{{ this.result.players[0].points }} / 6</td>
@@ -30,6 +42,7 @@
                     </tr>             
             </table>
         </div>
+        <!-- Button führt zurück zum Hauptmenü -->
         <div class="btnWrapper">
             <Button text="zum Hauptmenü" @click="backToMain"></Button>
         </div>
@@ -68,8 +81,12 @@ export default
 
         }
     },
+    /**
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
+     */
     async created()
     {
+        //Spielergebnis des Spiels
         this.quizEvaluation = localStorage.getItem("quizEvaluation")
 
         await fetch("http://localhost:8080/api/quiz/v1/get-session?lobbyId=" + localStorage.getItem("lobbyId"), {
@@ -90,26 +107,38 @@ export default
     },
     methods:
     {
+        /**
+         * Die Methode "answerAsText" zeigt die Antwort, in Textform, entsprechend der Array-Position an.
+         * 
+         * @param {roundlist}
+         * @param {number}
+         * @return {answerOne, answerTwo, answerThree, answerFour}
+         * 
+         */
         answerAsText(roundList, number)
         {
             if(roundList.playerList[number].chosenAnswer === 1)
             {
                 return roundList.answerOne;
             }
-            if(roundList.playerList[number].chosenAnswer === 2)
+            else if(roundList.playerList[number].chosenAnswer === 2)
             {
                 return roundList.answerTwo
             }
-            if(roundList.playerList[number].chosenAnswer === 3)
+            else if(roundList.playerList[number].chosenAnswer === 3)
             {
                 return roundList.answerThree
             }
-            if(roundList.playerList[number].chosenAnswer === 4)
+            else if(roundList.playerList[number].chosenAnswer === 4)
             {
                 return roundList.answerFour
             }            
         },
 
+        /**
+         * Die Methode "backToMain" beendet die Quizsession, löscht lokal gespeicherte Items und leitet in Hauptmenü zurück.
+         * 
+         */
         async backToMain()
         {
             await fetch("http://localhost:8080/api/quiz/v1/cancel", {

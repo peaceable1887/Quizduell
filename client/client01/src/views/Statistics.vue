@@ -1,6 +1,14 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "Statisics.vue" zeigt die Statistik des Spielers an.
+-->
 <template>
+    <!-- Header Komponente -->
     <Header></Header>
     <div class="container">
+        <!-- Headline Komponente (Meine Statistik)-->
         <Headline class="headline" text="Meine Statistik"></Headline>
         <div class="statContent">
             <div class="statData">
@@ -51,6 +59,9 @@ export default
             winRate: "",
         }
     },
+    /**
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
+     */
     async created()
     {
         await fetch("http://localhost:8080/api/stats/v1/get", {
@@ -70,6 +81,7 @@ export default
             this.gameDrawCount = data.gameDrawCount;
         })
 
+        //WinRate wird berechnet
         let number = (this.gameWonCount/this.gameCount)*100;
         this.winRate = Math.round(number * 100) / 100
     }
@@ -77,41 +89,41 @@ export default
 </script>
 
 <style scoped>
-    .container
-    {
-        margin: 0;   
-    }
-    .headline
-    {
-        font-size: 40px;
-        padding: 100px 0 60px 0;
-    }
-    .statContent
-    {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .statData
-    {
-        display: flex;
-        justify-content: space-between;
-        width: 600px;
-        font-size: 40px;
-        color: #184e98;
-        font-weight: bold;
-        margin: 30px 0 30px 0
-    }
-    Button
-    {
-        width: 200px;
-        padding: 12px 0 12px 0;
-        margin: 80px 0 0 0 ;
-        font-size: 22px;
-    }
-    @media screen and (max-width:650px) 
-    {
-        .headline{font-size: 33px;}
-        .statData{width: 400px;font-size: 33px; margin: 30px 0 30px 0}
-    }
+.container
+{
+    margin: 0;   
+}
+.headline
+{
+    font-size: 40px;
+    padding: 100px 0 60px 0;
+}
+.statContent
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.statData
+{
+    display: flex;
+    justify-content: space-between;
+    width: 600px;
+    font-size: 40px;
+    color: #184e98;
+    font-weight: bold;
+    margin: 30px 0 30px 0
+}
+Button
+{
+    width: 200px;
+    padding: 12px 0 12px 0;
+    margin: 80px 0 0 0 ;
+    font-size: 22px;
+}
+@media screen and (max-width:650px) 
+{
+    .headline{font-size: 33px;}
+    .statData{width: 400px;font-size: 33px; margin: 30px 0 30px 0}
+}
 </style>

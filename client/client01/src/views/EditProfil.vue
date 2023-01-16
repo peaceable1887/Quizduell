@@ -1,5 +1,13 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "EditProfil.vue" ist für Darstellung der Seite "Profil bearbeiten" zuständig .
+-->
 <template>
+    <!-- Header Komponente -->
     <Header></Header>
+    <!-- Formular Komponente (Profil bearbeiten) -->
     <EditProfilForm></EditProfilForm>
 </template>
 
