@@ -17,6 +17,7 @@ import gruppe_b.quizduell.application.common.GameSessionResult;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
 import gruppe_b.quizduell.application.enums.QuizStatus;
 import gruppe_b.quizduell.application.enums.RoundStatus;
+import gruppe_b.quizduell.application.interfaces.FinishQuiz;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.models.Player;
 import gruppe_b.quizduell.application.models.Quiz;
@@ -45,6 +46,7 @@ public class QuizSession extends Thread {
     private final StatsService statsService;
 
     private final Quiz quiz;
+    private final FinishQuiz finishQuiz;
     private boolean cancel = false;
 
     private int currentRoundNum = 0;
@@ -68,6 +70,8 @@ public class QuizSession extends Thread {
      * 
      * @param quiz                          Quiz für das eine Quiz-Session erstellt
      *                                      werden soll.
+     * @param finishQuiz                    CallBack Interface wenn das Quiz beendet
+     *                                      ist
      * @param sendToPlayerService           Service über den mit den Spielern
      *                                      Kommuniziert wird (Websocket)
      * @param getQuestionRandomQueryHandler Handler über den zufällige Quizfragen
@@ -78,12 +82,14 @@ public class QuizSession extends Thread {
      * @author Christopher Burmeister
      */
     public QuizSession(Quiz quiz,
+            FinishQuiz finishQuiz,
             SendToPlayerService sendToPlayerService,
             GetQuestionRandomQueryHandler getQuestionRandomQueryHandler,
             StatsService statsService) {
         this.send = sendToPlayerService;
         this.threadName = quiz.getId().toString();
         this.quiz = quiz;
+        this.finishQuiz = finishQuiz;
         this.questionRandomHandler = getQuestionRandomQueryHandler;
         this.playerCount = quiz.getPlayers().size();
         lock = new ReentrantLock(true);
@@ -248,7 +254,11 @@ public class QuizSession extends Thread {
     private void endGame() {
         updateStatsInDb();
 
+        // Status im Quiz setzen
         quiz.setQuizFinish();
+
+        // Service informieren, dass das Quiz fertig ist.
+        finishQuiz.finishQuiz(quiz);
 
         logger.info("finish session {} on thread: {}", quiz.getLobbyId(), threadName);
     }

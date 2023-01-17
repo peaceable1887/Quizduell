@@ -8,6 +8,7 @@ import gruppe_b.quizduell.application.common.GameSessionResult;
 import gruppe_b.quizduell.application.common.PlayerRoundStatus;
 import gruppe_b.quizduell.application.enums.RoundStatus;
 import gruppe_b.quizduell.application.game.QuizSession;
+import gruppe_b.quizduell.application.interfaces.FinishQuiz;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.application.questions.QuestionRepository;
@@ -49,6 +50,9 @@ class GameSessionTest {
     @Mock
     SendToPlayerService sendToPlayerService;
 
+    @Mock
+    FinishQuiz finishQuiz;
+
     @Autowired
     GetQuestionRandomQueryHandler getQuestionRandomQueryHandler;
 
@@ -71,7 +75,7 @@ class GameSessionTest {
         quiz = new Quiz(UUID.randomUUID());
         quiz.addPlayer(UUID.randomUUID(), "john");
         quiz.addPlayer(UUID.randomUUID(), "jane");
-        session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler, statsService);
+        session = new QuizSession(quiz, finishQuiz, sendToPlayerService, getQuestionRandomQueryHandler, statsService);
         Category category = Mockito.mock(Category.class);
         when(category.getName()).thenReturn("categoryName");
 
@@ -91,7 +95,7 @@ class GameSessionTest {
         Quiz quizLocal = new Quiz(UUID.randomUUID());
 
         // Act
-        QuizSession sessionLocal = new QuizSession(quizLocal, sendToPlayerService,
+        QuizSession sessionLocal = new QuizSession(quizLocal, finishQuiz, sendToPlayerService,
                 getQuestionRandomQueryHandler,
                 statsService);
 
