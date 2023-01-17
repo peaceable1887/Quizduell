@@ -273,6 +273,6 @@ public class QuizService implements StartQuiz, FinishQuiz {
      * @param quiz Quiz das fertig ist
      */
     public void finishQuiz(Quiz quiz) {
-        this.cancelQuiz(quiz.getId());
+        this.cancelQuiz(quiz.getLobbyId());
     }
 }
