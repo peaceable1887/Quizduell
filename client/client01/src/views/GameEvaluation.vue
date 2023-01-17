@@ -93,7 +93,7 @@ export default
         //Spielergebnis des Spiels
         this.quizEvaluation = localStorage.getItem("quizEvaluation")
 
-        await fetch("api/quiz/v1/get-session?lobbyId=" + localStorage.getItem("lobbyId"), {
+        await fetch("http://localhost:8080/api/quiz/v1/get-session?lobbyId=" + localStorage.getItem("lobbyId"), {
                 method: "GET",
                 headers: 
                 {
@@ -154,7 +154,7 @@ export default
          */
         async backToMain()
         {
-            await fetch("api/quiz/v1/cancel", {
+            await fetch("http://localhost:8080/api/quiz/v1/cancel", {
                     method: "POST",
                     headers: 
                     {
