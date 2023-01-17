@@ -54,6 +54,7 @@ export default
         {
             this.file = data.file;
         })
+        .catch(err => console.log("ERROR: " + err))
     },
     methods:
     {

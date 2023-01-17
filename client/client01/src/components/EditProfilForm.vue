@@ -20,14 +20,14 @@
                 </div>
                 <div class="formData">
                     <label for="selectedFile">Profilbild</label>
-                    <input type="file" @change="onFileSelected">
+                    <input type="file" accept="image/jpeg" @change="onFileSelected">
                 </div>
                 <div class="formData">
-                    <label for="password">Passwort</label>
+                    <label for="password">Passwort*</label>
                     <input type="password" name="password" v-model="password">
                 </div>
                 <div class="formData">
-                    <label for="passwordRepeat">Passwort wiederholen</label>
+                    <label for="passwordRepeat">Passwort wiederholen*</label>
                     <input type="password" name="passwordRepeat" v-model="passwordRepeat">
                 </div>
                 <!-- Meldung: ob das ändern das Profildaten geklappt hat -->
@@ -87,7 +87,8 @@ export default
         {
             this.accountName = data.name;
             this.eMail = data.mail;
-        })       
+        })
+        .catch(err => console.log("ERROR: " + err))       
     },
     methods:
     {
@@ -118,40 +119,45 @@ export default
                 {
                     if(res.ok)
                     {
-                        this.sucMsg = "Profildaten wurden erfolgreich geändert!"
+                        this.errMsg = "";
+                        this.sucMsg = "Profildaten wurden erfolgreich geändert!";
                     }else
                     {
-                        console.log("Fehler ist aufgetreten.")
+                        console.log("Fehler ist aufgetreten.");
                     }
                 })
-
-                //FormDara Objekt wird erzeugt für das Hochladen eines Bildes
-                const formData = new FormData();
-                formData.append("file", this.selectedFile)
-
-                //REST API Endpunkt (Profilbild posten)
-                await fetch("http://localhost:8080/api/auth/v1/image",{
-                    method: "POST",
-                    headers:
-                    {
-                        "Authorization": "Bearer " + localStorage.getItem("token")
-                    }, 
-                    body: formData
-                })
-                .then(res => 
+                //Wird ausgeführt wenn eine Datei ausgewählt wurde
+                if(this.selectedFile != null)
                 {
-                    if(res.ok)
+                    //FormDara Objekt wird erzeugt für das Hochladen eines Bildes
+                    const formData = new FormData();
+                    formData.append("file", this.selectedFile)
+
+                    //REST API Endpunkt (Profilbild posten)
+                    await fetch("http://localhost:8080/api/auth/v1/image",{
+                        method: "POST",
+                        headers:
+                        {
+                            "Authorization": "Bearer " + localStorage.getItem("token")
+                        }, 
+                        body: formData
+                    })
+                    .then(res => 
                     {
-                        console.log("Bild wurde hochgeladen")
-                    
-                    }else
-                    {
-                        console.log("Fehler ist aufgetreten beim hochladen des Bildes.")
-                    }
-                })       
+                        if(res.ok)
+                        {
+                            console.log("Bild wurde hochgeladen");
+                        
+                        }else
+                        {
+                            this.errMsg = "Bild konnte nicht Hochgeladen werden.<br><br> Mögliche Ursache:<br><br> - nur das jpeg-Format ist erlaubt <br> - die Datei ist zu groß";
+                            this.sucMsg = ""; 
+                        }
+                    })     
+                }      
             }else
             {
-                this.errMsg = "Passwort muss identisch sein!"
+                this.errMsg = "Passwort muss identisch sein!";
             }
         },
 

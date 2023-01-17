@@ -140,10 +140,7 @@ export default
                 console.log("Erfolgreich mit Quiz verbunden!")
                 console.log(data)
             })
-            .catch(err => 
-            {
-                console.log(err)
-            })
+            .catch(err => console.log("ERROR: " + err))
         
             //Initialisierung und Deklaration der WebSocket-Verbindung
             const token = "Bearer " + localStorage.getItem("token");

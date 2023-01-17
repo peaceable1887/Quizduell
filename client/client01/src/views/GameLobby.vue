@@ -89,7 +89,7 @@ export default
     /**
      * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
      */
-    created()
+    async created()
     {
         //ID aus der Spiellobby URL wird geholt
         const url = window.location.href;
@@ -171,15 +171,15 @@ export default
                 })
             })
             .then(res => 
+            {
+                if(res.ok)
                 {
-                    if(res.ok)
-                    {
-                        console.log("Spiellobby wurde gelöscht");
-                    }else
-                    {
-                        console.log("Ein Fehler ist beim löschen der Spiellobby aufgetreten!");
-                    }
-                })
+                    console.log("Spiellobby wurde gelöscht");
+                }else
+                {
+                    console.log("Ein Fehler ist beim löschen der Spiellobby aufgetreten!");
+                }
+            })
             .then(data => console.log(data))
             .catch(error => console.log("ERROR: " + error))       
         },

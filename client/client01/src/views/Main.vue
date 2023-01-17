@@ -7,8 +7,14 @@
 <template>
     <!-- Profil (Bild, Profil bearbeiten, Abmelden) -->
     <HeaderProfil v-if="token" :text="`${this.name}`"></HeaderProfil>
-    <HeaderProfil v-if="!token" text="Nicht eingeloggt!"></HeaderProfil>
-    <div class="container">
+     <!-- Wird Angezeigt wenn die Spieler nicht eingeloggt sind -->
+    <div v-if="!token">
+        <span class="notLoggedIn">Du bist nicht eingeloggt!</span>
+        <form action="/">
+            <Button text="Zum Login"></Button>  
+        </form>
+    </div>
+    <div v-if="token" class="container">
         <!-- Headline Komponente (Überschrift) -->
         <Headline class="headline" text="Quizduell"></Headline>
         <!-- Menü -->
@@ -100,6 +106,14 @@ export default
 {
     font-size: 80px;
     padding: 100px 0 100px 0;
+}
+.notLoggedIn
+{
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+    color: black;
+    font-size: 20px;
 }
 .container
 {

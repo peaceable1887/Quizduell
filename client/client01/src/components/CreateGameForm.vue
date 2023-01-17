@@ -88,7 +88,8 @@ export default
                     name: this.gameName,
                     password: this.password
                 })
-            }).then(res => 
+            })
+            .then(res => 
             {
                 if(res.ok)
                 {
@@ -99,10 +100,12 @@ export default
                     console.log("Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden")
                     this.errMsg = "Fehler ist aufgetreten. Das Spiel konnte nicht erstellt werden"
                 }
-            }).then(data => 
+            })
+            .then(data => 
             {
                 this.$router.push("/gameLobby/"+ data.id)
             })
+            .catch(err => console.log("ERROR: " + err))
              
         },
     },

@@ -80,6 +80,7 @@ export default
             this.gameLossCount = data.gameLossCount;
             this.gameDrawCount = data.gameDrawCount;
         })
+        .catch(err => console.log("ERROR: " + err))
 
         //WinRate wird berechnet
         let number = (this.gameWonCount/this.gameCount)*100;

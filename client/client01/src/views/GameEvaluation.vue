@@ -24,7 +24,7 @@
                     <tr>
                         <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[1].chosenAnswer">{{answerAsText(round, 1)}}</td>
                         <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 1)}}</td>
-                        <td class="categoryName">{{ round.categoryName }}Programmierung</td>
+                        <td class="categoryName">{{ round.categoryName }}</td>
                         <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[0].chosenAnswer">{{answerAsText(round, 0)}}</td>
                         <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 0)}}</td>
                     </tr>
@@ -104,6 +104,7 @@ export default
                 this.rounds = data.roundList
                 this.result = data.quizSessionResult
             })
+            .catch(err => console.log("ERROR: " + err))
     },
     methods:
     {

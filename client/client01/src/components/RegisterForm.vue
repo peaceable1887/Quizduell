@@ -11,7 +11,7 @@
         <div>
             <form id="registerForm" @submit.prevent="onSubmit">
                 <div class="formData">
-                    <label for="accountName">Accountname</label>
+                    <label for="accountName">Accountname*</label>
                     <input type="text" name="accountName" v-model="accountName">
                 </div>
                 <div class="formData">
@@ -19,11 +19,11 @@
                     <input type="email" name="eMail" v-model="eMail">
                 </div>
                 <div class="formData">
-                    <label for="password">Passwort</label>
+                    <label for="password">Passwort*</label>
                     <input type="password" name="password" v-model="password">
                 </div>
                 <div class="formData">
-                    <label for="passwordRepeat">Passwort wiederholen</label>
+                    <label for="passwordRepeat">Passwort wiederholen*</label>
                     <input type="password" name="passwordRepeat" v-model="passwordRepeat">
                 </div>
                 <div class="errMsg" v-html="errMsg"></div>
@@ -69,13 +69,9 @@ export default
         {
 
             //Validierung: prüft ob alle Daten für Registierung korrekt eingegeben wurden
-            /*if(!this.accountName)
+            if(!this.accountName)
             {
                 this.errMsg = "Der Accountname fehlt!";
-            }
-            if(!this.eMail)//noch email validation einbauen (regex)
-            {
-                this.errMsg = "Die E-Mail Adresse fehlt!";
             }
             if(!this.password)
             {
@@ -83,10 +79,10 @@ export default
             }
             if(this.password !== this.passwordRepeat)
             {
-                this.errMsg = "Passwort ist nicht identisch!";
+                this.errMsg = "Passwörter ist nicht identisch!";
             } 
             else
-            {*/
+            {
                 //REST API Endpunkt (Registrieren)
                 await fetch("http://localhost:8080/api/auth/v1/register", {
                     method: "POST",
@@ -100,20 +96,22 @@ export default
                         mail: this.eMail,
                         password: this.password
                     })
-                }).then(res =>
+                })
+                .then(res =>
                 {
                     if(res.ok)
                     {
-                        alert("Account wurde erfolgreich angelegt !")
-                        this.$router.push("/")
+                        this.errMsg = "";
+                        alert("Account wurde erfolgreich angelegt !");
+                        this.$router.push("/");
 
                     }else
                     {       
-                        console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden")
-                        this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden"
+                        this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden<br><br> Mögliche Ursache:<br><br> - Server nicht erreichbar<br> - Accountname bereits vergeben";
                     }
-                }) 
-            /*}*/
+                })
+                .catch(err => console.log("ERROR: " + err)) 
+            }
         },
     },
 }

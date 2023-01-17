@@ -58,6 +58,9 @@ export default
            timerColor: "",
         }
     },
+    /**
+     * Über den Lifecycle Hook "updated" wird geprüft welche größe der Timer hat und ändert die Farbe entsprechend.
+     */
     updated()
     {
         if(this.roundCountdown <= 5)
