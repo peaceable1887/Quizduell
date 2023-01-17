@@ -6,11 +6,10 @@ module.exports = defineConfig({
 module.exports = {
   devServer: {
     proxy: {
-      '^/': {
-        target: 'http://test.burmeister.hamburg/api',
+      '^/api': {
+        target: 'http://test.burmeister.hamburg/',
         changeOrigin: true,
         logLevel: "debug",
-        pathRewrite: {"^/api" : "/"}
       },
       '^/lobby-websocket': {
         target: 'http://test.burmeister.hamburg/',
