@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -26,9 +27,9 @@ public class DbQuestion extends Question {
 
     }
 
-    public DbQuestion(UUID categoryId, String questionText, String answerOne, String answerTwo, String answerThree,
+    public DbQuestion(DbCategory category, String questionText, String answerOne, String answerTwo, String answerThree,
             String answerFour, int correctAnswer) {
-        super(categoryId, questionText, answerOne, answerTwo, answerThree, answerFour, correctAnswer);
+        super(category, questionText, answerOne, answerTwo, answerThree, answerFour, correctAnswer);
     }
 
     @Id
@@ -41,11 +42,10 @@ public class DbQuestion extends Question {
         return super.getId();
     }
 
-    @Column(name = "categoryId", nullable = false, columnDefinition = "VARCHAR(36)")
-    @Type(type = "uuid-char")
+    @ManyToOne
     @Override
-    public UUID getCategoryId() {
-        return super.getCategoryId();
+    public DbCategory getCategory() {
+        return new DbCategory(super.getCategory());
     }
 
     @Column(name = "text", nullable = false)
@@ -87,13 +87,13 @@ public class DbQuestion extends Question {
     public Question createEntity() {
         Question question = new Question();
         question.setId(getId());
-        question.setCategoryId(getCategoryId());
         question.setQuestionText(getQuestionText());
         question.setAnswerOne(getAnswerOne());
         question.setAnswerTwo(getAnswerTwo());
         question.setAnswerThree(getAnswerThree());
         question.setAnswerFour(getAnswerFour());
         question.setCorrectAnswer(getCorrectAnswer());
+        question.setCategory(getCategory());
 
         return question;
     }

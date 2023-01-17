@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -22,12 +23,18 @@ import gruppe_b.quizduell.domain.entities.Category;
 @Table(name = "categories")
 public class DbCategory extends Category {
 
-    public DbCategory() {
+    private Category category;
 
+    public DbCategory() {
+        category = new Category();
+    }
+
+    public DbCategory(Category category) {
+        this.category = category;
     }
 
     public DbCategory(String name, String description) {
-        super(name, description);
+        category = new Category(name, description);
     }
 
     @Id
@@ -37,27 +44,38 @@ public class DbCategory extends Category {
     @Type(type = "uuid-char")
     @Override
     public UUID getId() {
-        return super.getId();
+        return category.getId();
+    }
+
+    @Override
+    public void setId(UUID id) {
+        category.setId(id);
     }
 
     @Column(name = "name", nullable = false, unique = true)
     @Override
     public String getName() {
-        return super.getName();
+        return category.getName();
+    }
+
+    @Override
+    public void setName(String name) {
+        category.setName(name);
     }
 
     @Column(name = "description")
     @Override
     public String getDescription() {
-        return super.getDescription();
+        return category.getDescription();
     }
 
-    public Category createEntity() {
-        Category category = new Category();
-        category.setId(getId());
-        category.setName(getName());
-        category.setDescription(getDescription());
+    @Override
+    public void setDescription(String description) {
+        category.setDescription(description);
+    }
 
+    @Transient
+    public Category createEntity() {
         return category;
     }
 }

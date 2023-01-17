@@ -29,7 +29,7 @@ public class SeedDb {
             Category category = categoryRepo
                     .save(new Category("Java", "Fragen zur Programmiersprache Java"));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Was ist Java?",
                     "Eine Programmiersprache ohne Objektorientierung",
                     "Eine Firma die Joghurt produziert",
@@ -37,7 +37,7 @@ public class SeedDb {
                     "Ein Planet der nicht bewohnbar ist",
                     3));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welchen Namen hatte Java ursprünglich?",
                     "Oak",
                     "Spruce",
@@ -45,7 +45,7 @@ public class SeedDb {
                     "Chai",
                     1));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Wie heißt der korrekte Datentyp für eine Zeichenkette?",
                     "string",
                     "String",
@@ -53,7 +53,7 @@ public class SeedDb {
                     "charchain",
                     2));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Schlüsselwort wird zur Vererbung genutzt?",
                     "implements",
                     "extends",
@@ -61,7 +61,7 @@ public class SeedDb {
                     "join",
                     2));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Schlüsselwort wird zum Implementieren eines Interfaces genutzt?",
                     "interface",
                     "join",
@@ -69,7 +69,7 @@ public class SeedDb {
                     "implements",
                     4));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Schlüsselwort ist für eine Methode ohne Rückgabewert korrekt?",
                     "void",
                     "nothing",
@@ -77,7 +77,7 @@ public class SeedDb {
                     "empty",
                     1));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Was ist Spring?",
                     "Baukasten",
                     "Framework",
@@ -85,7 +85,7 @@ public class SeedDb {
                     "Frühling",
                     2));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Was ist ein Beispiel für eine statische Methode in Java?",
                     "public void printName()",
                     "public static int addNumbers(int x, int y)",
@@ -93,7 +93,7 @@ public class SeedDb {
                     "public static String getCurrentDate()",
                     4));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Schlüsselwort wird verwendet, um eine Methode zu überschreiben?",
                     "override",
                     "overwrite",
@@ -108,7 +108,7 @@ public class SeedDb {
             Category category = categoryRepo
                     .save(new Category("Patterns", "Fragen zu Patterns"));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Muster wird verwendet, um die Erstellung von Objekten zu vereinfachen?",
                     "Observer-Muster",
                     "Singleton-Muster",
@@ -116,7 +116,7 @@ public class SeedDb {
                     "Adapter-Muster",
                     3));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Muster wird verwendet, um die Kommunikation zwischen unterschiedlichen Klassen zu ermöglichen?",
                     "Observer-Muster",
                     "Singleton-Muster",
@@ -124,7 +124,7 @@ public class SeedDb {
                     "Adapter-Muster",
                     4));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Muster wird verwendet, um die Anzahl der Objekte einer bestimmten Klasse zu begrenzen?",
                     "Observer-Muster",
                     "Singleton-Muster",
@@ -139,7 +139,7 @@ public class SeedDb {
             Category category = categoryRepo
                     .save(new Category("Framworks", "Fragen zu Frameworks"));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Framework wird hauptsächlich für die Entwicklung von Desktop-Anwendungen verwendet?",
                     "ReactJS",
                     "AngularJS",
@@ -147,7 +147,7 @@ public class SeedDb {
                     "Node.js",
                     3));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Framework wird hauptsächlich für die Entwicklung von Machine-Learning-Modellen verwendet?",
                     "TensorFlow",
                     "AngularJS",
@@ -155,7 +155,7 @@ public class SeedDb {
                     "Keras",
                     1));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welches Framework wird hauptsächlich für die Entwicklung von künstlicher Intelligenz verwendet?",
                     "TensorFlow",
                     "AngularJS",
@@ -170,7 +170,7 @@ public class SeedDb {
             Category category = categoryRepo
                     .save(new Category("Python", "Fragen zu Python"));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Funktion in Python verwendet man, um einen String in eine Zahl umzuwandeln?",
                     "to_string()",
                     "to_int()",
@@ -178,7 +178,7 @@ public class SeedDb {
                     "parse_int()",
                     3));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Funktion in Python verwendet man, um eine Liste von Strings in eine Liste von Integers umzuwandeln?",
                     "to_integers()",
                     "int_list()",
@@ -186,7 +186,7 @@ public class SeedDb {
                     "parse_int_list()",
                     3));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Bibliothek in Python verwendet man, um CSV-Dateien zu lesen und zu schreiben?",
                     "pandas",
                     "xlrd",
@@ -194,7 +194,7 @@ public class SeedDb {
                     "csv",
                     4));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Funktion in Python verwendet man, um einen String in Großbuchstaben umzuwandeln?",
                     "upper()",
                     "to_uppercase()",
@@ -202,7 +202,7 @@ public class SeedDb {
                     "to_upper()",
                     1));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Funktion in Python verwendet man, um die Länge einer Liste zu erhalten?",
                     "length()",
                     "size()",
@@ -210,7 +210,7 @@ public class SeedDb {
                     "count()",
                     3));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Bibliothek in Python verwendet man, um mit Datenbanken zu arbeiten?",
                     "sqlite3",
                     "pandas",
@@ -218,7 +218,7 @@ public class SeedDb {
                     "csv",
                     1));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Funktion in Python verwendet man, um eine Liste zu sortieren?",
                     "sort()",
                     "order()",
@@ -226,7 +226,7 @@ public class SeedDb {
                     "organize()",
                     1));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Bibliothek in Python verwendet man, um mit regulären Ausdrücken zu arbeiten?",
                     "re",
                     "string",
@@ -234,7 +234,7 @@ public class SeedDb {
                     "json",
                     1));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Bibliothek in Python verwendet man, um HTTP-Requests zu senden?",
                     "http",
                     "requests",
@@ -242,7 +242,7 @@ public class SeedDb {
                     "json",
                     2));
 
-            questionRepo.save(new Question(category.getId(),
+            questionRepo.save(new Question(category,
                     "Welche Bibliothek in Python verwendet man, um mit JSON-Daten zu arbeiten?",
                     "json",
                     "http",

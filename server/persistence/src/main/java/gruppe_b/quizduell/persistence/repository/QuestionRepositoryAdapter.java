@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import gruppe_b.quizduell.application.questions.QuestionRepository;
 import gruppe_b.quizduell.domain.entities.Question;
+import gruppe_b.quizduell.persistence.entities.DbCategory;
 import gruppe_b.quizduell.persistence.entities.DbQuestion;
 
 /**
@@ -36,7 +37,7 @@ public class QuestionRepositoryAdapter implements QuestionRepository {
     @Override
     public Question save(Question question) {
         return repo.save(new DbQuestion(
-                question.getCategoryId(),
+                new DbCategory(question.getCategory()),
                 question.getQuestionText(),
                 question.getAnswerOne(),
                 question.getAnswerTwo(),
@@ -55,7 +56,6 @@ public class QuestionRepositoryAdapter implements QuestionRepository {
 
         DbQuestion dbEntity = result.get();
 
-        dbEntity.setCategoryId(question.getCategoryId());
         dbEntity.setQuestionText(question.getQuestionText());
         dbEntity.setAnswerOne(question.getAnswerOne());
         dbEntity.setAnswerTwo(question.getAnswerTwo());

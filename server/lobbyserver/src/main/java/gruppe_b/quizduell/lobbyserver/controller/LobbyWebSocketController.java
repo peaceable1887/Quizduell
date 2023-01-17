@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -31,6 +33,8 @@ import gruppe_b.quizduell.lobbyserver.services.LobbyService;
 @Controller
 @ControllerAdvice
 public class LobbyWebSocketController {
+
+    private static final Logger logger = LoggerFactory.getLogger(LobbyController.class);
 
     @Autowired
     LobbyService lobbyService;
@@ -77,6 +81,8 @@ public class LobbyWebSocketController {
     public Lobby playerStatus(@DestinationVariable String lobbyId, PlayerStatusDto status,
             Principal principal)
             throws UnknownPlayerStatusException, AttributeNullException {
+
+        logger.info("receive player status update: {}", status.status);
 
         PlayerStatus playerStatus;
 

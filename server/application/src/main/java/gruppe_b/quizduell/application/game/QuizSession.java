@@ -458,6 +458,7 @@ public class QuizSession extends Thread {
         dto.currentRound = currentRoundNum;
         dto.maxRounds = MAX_ROUNDS;
 
+        dto.categoryName = round.getQuestion().getCategory().getName();
         dto.questionText = round.getQuestion().getQuestionText();
         dto.answerOne = round.getQuestion().getAnswerOne();
         dto.answerTwo = round.getQuestion().getAnswerTwo();
