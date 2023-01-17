@@ -28,8 +28,10 @@
                 </div>
                 <div class="errMsg" v-html="errMsg"></div>
                 <div class="btnWrapper">
-                    <router-link to="/"><Button text="Zurück"></Button></router-link>
-                    <Button type="submit" text="Registrieren"></Button>               
+                    <router-link to="/">
+                        <Button text="Zurück"></Button>
+                    </router-link>
+                    <Button text="Registrieren"></Button>               
                 </div>
             </form>
             
@@ -84,7 +86,7 @@ export default
             else
             {
                 //REST API Endpunkt (Registrieren)
-                await fetch("http://localhost:8080/api/auth/v1/register", {
+                await fetch("api/auth/v1/register", {
                     method: "POST",
                     headers: 
                     {

@@ -111,7 +111,7 @@ export default
          */
         async connectLobby(lobbyId)
         {
-            fetch("http://localhost:8080/api/lobby/v1/connect",
+            fetch("api/lobby/v1/connect",
             {
                 method: "POST",
                 headers:

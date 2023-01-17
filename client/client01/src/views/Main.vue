@@ -61,7 +61,7 @@ export default
     {
         console.log("token: " + localStorage.getItem("token"))
         //nochmal überarbeiten und auf fetch wechseln !!!!
-        await axios.get("http://localhost:8080/api/auth/v1/",
+        await axios.get("api/auth/v1/",
         {
             headers:
             {
@@ -78,7 +78,7 @@ export default
             console.log(err)
         })
         
-        await axios.get("http://localhost:8080/api/auth/v1/details",
+        await axios.get("api/auth/v1/details",
         {
             headers:
             {

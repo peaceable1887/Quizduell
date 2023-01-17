@@ -139,13 +139,11 @@ export default
                         else if(this.countdown == 0)
                         {
                             this.$router.push("/game"); 
-                        }
-                            
+                        }                         
                     }
                 );
             }
-        );
-        
+        );       
     },
     methods:
     {
@@ -157,7 +155,7 @@ export default
          */
         async deleteLobby(lobbyId)
         {
-            fetch("http://localhost:8080/api/lobby/v1/disconnect",
+            fetch("api/lobby/v1/disconnect",
             {
                 method: "POST",
                 headers:

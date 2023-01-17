@@ -35,7 +35,7 @@
                 <div v-if="sucMsg" class="sucMsg" v-html="sucMsg"></div>
                 <div class="btnWrapper">
                     <router-link to="/main"><Button text="Zurück"></Button></router-link>
-                    <Button type="submit" text="Speichern"></Button>               
+                    <Button text="Speichern"></Button>               
                 </div>
             </form>
             
@@ -74,7 +74,7 @@ export default
      */
     async created()
     {
-        await fetch("http://localhost:8080/api/auth/v1/details", {
+        await fetch("api/auth/v1/details", {
             method: "GET",
             headers: 
             {
@@ -101,7 +101,7 @@ export default
             if(this.password === this.passwordRepeat)
             {
                 //REST API Endpunkt (User-Details updaten)
-                await fetch("http://localhost:8080/api/auth/v1/update", {
+                await fetch("api/auth/v1/update", {
                 method: "POST",
                 headers:
                 {
@@ -134,7 +134,7 @@ export default
                     formData.append("file", this.selectedFile)
 
                     //REST API Endpunkt (Profilbild posten)
-                    await fetch("http://localhost:8080/api/auth/v1/image",{
+                    await fetch("api/auth/v1/image",{
                         method: "POST",
                         headers:
                         {

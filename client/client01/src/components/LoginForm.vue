@@ -58,38 +58,38 @@ export default
         */
         async onSubmit()
         {
-                //REST API Endpunkt (Login/ JWT anfordern)
-                await axios.get("http://localhost:8080/api/auth/v1/token",
+            //REST API Endpunkt (Login/ JWT anfordern)
+            await axios.get("api/auth/v1/token",
+            {
+                auth:
                 {
-                    auth:
-                    {
-                        username: this.accountName,
-                        password: this.password
-                    }
-                }).then(resp => 
+                    username: this.accountName,
+                    password: this.password
+                }
+            }).then(resp => 
+            {
+                localStorage.setItem("token", resp.data.token)
+                localStorage.setItem("userId", resp.data.userId)
+                this.$router.push("/main")
+                
+            }).catch((err) => 
+            {
+                this.errMsg = "Accountname und/oder Passwort falsch!";
+                
+                if(!this.accountName)
                 {
-                    localStorage.setItem("token", resp.data.token)
-                    localStorage.setItem("userId", resp.data.userId)
-                    this.$router.push("/main")
-                    
-                }).catch((err) => 
+                    this.errMsg = "Der Accountname fehlt!";
+                }
+                if(!this.password)
                 {
-                    this.errMsg = "Accountname und/oder Passwort falsch!";
-                    
-                    if(!this.accountName)
-                    {
-                        this.errMsg = "Der Accountname fehlt!";
-                    }
-                    if(!this.password)
-                    {
-                        this.errMsg = "Das Password fehlt!";
-                    }
-                    if(!this.accountName && !this.password)
-                    {
-                        this.errMsg = "Accountname und Passwort fehlen!";
-                    }
-                    console.log(err)
-                }) 
+                    this.errMsg = "Das Password fehlt!";
+                }
+                if(!this.accountName && !this.password)
+                {
+                    this.errMsg = "Accountname und Passwort fehlen!";
+                }
+                console.log(err)
+            })           
         },
     },
 }
