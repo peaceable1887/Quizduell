@@ -22,11 +22,19 @@
                 <!-- listet alle ausgewählten Antworten jeder Runde auf. Mit entsprechender Farbe nach Richtig/Falsch -->
                 <tbody v-for="round in rounds" :key="round" >
                     <tr>
-                        <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[1].chosenAnswer">{{answerAsText(round, 1)}}</td>
-                        <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 1)}}</td>
+                        <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[1].chosenAnswer">{{answerAsText(round, 1)}} 
+                            <span class="noAnswer">{{noAnswer}}</span>
+                        </td>
+                        <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 1)}} 
+                            <span class="noAnswer">{{noAnswer}}</span>
+                        </td>
                         <td class="categoryName">{{ round.categoryName }}</td>
-                        <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[0].chosenAnswer">{{answerAsText(round, 0)}}</td>
-                        <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 0)}}</td>
+                        <td :style="{color: answerRight}" v-if="round.correctAnswer === round.playerList[0].chosenAnswer">{{answerAsText(round, 0)}} 
+                            <span class="noAnswer">{{noAnswer}}</span>
+                        </td>
+                        <td :style="{color: answerFalse}" v-else>{{answerAsText(round, 0)}} 
+                            <span class="noAnswer">{{noAnswer}}</span>
+                        </td>
                     </tr>
                 </tbody>
                     <!-- zeigt Endergebnis -->
@@ -77,7 +85,8 @@ export default
             rounds: [],
             answers:[],
             answerRight: "green",
-            answerFalse: "red"
+            answerFalse: "red",
+            noAnswer: ""
 
         }
     },
@@ -120,19 +129,27 @@ export default
         {
             if(roundList.playerList[number].chosenAnswer === 1)
             {
+                this.noAnswer = ""
                 return roundList.answerOne;
             }
             else if(roundList.playerList[number].chosenAnswer === 2)
             {
+                this.noAnswer = ""
                 return roundList.answerTwo
             }
             else if(roundList.playerList[number].chosenAnswer === 3)
             {
+                this.noAnswer = ""
                 return roundList.answerThree
             }
             else if(roundList.playerList[number].chosenAnswer === 4)
             {
+                this.noAnswer = ""
                 return roundList.answerFour
+            }
+            else
+            {
+                this.noAnswer = "keine Antwort"
             }            
         },
 
@@ -237,5 +254,9 @@ Button
     padding: 12px 0 12px 0;
     font-size: 22px;
     text-align: center;
+}
+.noAnswer
+{
+    color: black;
 }
 </style>
