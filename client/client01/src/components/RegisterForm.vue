@@ -86,7 +86,7 @@ export default
             else
             {
                 //REST API Endpunkt (Registrieren)
-                await fetch("api/auth/v1/register", {
+                await fetch("http://localhost:8080/api/auth/v1/register", {
                     method: "POST",
                     headers: 
                     {

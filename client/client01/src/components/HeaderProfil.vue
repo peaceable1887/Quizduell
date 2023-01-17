@@ -41,7 +41,7 @@ export default
     async created()
     {
         //REST API Endpunkt (User-Details abrufen)
-        await fetch("api/auth/v1/details", {
+        await fetch("http://localhost:8080/api/auth/v1/details", {
             method: "GET",
             headers: 
             {

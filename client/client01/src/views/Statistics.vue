@@ -64,7 +64,7 @@ export default
      */
     async created()
     {
-        await fetch("api/stats/v1/get", {
+        await fetch("http://localhost:8080/api/stats/v1/get", {
             method: "GET",
             headers: 
             {

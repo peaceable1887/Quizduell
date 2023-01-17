@@ -59,7 +59,7 @@ export default
         async onSubmit()
         {
             //REST API Endpunkt (Login/ JWT anfordern)
-            await axios.get("api/auth/v1/token",
+            await axios.get("http://localhost:8080/api/auth/v1/token",
             {
                 auth:
                 {

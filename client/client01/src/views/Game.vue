@@ -116,7 +116,7 @@ export default
     async created()
     {
         //Stellt die Verbindung zum Quiz, per REST, her.
-        await fetch("api/quiz/v1/connect", {
+        await fetch("http://localhost:8080/api/quiz/v1/connect", {
                 method: "POST",
                 headers: 
                 {
@@ -336,7 +336,7 @@ export default
          */
         async abortQuiz()
         {
-            await fetch("api/quiz/v1/cancel", {
+            await fetch("http://localhost:8080/api/quiz/v1/cancel", {
                 method: "POST",
                 headers: 
                 {

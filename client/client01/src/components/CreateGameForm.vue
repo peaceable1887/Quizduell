@@ -76,7 +76,7 @@ export default
                 console.log(this.password)
             }
 
-            await fetch("api/lobby/v1/create", {
+            await fetch("http://localhost:8080/api/lobby/v1/create", {
                 method: "POST",
                 headers: 
                 {
