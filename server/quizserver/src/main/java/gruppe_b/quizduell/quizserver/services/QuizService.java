@@ -168,6 +168,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
                 quiz.cancel();
                 found = true;
 
+                logger.info("player count to release: {}", quiz.getPlayers().size());
                 for (Player player : quiz.getPlayers()) {
                     logger.info("release player: {}, {}", player.getName(), player.getUserId());
                     playerRepo.remove(player.getUserId());
