@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -14,6 +16,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
 import gruppe_b.quizduell.application.game.QuizSession;
+import gruppe_b.quizduell.application.interfaces.FinishQuiz;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.interfaces.StartQuiz;
 import gruppe_b.quizduell.application.models.Player;
@@ -38,7 +41,9 @@ import gruppe_b.quizduell.quizserver.exceptions.QuizNotFoundException;
  * @author Christopher Burmeister
  */
 @Service
-public class QuizService implements StartQuiz {
+public class QuizService implements StartQuiz, FinishQuiz {
+
+    private static final Logger logger = LoggerFactory.getLogger(QuizService.class);
 
     private final Lock lock;
 
@@ -151,23 +156,32 @@ public class QuizService implements StartQuiz {
     public boolean cancelQuiz(UUID lobbyId) {
         boolean found = false;
 
-        Quiz quiz = quizRepo.get(lobbyId);
-        QuizSession session = sessionRepo.get(lobbyId);
+        lock.lock();
 
-        if (quiz != null) {
-            quiz.cancel();
-            found = true;
+        logger.info("Quiz finish/cancel lobbyId: {}", lobbyId);
 
-            for (Player player : quiz.getPlayers()) {
-                playerRepo.remove(player.getUserId());
+        try {
+            Quiz quiz = quizRepo.get(lobbyId);
+            QuizSession session = sessionRepo.get(lobbyId);
+
+            if (quiz != null) {
+                quiz.cancel();
+                found = true;
+
+                for (Player player : quiz.getPlayers()) {
+                    logger.info("release player: {}, {}", player.getName(), player.getUserId());
+                    playerRepo.remove(player.getUserId());
+                }
+
+                simpMessagingTemplate.convertAndSend("/topic/quiz/" + quiz.getLobbyId(), quiz);
             }
 
-            simpMessagingTemplate.convertAndSend("/topic/quiz/" + quiz.getLobbyId(), quiz);
-        }
-
-        if (session != null) {
-            session.cancel();
-            return true;
+            if (session != null) {
+                session.cancel();
+                return true;
+            }
+        } finally {
+            lock.unlock();
         }
 
         return found;
@@ -244,8 +258,20 @@ public class QuizService implements StartQuiz {
      * @param quiz Quiz für das eine Session gestartet werden soll.
      */
     public void startQuiz(Quiz quiz) {
-        QuizSession session = new QuizSession(quiz, sendToPlayerService, getQuestionRandomQueryHandler, statsService);
+        QuizSession session = new QuizSession(quiz, this, sendToPlayerService, getQuestionRandomQueryHandler,
+                statsService);
         sessionRepo.put(quiz.getLobbyId(), session);
         session.start();
+    }
+
+    /**
+     * Wird aufgerufen, wenn ein Quiz beendet ist.
+     * Die Spieler werden dann aus dem playerRepo entfernt und können ein neues Quiz
+     * starten.
+     * 
+     * @param quiz Quiz das fertig ist
+     */
+    public void finishQuiz(Quiz quiz) {
+        this.cancelQuiz(quiz.getId());
     }
 }
