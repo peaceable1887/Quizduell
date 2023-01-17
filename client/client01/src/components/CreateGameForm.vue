@@ -1,5 +1,13 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "CreateGameForm.vue" definiert wie das Formular, zum erstellen einen Spiels, auszusehen hat 
+    und welche Funktionen es beinhaltet.
+-->
 <template>
     <div class="container">
+        <!-- Headline Komponente (Spiel erstellen)-->
         <Headline class="headline" text="Spiel erstellen"></Headline>
         <div>
             <form id="createGameForm" @submit.prevent="createLobby">
@@ -50,8 +58,12 @@ export default
     },
     methods:
     {
+        /**
+         * Die Methode "createLobby" erstellt per REST API eine neues Spiel.
+         */
         async createLobby()
         {
+            //mit oder ohne passwort (vllt noch rausnehmen)
             if(this.passwordProtected === true)
             {
                 console.log("passwort vorhanden")
@@ -89,7 +101,6 @@ export default
                 }
             }).then(data => 
             {
-                console.log(data.id)
                 this.$router.push("/gameLobby/"+ data.id)
             })
              

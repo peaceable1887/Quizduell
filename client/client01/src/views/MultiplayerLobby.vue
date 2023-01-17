@@ -122,7 +122,7 @@ export default
                 body: JSON.stringify(
                 {
                     lobbyId: lobbyId,
-                    password: "123" //vllt noch raus nehmen
+                    password: "123" //noch raus nehmen
                 })
             })
             .then(res => 
