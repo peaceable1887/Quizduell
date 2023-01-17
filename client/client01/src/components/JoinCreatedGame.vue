@@ -1,3 +1,9 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "JoinCreatedGame.vue" definiert die Darstellung eines einzelnen Lobby-Element, in der Mehrspieler-Lobby.
+-->
 <template>
     <div class="container">
         <h5>{{lobbyName}}</h5>
@@ -6,6 +12,7 @@
             <span><b>Anzahl der Runden:</b> 6</span>
             <span><b>erstellt von:</b> {{playerName}}</span>
             <router-link :to="'/gameLobby/' + lobbyId">
+                 <!-- "emit" legt fest, dass hier eine Funktion zum Verbinden mit der Lobby existieren muss-->
                 <Button text="Verbinden" @click="$emit('connect-lobby')"></Button>
             </router-link>
         </div>

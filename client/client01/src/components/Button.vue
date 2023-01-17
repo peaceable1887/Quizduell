@@ -2,7 +2,7 @@
     Version: 3.2.41
     Auhtor: Felix Hansmann
     
-    Die Komponente "Button.vue" die als grobes Schema wie ein Button auszusehen hat und was er behinhalten muss.
+    Die Komponente "Button.vue" dient als grobes Schema, wie ein Button auszusehen hat und was dieser behinhalten muss.
 -->
 <template>
     <button>{{ text }}</button>

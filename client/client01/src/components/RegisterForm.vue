@@ -1,3 +1,10 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "RegisterForm.vue" definiert wie das Formular, für die Registierung, auszusehen hat 
+    und welche Funktionen es beinhaltet.
+-->
 <template>
     <div class="container">
         <Headline class="headline" text="Registrieren"></Headline>
@@ -55,8 +62,13 @@ export default
     },
     methods:
     {
+        /**
+        * Die Methode "onSubmit" nimmt die eingebenen Daten aus dem Forumlar entgegen und sendet sie korrekter Eingabe an den Server.
+        */
         async onSubmit()
         {
+
+            //Validierung: prüft ob alle Daten für Registierung korrekt eingegeben wurden
             /*if(!this.accountName)
             {
                 this.errMsg = "Der Accountname fehlt!";
@@ -73,8 +85,9 @@ export default
             {
                 this.errMsg = "Passwort ist nicht identisch!";
             } 
-            else{*/
-            
+            else
+            {*/
+                //REST API Endpunkt (Registrieren)
                 await fetch("http://localhost:8080/api/auth/v1/register", {
                     method: "POST",
                     headers: 
@@ -88,20 +101,19 @@ export default
                         password: this.password
                     })
                 }).then(res =>
+                {
+                    if(res.ok)
                     {
-                        if(res.ok){
+                        alert("Account wurde erfolgreich angelegt !")
+                        this.$router.push("/")
 
-                            console.log("Account wurde erfolgreich angelegt !")
-                            alert("Account wurde erfolgreich angelegt !")
-                            this.$router.push("/")
-
-                        }else{
-                            
-                            console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden")
-                            this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden"
-                        }
-                    }) 
-                /*} */
+                    }else
+                    {       
+                        console.log("Fehler ist aufgetreten. Account konnte nicht erstellt werden")
+                        this.errMsg = "Fehler ist aufgetreten. Account konnte nicht erstellt werden"
+                    }
+                }) 
+            /*}*/
         },
     },
 }

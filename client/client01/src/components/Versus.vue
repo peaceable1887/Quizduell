@@ -1,3 +1,9 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "Versus.vue" wird in die Game Komponente geladen und ist für de Darstellung der Spieler, die gegeneinander spielen, dar.
+-->
 <template>
     <div class="container">
         <div class="versus">

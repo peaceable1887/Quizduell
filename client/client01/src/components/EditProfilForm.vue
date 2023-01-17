@@ -1,3 +1,10 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "EditProfilForm.vue" definiert wie das Formular, zum bearbeiten von dem Spielerprofil, auszusehen hat 
+    und welche Funktionen es beinhaltet.
+-->
 <template>
     <div class="container">
         <Headline class="headline" text="Profil bearbeiten"></Headline>
@@ -23,6 +30,7 @@
                     <label for="passwordRepeat">Passwort wiederholen</label>
                     <input type="password" name="passwordRepeat" v-model="passwordRepeat">
                 </div>
+                <!-- Meldung: ob das ändern das Profildaten geklappt hat -->
                 <div v-if="errMsg" class="errMsg" v-html="errMsg"></div>
                 <div v-if="sucMsg" class="sucMsg" v-html="sucMsg"></div>
                 <div class="btnWrapper">
@@ -61,6 +69,9 @@ export default
             sucMsg: "",
         }
     },
+    /**
+     * Der Lifecycle Hook "created" stellt alle benötigten REST Api und/oder Websocket Verbinungen her.
+     */
     async created()
     {
         await fetch("http://localhost:8080/api/auth/v1/details", {
@@ -80,19 +91,22 @@ export default
     },
     methods:
     {
+        /**
+        * Die Methode "onSubmit" löscht die bestehende Spiellobby (erst wenn alle Spieler wieder rausgegangen sind).
+        */
         async onSubmit()
         {
-            const headers = 
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-
+            //wird ausgeführt wenn die Passwörter identisch sind
             if(this.password === this.passwordRepeat)
             {
+                //REST API Endpunkt (User-Details updaten)
                 await fetch("http://localhost:8080/api/auth/v1/update", {
                 method: "POST",
-                headers: headers,
+                headers:
+                {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + localStorage.getItem("token")
+                },
                 body: JSON.stringify
                 ({
                     name:  this.accountName, 
@@ -111,17 +125,17 @@ export default
                     }
                 })
 
-                const headersFile = 
-                {
-                    "Authorization": "Bearer " + localStorage.getItem("token")
-                }
-
+                //FormDara Objekt wird erzeugt für das Hochladen eines Bildes
                 const formData = new FormData();
                 formData.append("file", this.selectedFile)
 
+                //REST API Endpunkt (Profilbild posten)
                 await fetch("http://localhost:8080/api/auth/v1/image",{
                     method: "POST",
-                    headers: headersFile,
+                    headers:
+                    {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }, 
                     body: formData
                 })
                 .then(res => 
@@ -130,7 +144,8 @@ export default
                     {
                         console.log("Bild wurde hochgeladen")
                     
-                    }else{
+                    }else
+                    {
                         console.log("Fehler ist aufgetreten beim hochladen des Bildes.")
                     }
                 })       
@@ -140,6 +155,12 @@ export default
             }
         },
 
+        /**
+        * Über die Methode "onFileSelected" wird das ausgewählte File-Objekt, der Variabale "selectedFile", zugewiesen.
+        * 
+        * @param event
+        * 
+        */
         onFileSelected(event)
         {
             this.selectedFile = event.target.files[0]

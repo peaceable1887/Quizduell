@@ -186,11 +186,10 @@ export default
 
          /**
          * Die Methode "toggle" ist dafür zuständig den Spielerstatus(bereit/nicht bereit), per Websocket, zu übermitteln.
-         * 
          */
         async toggle() 
         {
-            //nochmal überdenken und bearbeiten
+            //Es wird geprüft, ob der Spieler bereit/nicht bereit ist
             if(localStorage.getItem("userId"))
             {
                 this.waitForPlayer = false;

@@ -1,3 +1,10 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "Question.vue" wird in die Game-Komponente geladen und definiert die Darstellung, der Fragen und dazugehörigen Antwortmöglichkeiten.
+    Des Weiteren sind hier ein Timer, für jede Frage, mit eingebaut.
+-->
 <template>
     <QuestionCategory :topic="`${topic}`"></QuestionCategory>
     <div class="container">
@@ -7,7 +14,7 @@
             </div>            
         </div>  
         <div id="time">
-            <div :style="{color: timerColor}">{{ roundCountdown}}</div>
+            <div :style="{color: timerColor}">{{roundCountdown}}</div>
         </div>
         <form class="answers" @submit.prevent>
             <div class="option">

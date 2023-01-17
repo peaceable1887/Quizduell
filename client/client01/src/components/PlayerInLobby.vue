@@ -1,3 +1,9 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "PlayerInLobby.vue" dient als Schema, wie Spieler, die einer Lobby beigetreten sind, auszusehen haben.
+-->
 <template>
     <div class="container">
         <div class="playerNameContainer">

@@ -1,3 +1,9 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "Header.vue" beinhaltet die Form und Darstellung des Header-Elementes.
+-->
 <template>
     <div class="container">
         <span class="headline">Quizduell</span>

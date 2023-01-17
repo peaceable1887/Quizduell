@@ -1,3 +1,9 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "QuestionCategory.vue" dient als Schema, wie eine Fragekategorie auszusehen hat und was sie behinhalten muss.
+-->
 <template>
     <div class="container">
         <div class="topic">

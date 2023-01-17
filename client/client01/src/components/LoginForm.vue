@@ -1,3 +1,9 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "LoginForm.vue" definiert wie der Login Seite auszusehen hat und enthält entsprechenden Funktionen.
+-->
 <template>
     <div class="container">
         <Headline class="headline" text="Quizduell"></Headline>
@@ -47,8 +53,12 @@ export default
     },
     methods:
     {
+        /**
+        * Die Methode "onSubmit" prüft die Logindaten (Benutzername/Passwort) und leitet in das Hauptmenü weiter, bei korrekten Daten.
+        */
         async onSubmit()
         {
+                //REST API Endpunkt (Login/ JWT anfordern)
                 await axios.get("http://localhost:8080/api/auth/v1/token",
                 {
                     auth:
@@ -58,8 +68,6 @@ export default
                     }
                 }).then(resp => 
                 {
-                    console.log("Erfolgreich eingeloggt!")
-                    console.log(resp);
                     localStorage.setItem("token", resp.data.token)
                     localStorage.setItem("userId", resp.data.userId)
                     this.$router.push("/main")

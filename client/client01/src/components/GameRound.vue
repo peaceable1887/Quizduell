@@ -1,3 +1,9 @@
+<!--   
+    Version: 3.2.41
+    Auhtor: Felix Hansmann
+    
+    Die Komponente "GameRound.vue" dient als grobes Schema, wie die Darstellung einer Runde auszusehen hat.
+-->
 <template>
     <div class="container">
         <div class="round">
