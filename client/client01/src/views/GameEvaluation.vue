@@ -38,11 +38,6 @@
                     </tr>
                 </tbody>
                     <!-- zeigt Endergebnis -->
-                    <tr>
-                        <td>{{ this.result.players[1].points }} / 6</td>
-                        <td class="categoryName">Punkte</td>
-                        <td>{{ this.result.players[0].points }} / 6</td>
-                    </tr>
                     <tr class="tableSum">
                         <td>{{ this.result.players[1].playerResult }}</td>
                         <td class="resultCol">Ergebnis</td>
