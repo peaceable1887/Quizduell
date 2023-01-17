@@ -195,11 +195,11 @@ export default
             {
                 this.waitForPlayer = false;
             }
-            else if(!this.playerStatus)
+            if(!this.playerStatus)
             {
                 this.status = "ready";
             }
-            else if(this.playerStatus)
+            if(this.playerStatus)
             {
                 this.status = "wait";
             }
