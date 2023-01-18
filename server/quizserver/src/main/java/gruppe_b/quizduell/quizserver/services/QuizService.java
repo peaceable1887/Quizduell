@@ -45,7 +45,8 @@ public class QuizService implements StartQuiz, FinishQuiz {
 
     private static final Logger logger = LoggerFactory.getLogger(QuizService.class);
 
-    private final Lock lock;
+    private final Lock lockQuiz;
+    private final Lock lockUpdatePlayerStatus;
 
     private final ConcurrentHashMap<UUID, Quiz> quizRepo;
 
@@ -69,7 +70,8 @@ public class QuizService implements StartQuiz, FinishQuiz {
     JwtDecoder jwtDecoder;
 
     public QuizService() {
-        lock = new ReentrantLock(true);
+        lockQuiz = new ReentrantLock(true);
+        lockUpdatePlayerStatus = new ReentrantLock(true);
         this.quizRepo = new ConcurrentHashMap<>();
         this.playerRepo = new ConcurrentHashMap<>();
         this.sessionRepo = new ConcurrentHashMap<>();
@@ -113,7 +115,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
 
         Quiz quiz;
 
-        lock.lock();
+        lockQuiz.lock();
 
         try {
             // Gibt es das Spiel schon?
@@ -141,7 +143,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
                 playerRepo.put(playerId, newPlayer);
             }
         } finally {
-            lock.unlock();
+            lockQuiz.unlock();
         }
 
         return quiz;
@@ -156,7 +158,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
     public boolean cancelQuiz(UUID lobbyId) {
         boolean found = false;
 
-        lock.lock();
+        lockQuiz.lock();
 
         logger.info("Quiz finish/cancel lobbyId: {}", lobbyId);
 
@@ -182,7 +184,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
                 return true;
             }
         } finally {
-            lock.unlock();
+            lockQuiz.unlock();
         }
 
         return found;
@@ -219,26 +221,35 @@ public class QuizService implements StartQuiz, FinishQuiz {
 
     public Quiz updatePlayerStatus(UUID lobbyId, UUID playerId, PlayerStatus status)
             throws UnknownPlayerStatusException, QuizNotFoundException {
-        Quiz quiz = getQuiz(lobbyId);
 
-        if (quiz == null) {
-            throw new QuizNotFoundException("Quiz not Found! LobbyId:" + lobbyId.toString());
-        }
+        Quiz quiz;
 
-        Player player = quiz.getPlayer(playerId);
+        lockUpdatePlayerStatus.lock();
 
-        if (status == PlayerStatus.READY) {
-            player.setReady();
-        } else if (status == PlayerStatus.WAIT) {
-            player.setWait();
-        } else {
-            throw new UnknownPlayerStatusException(status.toString());
-        }
+        try {
+            quiz = getQuiz(lobbyId);
 
-        // Alle Spieler ready?
-        if (quiz.allPlayersReady()) {
-            // Spieler sind ready. Start countdown.
-            startQuizCountdown(quiz);
+            if (quiz == null) {
+                throw new QuizNotFoundException("Quiz not Found! LobbyId:" + lobbyId.toString());
+            }
+
+            Player player = quiz.getPlayer(playerId);
+
+            if (status == PlayerStatus.READY) {
+                player.setReady();
+            } else if (status == PlayerStatus.WAIT) {
+                player.setWait();
+            } else {
+                throw new UnknownPlayerStatusException(status.toString());
+            }
+
+            // Alle Spieler ready?
+            if (quiz.allPlayersReady()) {
+                // Spieler sind ready. Start countdown.
+                startQuizCountdown(quiz);
+            }
+        } finally {
+            lockUpdatePlayerStatus.unlock();
         }
 
         return quiz;
