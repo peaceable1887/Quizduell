@@ -15,9 +15,9 @@
         <div class="tableWrapper">
             <table>
                 <tr>
-                    <th>{{player[1].name }}</th>
+                    <th>{{playerTwo}}</th>
                     <th>Runde</th>
-                    <th>{{player[0].name}}</th>
+                    <th>{{playerOne}}</th>
                 </tr>
                 <!-- listet alle ausgewählten Antworten jeder Runde auf. Mit entsprechender Farbe nach Richtig/Falsch -->
                 <tbody v-for="round in rounds" :key="round" >
@@ -39,9 +39,9 @@
                 </tbody>
                     <!-- zeigt Endergebnis -->
                     <tr class="tableSum">
-                        <td>{{ this.result.players[1].playerResult }}</td>
+                        <td>{{resultOne}}</td>
                         <td class="resultCol">Ergebnis</td>
-                        <td>{{ this.result.players[0].playerResult }}</td>
+                        <td>{{resultTwo}}</td>
                     </tr>             
             </table>
         </div>
@@ -70,12 +70,14 @@ export default
     data()
     {
         return{
-            player: "",
+            playerOne: "",
+            playerTwo: "",
             quizEvaluation: "",
             categoryName: "",
             chosenAnswer: "",
             answerText: "",
-            result: "",
+            resultOne: "",
+            resultTwo: "",
             points: "",
             rounds: [],
             answers:[],
@@ -104,9 +106,13 @@ export default
             .then(res => res.json())
             .then(data => 
             {
-                this.player = data.playerList
-                this.rounds = data.roundList
-                this.result = data.quizSessionResult
+                console.log(data) 
+                this.rounds = data.roundList;
+                this.resultOne = data.quizSessionResult.players[0].playerResult;
+                this.resultTwo = data.quizSessionResult.players[1].playerResult;
+                this.playerOne = data.playerList[0].name;
+                this.playerTwo = data.playerList[1].name;
+                
             })
             .catch(err => console.log("ERROR: " + err))
     },

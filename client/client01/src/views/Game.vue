@@ -304,7 +304,7 @@ export default
                         this.textColor = "red";
                     }
                     //Wenn keine Antwort ausgewählt wurde (nochmal überarbeiten, funktioniert noch nicht wie gewollt)
-                    else if((object.playerList[i].playerRoundStatus === "GUESS") && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    else if((object.playerList[i].chosenAnswer === 0) && (object.playerList[i].playerId === localStorage.getItem("userId")))
                     {
                         console.log("keine antwort gewählt")
                         this.noAnswer = "Keine Antwort ausgewählt";
