@@ -45,7 +45,8 @@ public class QuizService implements StartQuiz, FinishQuiz {
 
     private static final Logger logger = LoggerFactory.getLogger(QuizService.class);
 
-    private final Lock lock;
+    private final Lock lockQuiz;
+    private final Lock lockPlayerReadyStartQuiz;
 
     private final ConcurrentHashMap<UUID, Quiz> quizRepo;
 
@@ -69,7 +70,8 @@ public class QuizService implements StartQuiz, FinishQuiz {
     JwtDecoder jwtDecoder;
 
     public QuizService() {
-        lock = new ReentrantLock(true);
+        lockQuiz = new ReentrantLock(true);
+        lockPlayerReadyStartQuiz = new ReentrantLock(true);
         this.quizRepo = new ConcurrentHashMap<>();
         this.playerRepo = new ConcurrentHashMap<>();
         this.sessionRepo = new ConcurrentHashMap<>();
@@ -113,7 +115,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
 
         Quiz quiz;
 
-        lock.lock();
+        lockQuiz.lock();
 
         try {
             // Gibt es das Spiel schon?
@@ -141,7 +143,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
                 playerRepo.put(playerId, newPlayer);
             }
         } finally {
-            lock.unlock();
+            lockQuiz.unlock();
         }
 
         return quiz;
@@ -156,7 +158,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
     public boolean cancelQuiz(UUID lobbyId) {
         boolean found = false;
 
-        lock.lock();
+        lockQuiz.lock();
 
         logger.info("Quiz finish/cancel lobbyId: {}", lobbyId);
 
@@ -182,7 +184,7 @@ public class QuizService implements StartQuiz, FinishQuiz {
                 return true;
             }
         } finally {
-            lock.unlock();
+            lockQuiz.unlock();
         }
 
         return found;
@@ -235,10 +237,16 @@ public class QuizService implements StartQuiz, FinishQuiz {
             throw new UnknownPlayerStatusException(status.toString());
         }
 
-        // Alle Spieler ready?
-        if (quiz.allPlayersReady()) {
-            // Spieler sind ready. Start countdown.
-            startQuizCountdown(quiz);
+        lockPlayerReadyStartQuiz.lock();
+
+        try {
+            // Alle Spieler ready?
+            if (quiz.allPlayersReady()) {
+                // Spieler sind ready. Start countdown.
+                startQuizCountdown(quiz);
+            }
+        } finally {
+            lockPlayerReadyStartQuiz.unlock();
         }
 
         return quiz;
