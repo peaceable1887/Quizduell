@@ -2,6 +2,8 @@ package gruppe_b.quizduell.quizserver.services;
 
 import java.util.TimerTask;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import gruppe_b.quizduell.application.interfaces.StartQuiz;
@@ -9,6 +11,8 @@ import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.quizserver.common.QuizStartDto;
 
 public class QuizStartCountDown extends TimerTask {
+
+    private static final Logger logger = LoggerFactory.getLogger(QuizStartCountDown.class);
 
     private final Quiz quiz;
     private final SimpMessagingTemplate simpMessagingTemplate;
@@ -46,6 +50,7 @@ public class QuizStartCountDown extends TimerTask {
     }
 
     private void sendMessage(QuizStartDto dto) {
+        logger.info("start-quiz countdown: {}", dto.countdown);
         simpMessagingTemplate.convertAndSend(
                 "/topic/quiz/" + quiz.getLobbyId().toString() + "/start-quiz", dto);
     }
