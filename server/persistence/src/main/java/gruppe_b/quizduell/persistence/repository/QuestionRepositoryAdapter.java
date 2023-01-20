@@ -1,5 +1,6 @@
 package gruppe_b.quizduell.persistence.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
@@ -76,6 +77,10 @@ public class QuestionRepositoryAdapter implements QuestionRepository {
         Question question = repo.findAll().get(rdn);
 
         return question;
+    }
+
+    public List<? extends Question> findAll() {
+        return repo.findAll();
     }
 
     public void deleteAll() {

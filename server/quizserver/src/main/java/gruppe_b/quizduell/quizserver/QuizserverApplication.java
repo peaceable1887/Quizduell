@@ -28,6 +28,6 @@ public class QuizserverApplication implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		seedDb.Seed();
+		seedDb.seed();
 	}
 }

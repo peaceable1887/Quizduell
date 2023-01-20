@@ -1,5 +1,6 @@
 package gruppe_b.quizduell.application.questions;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -21,6 +22,8 @@ public interface QuestionRepository {
     Question update(Question question);
 
     Question random(Random random);
+
+    List<? extends Question> findAll();
 
     void deleteAll();
 }

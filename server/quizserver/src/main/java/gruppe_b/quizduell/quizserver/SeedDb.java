@@ -17,7 +17,7 @@ public class SeedDb {
     @Autowired
     QuestionRepository questionRepo;
 
-    public void Seed() {
+    public void seed() {
         java();
         patterns();
         framework();
@@ -25,7 +25,7 @@ public class SeedDb {
     }
 
     void java() {
-        if (categoryRepo.findAll().isEmpty()) {
+        if (categoryRepo.findByName("Java") == null) {
             Category category = categoryRepo
                     .save(new Category("Java", "Fragen zur Programmiersprache Java"));
 
@@ -104,7 +104,7 @@ public class SeedDb {
     }
 
     void patterns() {
-        if (categoryRepo.findAll().isEmpty()) {
+        if (categoryRepo.findByName("Patterns") == null) {
             Category category = categoryRepo
                     .save(new Category("Patterns", "Fragen zu Patterns"));
 
@@ -135,9 +135,9 @@ public class SeedDb {
     }
 
     void framework() {
-        if (categoryRepo.findAll().isEmpty()) {
+        if (categoryRepo.findByName("Frameworks") == null) {
             Category category = categoryRepo
-                    .save(new Category("Framworks", "Fragen zu Frameworks"));
+                    .save(new Category("Frameworks", "Fragen zu Frameworks"));
 
             questionRepo.save(new Question(category,
                     "Welches Framework wird hauptsächlich für die Entwicklung von Desktop-Anwendungen verwendet?",
@@ -166,7 +166,7 @@ public class SeedDb {
     }
 
     void python() {
-        if (categoryRepo.findAll().isEmpty()) {
+        if (categoryRepo.findByName("Python") == null) {
             Category category = categoryRepo
                     .save(new Category("Python", "Fragen zu Python"));
 
