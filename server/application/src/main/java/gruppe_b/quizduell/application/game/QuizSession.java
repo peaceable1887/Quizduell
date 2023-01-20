@@ -346,7 +346,13 @@ public class QuizSession extends Thread {
      * @return Quizfrage
      */
     private Question getNewQuestion() {
-        return questionRandomHandler.handle(new GetQuestionRandomQuery());
+        List<UUID> excludeQuestionsIds = new ArrayList<>();
+
+        for (QuizRound round : roundList) {
+            excludeQuestionsIds.add(round.getQuestion().getId());
+        }
+
+        return questionRandomHandler.handle(new GetQuestionRandomQuery(excludeQuestionsIds));
     }
 
     /**

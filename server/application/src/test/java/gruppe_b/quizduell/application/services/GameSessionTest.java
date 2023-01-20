@@ -13,7 +13,6 @@ import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.application.questions.QuestionRepository;
 import gruppe_b.quizduell.application.questions.queries.GetQuestionRandomQueryHandler;
-import gruppe_b.quizduell.application.services.StatsService;
 import gruppe_b.quizduell.domain.entities.Category;
 import gruppe_b.quizduell.domain.entities.Question;
 
@@ -21,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
@@ -79,7 +79,7 @@ class GameSessionTest {
         Category category = Mockito.mock(Category.class);
         when(category.getName()).thenReturn("categoryName");
 
-        when(questionRepository.random(random)).thenReturn(
+        when(questionRepository.random(anyList())).thenReturn(
                 new Question(category,
                         "mockQuestionText",
                         "mockAnswer1",

@@ -5,6 +5,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +25,9 @@ import gruppe_b.quizduell.persistence.entities.DbQuestion;
  */
 @Repository("QuestionRepository")
 public class QuestionRepositoryAdapter implements QuestionRepository {
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Autowired
     private JpaQuestionRepository repo;
@@ -70,13 +76,27 @@ public class QuestionRepositoryAdapter implements QuestionRepository {
     }
 
     @Override
-    public Question random(Random random) {
-        int count = (int) repo.count();
-        int rdn = random.nextInt(count);
+    public Question random(List<UUID> excludedQuestions) {
 
-        Question question = repo.findAll().get(rdn);
+        Random random = new Random();
 
-        return question;
+        List<DbQuestion> questions = repo.findAll();
+
+        DbQuestion question;
+
+        while (true) {
+            int rdnInt = random.nextInt(questions.size());
+            question = questions.get(rdnInt);
+
+            if (excludedQuestions == null || excludedQuestions.isEmpty() ||
+                    questions.size() <= excludedQuestions.size()) {
+                return question.createEntity();
+            }
+
+            if (!excludedQuestions.contains(question.getId())) {
+                return question.createEntity();
+            }
+        }
     }
 
     public List<? extends Question> findAll() {

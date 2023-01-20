@@ -31,10 +31,10 @@ public class SeedDb {
 
             questionRepo.save(new Question(category,
                     "Was ist Java?",
-                    "Eine Programmiersprache ohne Objektorientierung",
-                    "Eine Firma die Joghurt produziert",
-                    "Eine Objekt-Orientierte Programmiersprache",
-                    "Ein Planet der nicht bewohnbar ist",
+                    "Eine Insel",
+                    "Ein Joghurt",
+                    "Eine Programmiersprache",
+                    "Ein Planet",
                     3));
 
             questionRepo.save(new Question(category,
