@@ -1,5 +1,7 @@
 # LobbyServer
 
+Micro-Service um eine Lobby zu erstellen, über die ein Gegenspieler gefunden werden kann und ein Quiz gestartet wird. API ist nur mit einem gültigen JWT zugänglich.
+
 ## API Dokumentation
 
 ### Lobby

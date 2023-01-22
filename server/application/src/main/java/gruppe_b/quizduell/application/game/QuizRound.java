@@ -6,6 +6,11 @@ import java.util.UUID;
 import gruppe_b.quizduell.application.models.QuizPlayer;
 import gruppe_b.quizduell.domain.entities.Question;
 
+/**
+ * Enthält die Informationen zu einer Quiz Runde.
+ * 
+ * @author Christopher Burmeister
+ */
 public class QuizRound {
 
     private final Question question;

@@ -1,5 +1,7 @@
 # QuizServer
 
+Micro-Service über den Quiz-Sessions gespielt werden. API ist nur mit einem gültigen JWT zugänglich.
+
 ## API Dokumentation
 
 ### Quiz
