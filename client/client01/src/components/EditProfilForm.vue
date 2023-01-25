@@ -150,7 +150,7 @@ export default
                         
                         }else
                         {
-                            this.errMsg = "Bild konnte nicht Hochgeladen werden.<br><br> Mögliche Ursache:<br><br> - nur das jpeg-Format ist erlaubt <br> - die Datei ist zu groß";
+                            this.errMsg = "Bild konnte nicht Hochgeladen werden.<br><br> Mögliche Ursache:<br><br> - nur das jpg-Format (.jpg) ist erlaubt <br> - die Datei ist zu groß (max. 2 MB)";
                             this.sucMsg = ""; 
                         }
                     })     
