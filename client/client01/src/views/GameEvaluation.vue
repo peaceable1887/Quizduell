@@ -39,9 +39,9 @@
                 </tbody>
                     <!-- zeigt Endergebnis -->
                     <tr class="tableSum">
-                        <td>{{resultOne}}</td>
-                        <td class="resultCol">Ergebnis</td>
                         <td>{{resultTwo}}</td>
+                        <td class="resultCol">Ergebnis</td>
+                        <td>{{resultOne}}</td>
                     </tr>             
             </table>
         </div>

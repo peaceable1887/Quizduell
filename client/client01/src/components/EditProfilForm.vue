@@ -163,6 +163,7 @@ export default
 
         /**
         * Über die Methode "onFileSelected" wird das ausgewählte File-Objekt, der Variabale "selectedFile", zugewiesen.
+        * Des Weiteren findet eine Validierung statt, ob die Datei größer als 2 Mb ist.
         * 
         * @param event
         * 
@@ -170,6 +171,17 @@ export default
         onFileSelected(event)
         {
             this.selectedFile = event.target.files[0]
+            
+            // in MiB
+            const fileSize = event.target.files[0].size / 1024 / 1024; 
+
+            if(fileSize > 2) 
+            {
+                this.errMsg = "Die Datei ist zu groß! (max. 2 MB)"
+            }else 
+            {
+                this.errMsg = ""
+            }
         }
     }
     

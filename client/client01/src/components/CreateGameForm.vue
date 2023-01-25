@@ -15,16 +15,6 @@
                     <label for="gameName">Name des Spiels</label>
                     <input type="text" name="gameName" v-model="gameName">
                 </div>
-                <div class="formData">
-                    <label for="passwordProtected">Passwortgeschützt</label> 
-                    <div class="checkboxContainer">
-                        <input type="checkbox" name="passwordProtected" v-model="passwordProtected">
-                    </div>
-                </div>
-                <div class="formData">
-                    <label for="password">Passwort</label>
-                    <input type="password" name="password" v-model="password">
-                </div>
                 <div class="btnWrapper">
                     <router-link to="/lobby">
                         <Button text="Zurück"></Button>
