@@ -12,6 +12,12 @@ import gruppe_b.quizduell.application.common.GameSessionDto;
 import gruppe_b.quizduell.application.common.GameSessionResult;
 import gruppe_b.quizduell.application.interfaces.SendToPlayerService;
 
+/**
+ * Service zum Senden von Spielupdates an die Spieler.
+ * Wird von GameSession aus dem application Layer verwendet.
+ * 
+ * @author Christopher Burmeister
+ */
 @Service
 public class SendToPlayerServiceImp implements SendToPlayerService {
 

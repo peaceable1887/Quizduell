@@ -1,6 +1,6 @@
 package gruppe_b.quizduell.application.questions;
 
-import java.util.Random;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
@@ -20,7 +20,9 @@ public interface QuestionRepository {
 
     Question update(Question question);
 
-    Question random(Random random);
+    Question random(List<UUID> excludeQuestions);
+
+    List<? extends Question> findAll();
 
     void deleteAll();
 }

@@ -10,6 +10,12 @@ import gruppe_b.quizduell.application.interfaces.StartQuiz;
 import gruppe_b.quizduell.application.models.Quiz;
 import gruppe_b.quizduell.quizserver.common.QuizStartDto;
 
+/**
+ * Service für den Countdown, wenn die Spieler mit dem Quiz verbunden sind und
+ * das Quiz starten soll.
+ * 
+ * @author Christopher Burmeister
+ */
 public class QuizStartCountDown extends TimerTask {
 
     private static final Logger logger = LoggerFactory.getLogger(QuizStartCountDown.class);
@@ -27,6 +33,9 @@ public class QuizStartCountDown extends TimerTask {
         this.startQuizCallBack = startQuiz;
     }
 
+    /**
+     * Loop für den Countdown
+     */
     @Override
     public void run() {
         // alle Spieler immer noch ready?
@@ -38,23 +47,37 @@ public class QuizStartCountDown extends TimerTask {
         }
 
         if (counter == 0) {
+            // Countdown fertig. Letzten Countdown senden und Spiel starten.
             this.cancel();
             quiz.setQuizStarted();
             sendMessage(createDto("start", counter));
             startQuizCallBack.startQuiz(quiz);
         } else {
+            // Countdown senden.
             sendMessage(createDto("start", counter));
         }
 
         counter--;
     }
 
+    /**
+     * Aktuellen Countdown über Websocket an die Spieler senden.
+     * 
+     * @param dto
+     */
     private void sendMessage(QuizStartDto dto) {
         logger.info("start-quiz countdown: {}", dto.countdown);
         simpMessagingTemplate.convertAndSend(
                 "/topic/quiz/" + quiz.getLobbyId().toString() + "/start-quiz", dto);
     }
 
+    /**
+     * Erstellt das Dto zum Senden des Countdown's an die Spieler.
+     * 
+     * @param status
+     * @param countdown
+     * @return
+     */
     private static QuizStartDto createDto(String status, int countdown) {
         QuizStartDto dto = new QuizStartDto();
         dto.status = status;

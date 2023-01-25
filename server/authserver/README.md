@@ -1,5 +1,7 @@
 # AuthServer
 
+Micro-Service zum Registrieren, Einloggen, Bearbeiten des Profils. Stellt nach erfolgreicher Authentication ein JWT zur Verfügung, um mit den anderen Micro-Services zu interagieren.
+
 ## API Dokumentation
 
 ### Authentication

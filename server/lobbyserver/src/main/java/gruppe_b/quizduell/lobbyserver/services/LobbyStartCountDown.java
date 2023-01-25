@@ -7,6 +7,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import gruppe_b.quizduell.lobbyserver.common.LobbyStartDto;
 import gruppe_b.quizduell.lobbyserver.models.Lobby;
 
+/**
+ * Service für den Countdown, wenn die Spieler in einer Lobby bereit sind und
+ * ein Spiel starten wollen.
+ */
 public class LobbyStartCountDown extends TimerTask {
 
     private final Lobby lobby;

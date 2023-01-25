@@ -1,5 +1,7 @@
 # StatsServer
 
+Micro-Service über den die eigenen Spieler-Statistiken abgerufen werden können. API ist nur mit einem gültigen JWT zugänglich.
+
 ## API Dokumentation
 
 ### Stats-Server

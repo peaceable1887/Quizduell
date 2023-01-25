@@ -10,6 +10,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.annotation.DirtiesContext.MethodMode;
 
 import gruppe_b.quizduell.application.categories.CategoryRepository;
+import gruppe_b.quizduell.application.questions.QuestionRepository;
 
 @SpringBootTest
 @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
@@ -20,6 +21,9 @@ class QuizserverApplicationTests {
 
 	@Autowired
 	CategoryRepository categoryRepo;
+
+	@Autowired
+	QuestionRepository questionRepo;
 
 	static {
 		System.setProperty("DB_PORT", "3306");
@@ -34,8 +38,8 @@ class QuizserverApplicationTests {
 
 	@Test
 	void testSeed() {
-		seedDb.Seed();
-		assertTrue(categoryRepo.findAll().size() > 0);
+		seedDb.seed();
+		assertTrue(categoryRepo.findAll().size() >= 4);
+		assertTrue(questionRepo.findAll().size() >= 20);
 	}
-
 }
