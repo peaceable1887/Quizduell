@@ -297,17 +297,16 @@ export default
                         this.textColor = "green";
                     }
                     //Wenn die Antwort falsch ist
-                    else if((object.playerList[i].chosenAnswer != object.correctAnswer) && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    if((object.playerList[i].chosenAnswer != object.correctAnswer) && (object.playerList[i].playerId === localStorage.getItem("userId")))
                     {
                         this.noAnswer = "";
                         this.isCorrectAnswer = "Falsch";
                         this.textColor = "red";
                     }
-                    //Wenn keine Antwort ausgewählt wurde (nochmal überarbeiten, funktioniert noch nicht wie gewollt)
-                    else if((object.playerList[i].chosenAnswer === 0) && (object.playerList[i].playerId === localStorage.getItem("userId")))
+                    //Wenn keine Antwort ausgewählt wurde 
+                    if((object.playerList[i].chosenAnswer === 0) && (object.playerList[i].playerId === localStorage.getItem("userId")))
                     {
-                        console.log("keine antwort gewählt")
-                        this.noAnswer = "Keine Antwort ausgewählt";
+                        this.noAnswer = "keine Antwort";
                         this.isCorrectAnswer = "Falsch";
                         this.textColor = "red";
                     }    
