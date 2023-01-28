@@ -47,3 +47,5 @@ https://test2.burmeister.hamburg
     -e MARIADB_DATABASE=quizduell \
     -p 3306:3306 \
     mariadb:latest
+
+FINALER COMMIT PRÜFUNGSLEISTUNG
