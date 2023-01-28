@@ -18,7 +18,7 @@ https://test2.burmeister.hamburg
 
 - Docker Compose Command ausführen
 
-        docker-compose up --build
+        docker-compose up --build -d
 
 - Server sollte nun erreichbar sein: http://localhost:8080
 
@@ -34,7 +34,7 @@ https://test2.burmeister.hamburg
 
 - Docker Compose Command ausführen
 
-        docker-compose up --build
+        docker-compose up --build -d
 
 - Server sollte nun erreichbar sein: http://localhost:8080
 
