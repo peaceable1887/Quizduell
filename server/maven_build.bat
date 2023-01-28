@@ -1,0 +1,9 @@
+call .\domain\mvnw install -DskipTests -f domain
+call .\application\mvnw install -DskipTests -f application
+call .\common\mvnw install -DskipTests -f common
+call .\persistence\mvnw install -DskipTests -f persistence
+call .\infrastructure\mvnw install -DskipTests -f infrastructure
+call .\authserver\mvnw install -DskipTests -f authserver
+call .\lobbyserver\mvnw install -DskipTests -f lobbyserver
+call .\quizserver\mvnw install -DskipTests -f quizserver
+call .\statsserver\mvnw install -DskipTests -f statsserver
