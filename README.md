@@ -6,14 +6,35 @@ https://test2.burmeister.hamburg
 
 ## Projekt lokal ausführen
 
+### Linux
+
 - In der Command Line in den "server/" Ordner wechseln
+
+        cd server
+
 - Build Script ausführen
 
         ./maven_build.sh
 
 - Docker Compose Command ausführen
 
-        docker-compose stop && docker-compose rm -f && docker volume prune -f && docker-compose up --build --force-recreate -d
+        docker-compose up --build
+
+- Server sollte nun erreichbar sein: http://localhost:8080
+
+### Windows
+
+- In der Command Line in den "server/" Ordner wechseln
+
+        cd server
+
+- Build Script ausführen
+
+        ./maven_build.bat
+
+- Docker Compose Command ausführen
+
+        docker-compose up --build
 
 - Server sollte nun erreichbar sein: http://localhost:8080
 
