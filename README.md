@@ -1,15 +1,7 @@
 # Quizduell
 ## Streamcast
 
-<iframe
-    width="640"
-    height="480"
-    src="https://www.youtube.com/watch?v=Y5ySBIC16K4"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
->
-</iframe>
+[![IMAGE_ALT](https://img.youtube.com/vi/UmX4kyB2wfg/0.jpg)](https://www.youtube.com/watch?v=Y5ySBIC16K4)
 
 ## Projekt lokal ausführen
 
