@@ -1,8 +1,4 @@
-# Gruppe B Quizduell
-
-## Projekt zum Testen erreichbar unter:
-
-https://test2.burmeister.hamburg
+# Quizduell
 
 ## Projekt lokal ausführen
 
