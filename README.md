@@ -1,7 +1,7 @@
 # Quizduell
-## Streamcast
+## Screencast
 
-[![Streamcast - Quizduell](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.dropbox.com/s/n3lkz4stilhzm13/ScreenCast_Quizduell.wmv?dl=0)
+[![Screencast - Quizduell](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.dropbox.com/s/n3lkz4stilhzm13/ScreenCast_Quizduell.wmv?dl=0)
 
 ## Projekt lokal ausführen
 
